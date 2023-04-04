@@ -6,8 +6,10 @@ const MessageInput = ({ sendMessage }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    sendMessage(message)
-    setMessage('')
+    if (message) {
+      sendMessage(message)
+      setMessage('')
+    }
   }
 
   const inputRef = useRef(null)
