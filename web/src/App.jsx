@@ -28,7 +28,9 @@ const App = () => {
 
   return (
     <div className="App">
+      <h1>Huddle</h1>
       <div className="messages">
+        {/* TODO: Add a key to messages! */}
         {messages.map((message) => <Message message={message}/>)}
       </div>
 
