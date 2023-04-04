@@ -1,4 +1,5 @@
 import { useState, } from 'react'
+import './MessageInput.css'
 
 const MessageInput = () => {
   const [message, setMessage] = useState('')
@@ -9,8 +10,9 @@ const MessageInput = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="message-form" onSubmit={handleSubmit}>
       <input
+        className="message-input"
         value={message}
         onChange={(event) => setMessage(event.target.value)}
       />
