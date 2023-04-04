@@ -18,10 +18,21 @@ const initialMessages = [
 const App = () => {
   const [messages, setMessages] = useState(initialMessages)
 
+  const sendMessage = (content) => {
+    const newMessage = {
+      type: "user",
+      content
+    }
+    setMessages(messages.concat(newMessage))
+  }
+
   return (
     <div className="App">
-      {messages.map((message) => <Message message={message}/>)}
-      <MessageInput />
+      <div className="messages">
+        {messages.map((message) => <Message message={message}/>)}
+      </div>
+
+      <MessageInput sendMessage={sendMessage}/>
     </div>
   )
 }

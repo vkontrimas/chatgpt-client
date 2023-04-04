@@ -8,9 +8,8 @@
 
 .message-type-ai {
   border-color: blue;
-  float: left;
 }
 
 .message-type-user {
-  float: right;
+  margin-left: 10%;
 }

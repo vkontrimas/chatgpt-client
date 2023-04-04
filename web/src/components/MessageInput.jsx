@@ -1,12 +1,13 @@
 import { useState, } from 'react'
 import './MessageInput.css'
 
-const MessageInput = () => {
+const MessageInput = ({ sendMessage }) => {
   const [message, setMessage] = useState('')
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log('message:', message)
+    sendMessage(message)
+    setMessage('')
   }
 
   return (
