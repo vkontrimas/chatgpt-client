@@ -1,0 +1,16 @@
+.message {
+  width: 90%;
+  padding: 5px;
+  margin-bottom: 5px;
+  border: 2px solid green;
+  border-radius: 5px;
+}
+
+.message-type-ai {
+  border-color: blue;
+  float: left;
+}
+
+.message-type-user {
+  float: right;
+}

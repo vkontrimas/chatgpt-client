@@ -1,12 +1,26 @@
+import { useState } from 'react'
+import MessageInput from './components/MessageInput'
+import Message from './components/Message'
+
 import './App.css'
 
-import MessageInput from './components/MessageInput'
+const initialMessages = [
+  {
+    type: "user",
+    content: "hello",
+  },
+  {
+    type: "ai",
+    content: "hello",
+  },
+]
 
 const App = () => {
+  const [messages, setMessages] = useState(initialMessages)
+
   return (
     <div className="App">
-      Hello world
-
+      {messages.map((message) => <Message message={message}/>)}
       <MessageInput />
     </div>
   )
