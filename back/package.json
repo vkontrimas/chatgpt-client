@@ -10,6 +10,7 @@
   },
   "author": "Vytautas Kontrimas",
   "dependencies": {
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-async-errors": "^3.1.1"
   },
