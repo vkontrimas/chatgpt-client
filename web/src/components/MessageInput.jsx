@@ -5,10 +5,12 @@ const MessageInput = ({ sendMessage }) => {
   const [message, setMessage] = useState('')
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
+    event?.preventDefault()
     if (message) {
       setMessage('')
-      await sendMessage(message)
+      // TODO: Find out if the markdownified message significantly affects
+      //       GPT replies. (Also definitely should add tokens? Maybe not?)
+      await sendMessage(message.replace(/\n/g, '  \n'))
     }
   }
 
@@ -20,12 +22,33 @@ const MessageInput = ({ sendMessage }) => {
     return () => window.removeEventListener('focus', focusInput)
   }, [])
 
+  const autoSize = (target) => {
+    target.style.height = '0px'
+    target.style.height = `${target.scrollHeight}px`
+  }
+
+  useEffect(() => autoSize(inputRef.current), [])
+
+  const handleKeyDown = async (event) => {
+    if (message && event.keyCode === 13 && !event.shiftKey) {
+      event.preventDefault()
+      await handleSubmit(null)
+    }
+    autoSize(event.target)
+  }
+
+  const handleChange = (event) => {
+    setMessage(event.target.value) 
+    autoSize(event.target)
+  }
+
   return (
     <form className="message-form" onSubmit={handleSubmit}>
-      <input
+      <textarea
         className="message-input"
         value={message}
-        onChange={(event) => setMessage(event.target.value)}
+        onKeyDown={handleKeyDown}
+        onChange={handleChange}
         ref={inputRef}
       />
     </form>
