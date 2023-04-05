@@ -11,8 +11,7 @@ const App = () => {
     <div className="App">
       <h1>Huddle</h1>
       <div className="messages">
-        {/* TODO: Add a key to messages! */}
-        {messages.map((message) => <Message message={message}/>)}
+        {messages.map((message, i) => <Message key={i} message={message}/>)}
       </div>
 
       <MessageInput sendMessage={sendMessage}/>
