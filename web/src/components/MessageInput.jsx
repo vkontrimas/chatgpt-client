@@ -4,10 +4,10 @@ import './MessageInput.css'
 const MessageInput = ({ sendMessage }) => {
   const [message, setMessage] = useState('')
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
     if (message) {
-      sendMessage(message)
+      await sendMessage(message)
       setMessage('')
     }
   }

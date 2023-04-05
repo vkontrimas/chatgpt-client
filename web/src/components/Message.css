@@ -6,10 +6,10 @@
   border-radius: 5px;
 }
 
-.message-type-ai {
+.message-role-assistant {
   border-color: blue;
 }
 
-.message-type-user {
+.message-role-user {
   margin-left: 10%;
 }
