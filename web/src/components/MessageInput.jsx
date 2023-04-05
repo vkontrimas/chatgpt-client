@@ -1,15 +1,11 @@
 import { useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { increment } from '../redux/message'
+import { } from '../redux/message'
 import './MessageInput.css'
 
 const MessageInput = ({ sendMessage }) => {
-  const count = useSelector(state => state.message.temp)
-  const dispatch = useDispatch()
-
-  useEffect(() => {
-    console.log(count)
-  }, [count])
+  // const count = useSelector(state => state.message.temp)
+  // const dispatch = useDispatch()
 
   const [message, setMessage] = useState('')
 
