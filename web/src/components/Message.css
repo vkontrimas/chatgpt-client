@@ -1,9 +1,28 @@
-.message {
-  width: 90%;
-  padding: 5px;
+.message-container {
+  min-width: 25%;
+  max-width: 100%;
+  width: auto;
+
   margin-bottom: 5px;
-  border: 2px solid green;
+}
+
+.message-container.user {
+  text-align: right;
+}
+
+.message {
+  display: inline-block;
+  padding: 6px;
   border-radius: 5px;
+
+  text-align: auto;
+
+  color: black;
+  background: aquamarine;
+}
+
+.message.assistant {
+  background: aqua;
 }
 
 .message p:first-of-type {
@@ -14,10 +33,7 @@
   margin-bottom: 0;
 }
 
-.message-role-assistant {
-  border-color: blue;
+.message code {
+  white-space: pre-wrap;
 }
 
-.message-role-user {
-  margin-left: 10%;
-}

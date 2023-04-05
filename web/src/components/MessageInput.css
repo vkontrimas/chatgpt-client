@@ -3,6 +3,26 @@
 }
 
 .message-input {
-  padding: 5px;
+  outline: none;
+
+  border: none;
+  border-radius: 5px;
+
+  padding: 5px 5px 6px 5px;
   width: 100%;
+  height: auto;
+
+  color: floralwhite;
+  background: #303030;
+}
+
+.message-input:hover,
+.message-input:active {
+  background: #505050;
+  color: black;
+}
+
+.message-input:focus {
+  background: #808080;
+  color: black;
 }
