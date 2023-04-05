@@ -6,6 +6,14 @@
   border-radius: 5px;
 }
 
+.message p:first-of-type {
+  margin-top: 0;
+}
+
+.message p:last-of-type {
+  margin-bottom: 0;
+}
+
 .message-role-assistant {
   border-color: blue;
 }
