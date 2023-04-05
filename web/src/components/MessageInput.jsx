@@ -7,8 +7,8 @@ const MessageInput = ({ sendMessage }) => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     if (message) {
-      await sendMessage(message)
       setMessage('')
+      await sendMessage(message)
     }
   }
 
