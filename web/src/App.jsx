@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import MessageInput from './components/MessageInput'
@@ -15,9 +15,14 @@ const App = () => {
     dispatch(fetchAll())
   }, [])
 
+  const messagesRef = useRef(null)
+  useEffect(() => {
+    messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+  }, [messages])
+
   return (
     <div className="App">
-      <div className="messages">
+      <div className="messages" ref={messagesRef}>
         {messages.map((message, i) => <Message key={i} message={message}/>)}
       </div>
 
