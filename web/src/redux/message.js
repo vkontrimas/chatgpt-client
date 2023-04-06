@@ -1,8 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getAllMessages, sendMessage } from '../api/message'
+import { getAllMessages, createMessage } from '../api/message'
 
 const initialState = {
-  loading: false,
   messages: [],
 }
 
@@ -14,10 +13,10 @@ export const fetchAll = createAsyncThunk(
   }
 )
 
-export const send = createAsyncThunk(
-  'message/send',
-  async ({ message }) => {
-    const newMessages = await sendMessage(message)
+export const create = createAsyncThunk(
+  'message/create',
+  async (message) => {
+    const newMessages = await createMessage(message)
     return newMessages
   }
 )
@@ -28,34 +27,32 @@ export const messageSlice = createSlice({
   // reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(send.pending, (state, { meta }) => {
-        const { message } = meta.arg
+      .addCase(create.pending, (state, { meta }) => {
+        const { user, content } = meta.arg
         state.messages.push({
-          content: message,
-          user: 'user',
+          content: user === 'user' ? content : '🤔',
+          user,
           state: 'pending',
+          requestId: meta.requestId
         })
       })
-      .addCase(send.rejected, (state, { error }) => {
-        console.error('send rejected', error.message)
-        // TODO: DANGER: assuming our message is the last one!
-        state.messages[state.messages.length - 1].state = 'failed'
+      .addCase(create.rejected, (state, { error, meta }) => {
+        console.error('create rejected', error.message)
+        const message = state.messages
+          .find(({ requestId }) => requestId === meta.requestId)
+        message.state = 'failed'
+        delete message.requestId 
       })
-      .addCase(send.fulfilled, (state, { payload }) => {
-        state.messages = state.messages
-          .filter(message => message.state !== 'pending')
-          .concat(payload)
-      })
-      .addCase(fetchAll.pending, (state) => {
-        state.loading = true 
+      .addCase(create.fulfilled, (state, { payload, meta }) => {
+        const idx = state.messages
+          .findIndex(({ requestId }) => requestId === meta.requestId)
+        state.messages[idx] = payload
       })
       .addCase(fetchAll.rejected, (state, { error }) => {
         console.error('fetchAll rejected', error.message)
-        state.loading = false 
       })
       .addCase(fetchAll.fulfilled, (state, action) => {
         state.messages = action.payload
-        state.loading = false
       })
   },
 })

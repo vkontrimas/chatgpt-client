@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, } from 'react'
 import { useDispatch } from 'react-redux'
-import { send as sendMessage } from '../redux/message'
+import { create } from '../redux/message'
 import './MessageInput.css'
 
 const MessageInput = () => {
@@ -14,7 +14,8 @@ const MessageInput = () => {
       setMessage('')
       // TODO: Find out if the markdownified message significantly affects
       //       GPT replies. (Also definitely should add tokens? Maybe not?)
-      dispatch(sendMessage({ message: message.replace(/\n/g, '  \n') }))
+      dispatch(create({ user: 'user', content: message.replace(/\n/g, '  \n') }))
+      dispatch(create({ user: 'assistant' }))
     }
   }
 

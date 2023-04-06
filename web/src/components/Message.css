@@ -21,7 +21,7 @@
   background: aquamarine;
 }
 
-.message.pending {
+.message.user.pending {
   background: #3c876e;
 }
 
@@ -30,7 +30,11 @@
 }
 
 .message.assistant {
-  background: powderblue;
+  background: paleturquoise;
+}
+
+.message.assistant.pending {
+  background: #507575;
 }
 
 .message p:first-of-type {

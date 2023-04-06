@@ -19,8 +19,9 @@ describe(`API ${MESSAGE_ENDPOINT}`, () => {
     expect(messages.length).toBe(initialMessages.length)
   })
 
-  test('POST with no content - 400 - error', async () => {
+  test('POST - user but no content - 400 - error', async () => {
     const newMessage = {
+      user: User.user,
       content: undefined,
     }
 
@@ -35,11 +36,32 @@ describe(`API ${MESSAGE_ENDPOINT}`, () => {
     expect(response.body.error).toContain('content missing')
 
     const messagesAfter = getStoredMessages()
-    expect(messagesBefore.length).toBe(messagesAfter.length)
+    expect(messagesBefore).toMatchObject(messagesAfter)
   })
 
-  test('POST with content - 201 - adds user message and ai reply', async () => {
+  test('POST - no user - 400 - error', async () => {
     const newMessage = {
+      user: undefined,
+      content: 'hello world'
+    }
+
+    const messagesBefore = getStoredMessages()
+
+    const response = await api
+      .post(MESSAGE_ENDPOINT)
+      .send(newMessage)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('user missing')
+
+    const messagesAfter = getStoredMessages()
+    expect(messagesBefore).toMatchObject(messagesAfter)
+  })
+
+  test('POST - user with content - 201 - adds user message', async () => {
+    const newMessage = {
+      user: User.user,
       content: 'hello world! this is a brand new test message',
     }
 
@@ -51,29 +73,46 @@ describe(`API ${MESSAGE_ENDPOINT}`, () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const responseMessages = response.body
-    expect(responseMessages).toMatchObject([
-      {
-        ...newMessage,
-        user: User.user,
-      },
-      {
-        user: User.assistant,
-        // content: ???
-      },
-    ])
-    expect(responseMessages)
-    for (const message of responseMessages) {
-      expect(message.id).toBeDefined()
-      expect(message.content).toBeDefined()
-    }
-    // expect all IDs to be unique 
-    expect(responseMessages.map(m => m.id)).not.toMatchObject(initialIds)
+    const responseMessage = response.body
+    expect(responseMessage).toMatchObject({
+      ...newMessage,
+      user: User.user,
+    })
+    expect(responseMessage.id).toBeDefined()
+    expect(responseMessage.content).toBe(newMessage.content)
+    expect(initialIds).not.toContain(responseMessage.id)
 
     const storedMessages = getStoredMessages()
-    console.log(storedMessages)
-    expect(storedMessages.length).toBe(initialIds.length + 2)
+    expect(storedMessages.length).toBe(initialIds.length + 1)
     expect(storedMessages.map(message => message.content))
       .toContain(newMessage.content)
+  })
+
+  test('POST - assistant - 201 - generates new message', async () => {
+    const newMessage = {
+      user: User.assistant,
+    }
+
+    const initialIds = getStoredMessages().map(message => message.id)
+
+    const response = await api
+      .post(MESSAGE_ENDPOINT)
+      .send(newMessage)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const responseMessage = response.body
+    expect(responseMessage).toMatchObject({
+      ...newMessage,
+      user: User.assistant,
+    })
+    expect(responseMessage.id).toBeDefined()
+    expect(typeof responseMessage.content).toBe('string')
+    expect(initialIds).not.toContain(responseMessage.id)
+
+    const storedMessages = getStoredMessages()
+    expect(storedMessages.length).toBe(initialIds.length + 1)
+    expect(storedMessages.map(message => message.id))
+      .toContain(responseMessage.id)
   })
 })
