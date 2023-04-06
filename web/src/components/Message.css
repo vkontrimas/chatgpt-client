@@ -21,6 +21,14 @@
   background: aquamarine;
 }
 
+.message.pending {
+  background: #3c876e;
+}
+
+.message.failed {
+  background: firebrick;
+}
+
 .message.assistant {
   background: powderblue;
 }

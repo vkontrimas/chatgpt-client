@@ -33,15 +33,17 @@ export const messageSlice = createSlice({
         state.messages.push({
           content: message,
           user: 'user',
-          pending: true,
+          state: 'pending',
         })
       })
       .addCase(send.rejected, (state, { error }) => {
         console.error('send rejected', error.message)
+        // TODO: DANGER: assuming our message is the last one!
+        state.messages[state.messages.length - 1].state = 'failed'
       })
       .addCase(send.fulfilled, (state, { payload }) => {
         state.messages = state.messages
-          .filter(message => !message.pending)
+          .filter(message => message.state !== 'pending')
           .concat(payload)
       })
       .addCase(fetchAll.pending, (state) => {
