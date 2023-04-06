@@ -1,0 +1,3 @@
+[] Move pending assistant message logic to backend
+[] Rework message loading so we only load a portion of the chat
+[] Set up some kind of superproject to test both the frontend and backend simultaneously
