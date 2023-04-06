@@ -1,6 +1,10 @@
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
-const { MESSAGE_ENDPOINT, initialMessages, getStoredMessages } = require('./message_helper')
+const { 
+  MESSAGE_ENDPOINT,
+  initialMessages,
+  getStoredMessages
+} = require('./message_helper')
 const User = require('../../message/user')
 
 
@@ -34,7 +38,7 @@ describe(`API ${MESSAGE_ENDPOINT}`, () => {
     expect(messagesBefore.length).toBe(messagesAfter.length)
   })
 
-  test('POST with content - 201 - adds new message', async () => {
+  test('POST with content - 201 - adds user message and ai reply', async () => {
     const newMessage = {
       content: 'hello world! this is a brand new test message',
     }
@@ -47,17 +51,28 @@ describe(`API ${MESSAGE_ENDPOINT}`, () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const responseMessage = response.body
-    expect(responseMessage).toMatchObject({
-      ...newMessage,
-      user: User.user,
-    })
-    expect(responseMessage.id).toBeDefined()
-    expect(initialIds).not.toContain(responseMessage.id)
+    const responseMessages = response.body
+    expect(responseMessages).toMatchObject([
+      {
+        ...newMessage,
+        user: User.user,
+      },
+      {
+        user: User.assistant,
+        // content: ???
+      },
+    ])
+    expect(responseMessages)
+    for (const message of responseMessages) {
+      expect(message.id).toBeDefined()
+      expect(message.content).toBeDefined()
+    }
+    // expect all IDs to be unique 
+    expect(responseMessages.map(m => m.id)).not.toMatchObject(initialIds)
 
     const storedMessages = getStoredMessages()
     console.log(storedMessages)
-    expect(storedMessages.length).toBe(initialIds.length + 1)
+    expect(storedMessages.length).toBe(initialIds.length + 2)
     expect(storedMessages.map(message => message.content))
       .toContain(newMessage.content)
   })

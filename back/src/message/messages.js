@@ -1,6 +1,6 @@
 const User = require('../message/user')
 
-let messages = [
+const initialMessages = () => [
   {
     id: 0,
     user: User.user,
@@ -13,9 +13,12 @@ let messages = [
   },
 ]
 
+let messages = initialMessages()
+const fakeId = () => messages[messages.length - 1].id + 1
+
 const addMessage = ({ content, user }) => {
   const addedMessage = {
-    id: messages[messages.length - 1].id + 1,
+    id: fakeId(),
     user: user || User.user,
     content: content
   }
@@ -23,10 +26,20 @@ const addMessage = ({ content, user }) => {
   return addedMessage
 }
 
-const getAllMessages = () => messages
+const generateNextReply = () => {
+  const reply = {
+    id: fakeId(),
+    user: User.assistant,
+    content: 'waaaaazaaaaaaaaaaaaaaaaaaaaaaaaap',
+  }
+  messages.push(reply)
+  return reply
+}
 
+const getAllMessages = () => messages
 
 module.exports = {
   addMessage,
   getAllMessages,
+  generateNextReply,
 }

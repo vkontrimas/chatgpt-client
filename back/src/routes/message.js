@@ -1,6 +1,10 @@
 const messageRouter = require('express').Router()
 const User = require('../message/user')
-const { addMessage, getAllMessages } = require('../message/messages')
+const { 
+  addMessage,
+  getAllMessages,
+  generateNextReply,
+} = require('../message/messages')
 
 messageRouter.get('/', (request, response) => {
   response.json(getAllMessages())
@@ -13,7 +17,9 @@ messageRouter.post('/', (request, response) => {
   }
 
   const addedMessage = addMessage({ user: User.user, content: newMessage.content })
-  return response.status(201).json(addedMessage)
+  const assistantReply = generateNextReply()
+
+  return response.status(201).json([addedMessage, assistantReply])
 })
 
 module.exports = messageRouter
