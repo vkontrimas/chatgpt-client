@@ -17,7 +17,6 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1>Huddle</h1>
       <div className="messages">
         {messages.map((message, i) => <Message key={i} message={message}/>)}
       </div>

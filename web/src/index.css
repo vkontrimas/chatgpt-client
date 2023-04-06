@@ -2,10 +2,20 @@
   box-sizing: border-box;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   margin: none;
   font-family: 'Fira Sans', sans-serif;
   font-size: 14px;
   background: #252525;
   color: floralwhite;
+  overflow: hidden;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
 }

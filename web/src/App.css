@@ -1,9 +1,14 @@
 .App {
   width: 60%;
+  height: 100%;
   margin: auto;
   padding-bottom: 20px;
 }
 
 .messages {
   margin-bottom: 15px;
+  overflow: hidden auto;
+  min-height: calc(50% - 100px);
+  max-height: calc(100% - 150px);
+  padding-right: 10px;
 }
