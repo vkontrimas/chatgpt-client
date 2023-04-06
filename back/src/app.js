@@ -3,7 +3,7 @@ require('express-async-errors')
 const cors = require('cors')
 const unknownEndpoint = require('./mid/unknown_endpoint')
 const errorHandler = require('./mid/error_handler')
-const messageRouter = require('./routes/message')
+const messageRouter = require('./api/message')
 
 const app = express()
 app.use(cors())
