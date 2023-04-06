@@ -1,7 +1,8 @@
 const User = require('../message/user')
 const { getCompletion } = require('../openai/openai')
+const { ENVIRONMENT } = require('../config')
 
-const initialMessages = () => [
+const testMessages = () => [
   {
     id: 0,
     user: User.user,
@@ -14,8 +15,8 @@ const initialMessages = () => [
   },
 ]
 
-let messages = initialMessages()
-const fakeId = () => messages[messages.length - 1].id + 1
+let messages = ENVIRONMENT === 'test' ? testMessages() : []
+const fakeId = () => messages.length > 0 ? messages[messages.length - 1].id + 1 : 0
 
 const addMessage = ({ content, user }) => {
   const addedMessage = {
