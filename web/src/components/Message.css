@@ -55,6 +55,14 @@
   border-radius: 4px;
 }
 
+.message.assistant code {
+  background: #507575;
+}
+
+.message.user code {
+  background: #3c876e;
+}
+
 .message pre > code {
   display: block;
   padding-left: 10px;
