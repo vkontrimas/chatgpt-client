@@ -30,7 +30,7 @@ export const messageSlice = createSlice({
       .addCase(create.pending, (state, { meta }) => {
         const { user, content } = meta.arg
         state.messages.push({
-          content: user === 'user' ? content : '🤔',
+          content: user === 'user' ? content : '*thinking...*',
           user,
           state: 'pending',
           requestId: meta.requestId
