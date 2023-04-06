@@ -1,11 +1,10 @@
 import { useState, useRef, useEffect, } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { } from '../redux/message'
+import { useDispatch } from 'react-redux'
+import { send as sendMessage } from '../redux/message'
 import './MessageInput.css'
 
-const MessageInput = ({ sendMessage }) => {
-  // const count = useSelector(state => state.message.temp)
-  // const dispatch = useDispatch()
+const MessageInput = () => {
+  const dispatch = useDispatch()
 
   const [message, setMessage] = useState('')
 
@@ -13,10 +12,9 @@ const MessageInput = ({ sendMessage }) => {
     event?.preventDefault()
     if (message) {
       setMessage('')
-      dispatch(increment())
       // TODO: Find out if the markdownified message significantly affects
       //       GPT replies. (Also definitely should add tokens? Maybe not?)
-      await sendMessage(message.replace(/\n/g, '  \n'))
+      dispatch(sendMessage({ message: message.replace(/\n/g, '  \n') }))
     }
   }
 

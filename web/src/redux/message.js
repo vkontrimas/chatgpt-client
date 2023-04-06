@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getAllMessages } from '../api/message'
+import { getAllMessages, sendMessage } from '../api/message'
 
 const initialState = {
   loading: false,
@@ -14,22 +14,44 @@ export const fetchAll = createAsyncThunk(
   }
 )
 
+export const send = createAsyncThunk(
+  'message/send',
+  async ({ message }) => {
+    const newMessages = await sendMessage(message)
+    return newMessages
+  }
+)
+
 export const messageSlice = createSlice({
   name: 'message',
   initialState,
   // reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(send.pending, (state, { meta }) => {
+        const { message } = meta.arg
+        state.messages.push({
+          content: message,
+          user: 'user',
+          pending: true,
+        })
+      })
+      .addCase(send.rejected, (state, { error }) => {
+        console.error('send rejected', error.message)
+      })
+      .addCase(send.fulfilled, (state, { payload }) => {
+        state.messages = state.messages
+          .filter(message => !message.pending)
+          .concat(payload)
+      })
       .addCase(fetchAll.pending, (state) => {
-        console.log('fetchAll pending')
         state.loading = true 
       })
-      .addCase(fetchAll.rejected, (state) => {
-        console.log('fetchAll rejected')
+      .addCase(fetchAll.rejected, (state, { error }) => {
+        console.error('fetchAll rejected', error.message)
         state.loading = false 
       })
       .addCase(fetchAll.fulfilled, (state, action) => {
-        console.log('fetchAll fulfilled', action)
         state.messages = action.payload
         state.loading = false
       })

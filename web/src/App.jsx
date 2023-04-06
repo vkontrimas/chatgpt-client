@@ -15,8 +15,6 @@ const App = () => {
     dispatch(fetchAll())
   }, [])
 
-  const sendMessage = () => {}
-
   return (
     <div className="App">
       <h1>Huddle</h1>
@@ -24,7 +22,7 @@ const App = () => {
         {messages.map((message, i) => <Message key={i} message={message}/>)}
       </div>
 
-      <MessageInput sendMessage={sendMessage}/>
+      <MessageInput />
     </div>
   )
 }

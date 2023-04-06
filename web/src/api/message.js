@@ -6,3 +6,8 @@ export const getAllMessages = async () => {
   const response = await axios.get(baseUrl)
   return response.data
 }
+
+export const sendMessage = async (content) => {
+  const response = await axios.post(baseUrl, { content })
+  return response.data
+}
