@@ -10,14 +10,14 @@ messageRouter.get('/', (request, response) => {
   response.json(getAllMessages())
 })
 
-messageRouter.post('/', (request, response) => {
+messageRouter.post('/', async (request, response) => {
   const newMessage = request.body
   if (!newMessage || !newMessage.content) {
     return response.status(400).json({ error: 'content missing' })
   }
 
   const addedMessage = addMessage({ user: User.user, content: newMessage.content })
-  const assistantReply = generateNextReply()
+  const assistantReply = await generateNextReply()
 
   return response.status(201).json([addedMessage, assistantReply])
 })

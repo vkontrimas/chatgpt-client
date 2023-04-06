@@ -1,4 +1,5 @@
 const User = require('../message/user')
+const { getCompletion } = require('../openai/openai')
 
 const initialMessages = () => [
   {
@@ -26,14 +27,17 @@ const addMessage = ({ content, user }) => {
   return addedMessage
 }
 
-const generateNextReply = () => {
-  const reply = {
+const generateNextReply = async () => {
+  const completion = await getCompletion(messages)
+  const { role, content } = completion?.choices[0]?.message
+
+  const assistantReply = {
     id: fakeId(),
-    user: User.assistant,
-    content: 'waaaaazaaaaaaaaaaaaaaaaaaaaaaaaap',
+    user: role,
+    content,
   }
-  messages.push(reply)
-  return reply
+  messages.push(assistantReply)
+  return assistantReply
 }
 
 const getAllMessages = () => messages
