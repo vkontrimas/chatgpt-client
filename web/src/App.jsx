@@ -1,11 +1,21 @@
+import { useEffect } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+
 import MessageInput from './components/MessageInput'
 import Message from './components/Message'
-import { useOpenAIChat } from './services/openai'
+import { fetchAll } from './redux/message'
 
 import './App.css'
 
 const App = () => {
-  const [messages, sendMessage] = useOpenAIChat()
+  const messages = useSelector(state => state.message.messages)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    dispatch(fetchAll())
+  }, [])
+
+  const sendMessage = () => {}
 
   return (
     <div className="App">
