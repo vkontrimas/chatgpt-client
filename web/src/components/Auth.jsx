@@ -1,16 +1,10 @@
 import './Auth.css'
 
-const Input = ({ isPassword }) => {
-  return (
-    <input />
-  )
-}
-
 const Auth = () => {
   return (
     <form className="auth-form">
-      <Input />
-      <Input />
+      <input placeholder="email" />
+      <input placeholder="password" type="password" />
     </form>
   )
 }

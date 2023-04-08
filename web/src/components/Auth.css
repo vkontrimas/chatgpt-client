@@ -4,7 +4,7 @@
 
 .auth-form input {
   display: block;
-  width: 100%;
+  width: 300px;
 
   outline: none;
 
@@ -15,11 +15,12 @@
   border-radius: 5px;
 
   padding: 6px 6px 8px 6px;
-  width: 100%;
   height: auto;
 
   color: floralwhite;
   background: #303030;
+
+  margin: 10px auto;
 }
 
 .auth-form input:hover,
