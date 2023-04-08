@@ -16,7 +16,8 @@ const getFakeResponse = () => ({
 })
 
 const createOpenAIApi = () => {
-  if (ENVIRONMENT === 'production' || ENVIRONMENT === 'development') {
+  // if (ENVIRONMENT === 'production' || ENVIRONMENT === 'development') {
+  if (false) {
     return new OpenAIApi(
       new Configuration({
         apiKey: OPENAI_API_KEY,
