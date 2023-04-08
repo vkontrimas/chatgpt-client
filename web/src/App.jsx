@@ -1,13 +1,19 @@
 import MessageInput from './components/MessageInput'
 import Messages from './components/Messages'
+import Auth from './components/Auth'
 
 import './App.css'
 
 const App = () => {
+  const showAuth = true
+
   return (
     <div className="App">
-      <Messages />
-      <MessageInput />
+      {showAuth && <Auth />}
+      {!showAuth && (<>
+        <Messages />
+        <MessageInput />
+      </>)}
     </div>
   )
 }
