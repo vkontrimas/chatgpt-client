@@ -1,6 +1,6 @@
 import MessageInput from './components/MessageInput'
 import Messages from './components/Messages'
-import Auth from './components/Auth'
+import Auth from './components/Login'
 
 import './App.css'
 
