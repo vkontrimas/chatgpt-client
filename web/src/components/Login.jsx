@@ -9,4 +9,10 @@ const Auth = () => {
   )
 }
 
+const action = async ({ request }) => {
+  const formData = await request.formData()
+  const updates = Object.fromEntries(formData)
+  console.log(updates)
+}
+
 export default Auth
