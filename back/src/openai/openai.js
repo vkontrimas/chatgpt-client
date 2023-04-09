@@ -29,7 +29,7 @@ const createOpenAIApi = () => {
     )
   }
   else {
-    console.warn('Running with fake AI messages.')
+    console.log('Running with fake AI messages.')
     return {
       createChatCompletion: async () => {
         return getFakeResponse()
