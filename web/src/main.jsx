@@ -8,12 +8,17 @@ import {
 
 import { store } from './redux/store.js'
 import MainPage from './MainPage'
+import LoginPage from './LoginPage'
 import './index.css'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <MainPage />,
+  },
+  {
+    path: '/login',
+    element: <LoginPage />,
   },
 ])
 
