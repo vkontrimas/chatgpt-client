@@ -1,12 +1,17 @@
 const sequelize = require('../db/sequelize')
 const User = require('../db/user')
 
+const modelUser = () => ({
+  email: 'eve@example.com',
+  password: 'topsekret',
+})
+
 const initialUsers = [
   {
-    email: 'test@example.com',
+    email: 'bob@example.com',
   },
   {
-    email: 'test2@example.com',
+    email: 'alice@example.com',
   },
 ]
 
@@ -21,6 +26,7 @@ const wipeDB = async () => {
 }
 
 module.exports = {
+  modelUser,
   initialUsers,
   initializeDB,
   wipeDB,
