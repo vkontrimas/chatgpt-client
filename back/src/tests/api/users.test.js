@@ -87,7 +87,6 @@ describe(`API ${ENDPOINT}`, () => {
       .expect('Content-Type', /application\/json/)
 
     const user = response.body
-    console.log(user)
     expect(user.email).toBe(request.email)
     expect(user.passwordHash).not.toBeDefined()
     expect(user.id).toBeDefined()
