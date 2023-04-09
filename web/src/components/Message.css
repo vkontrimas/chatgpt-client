@@ -17,24 +17,29 @@
 
   text-align: left;
 
-  color: black;
-  background: aquamarine;
-}
-
-.message.user.pending {
-  background: #3c876e;
+  color: floralwhite;
+  background: #005f7f;
 }
 
 .message.failed {
   background: firebrick;
 }
 
+.message.user {
+  background: #007F5F;
+}
+
+.message.user.pending {
+  background: #004433;
+}
+
 .message.assistant {
-  background: paleturquoise;
+  color: floralwhite;
+  background: #005f7f;
 }
 
 .message.assistant.pending {
-  background: #507575;
+  background: #003547;
 }
 
 .message p:first-of-type {
