@@ -62,6 +62,21 @@ describe(`API ${ENDPOINT}`, () => {
     expect(response.body.error).toMatch(/no password/)
   })
 
+  test('POST - email exists - 400 error', async () => {
+    const request = {
+      ...modelUser(),
+      email: initialUsers[0].email,
+    }
+
+    const response = await api
+      .post(ENDPOINT)
+      .send(request)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toMatch(/email in use/)
+  })
+
   test('POST - valid - 201 created', async () => {
     const request = modelUser()
 
