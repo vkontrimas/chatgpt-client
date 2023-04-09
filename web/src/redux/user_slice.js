@@ -45,12 +45,15 @@ export const userSlice = createSlice({
       .addCase(login.fulfilled, (state, { payload }) => {
         state.token = payload
         setLocalToken(payload)
+        console.log('login worked!')
       })
       .addCase(login.rejected, (state, action) => {
         console.error('login failed')
       })
   },
 })
+
+export const { logout } = userSlice.actions
 
 export default userSlice.reducer
 
