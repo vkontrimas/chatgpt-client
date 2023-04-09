@@ -8,7 +8,6 @@ usersRouter.get('/', async (request, response) => {
     id: user.id,
     email: user.email,
   }))
-  console.log(users, result)
   response.status(200).json(result)
 })
 
