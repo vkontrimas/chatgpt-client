@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
-import { login } from '../redux/user_slice'
+import { login } from '../redux/user'
 
 import './Login.css'
 
