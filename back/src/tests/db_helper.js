@@ -15,6 +15,10 @@ const initialUsers = [
   },
 ]
 
+const fetchAllUsers = async () => {
+  return await User.findAll()
+}
+
 const initializeDB = async () => {
   await sequelize.drop()
   await sequelize.sync()
@@ -28,6 +32,7 @@ const wipeDB = async () => {
 module.exports = {
   modelUser,
   initialUsers,
+  fetchAllUsers,
   initializeDB,
   wipeDB,
 }
