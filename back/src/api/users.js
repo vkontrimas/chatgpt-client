@@ -1,6 +1,8 @@
+const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 
 const User = require('../db/user')
+const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 usersRouter.get('/', async (request, response) => {
   const users = await User.findAll()
@@ -21,10 +23,13 @@ usersRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'no password' })
   }
 
-  const passwordHash = 'todo'
+  const passwordHash = await bcrypt.hash(newUser.password, PASSWORD_HASH_ROUNDS)
 
   try {
-    const user = await User.create({ email: newUser.email, passwordHash, })
+    const user = await User.create({
+      email: newUser.email,
+      passwordHash,
+    })
     response.status(201).json({
       id: user.id,
       email: user.email,

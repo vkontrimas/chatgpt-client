@@ -1,5 +1,8 @@
+const bcrypt = require('bcrypt')
+
 const sequelize = require('../db/sequelize')
 const User = require('../db/user')
+const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const modelUser = () => ({
   email: 'eve@example.com',
@@ -9,9 +12,11 @@ const modelUser = () => ({
 const initialUsers = [
   {
     email: 'bob@example.com',
+    password: 'sekret',
   },
   {
     email: 'alice@example.com',
+    password: 'password123',
   },
 ]
 
@@ -22,7 +27,13 @@ const fetchAllUsers = async () => {
 const initializeDB = async () => {
   await sequelize.drop()
   await sequelize.sync()
-  await Promise.all(initialUsers.map(user => User.create(user)))
+  await Promise.all(initialUsers.map(async (user) => {
+    const newUser = {
+      email: user.email,
+      passwordHash: await bcrypt.hash(user.password, PASSWORD_HASH_ROUNDS),
+    }
+    await User.create(newUser)
+  }))
 }
 
 const wipeDB = async () => {

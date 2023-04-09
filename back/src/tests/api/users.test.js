@@ -29,7 +29,8 @@ describe(`API ${ENDPOINT}`, () => {
     const users = response.body
 
     expect(initialUsers.length).toBe(users.length)
-    expect(initialUsers.map(user => user.email)).toMatchObject(users.map(user => user.email))
+    expect(initialUsers.map(user => user.email).sort())
+      .toMatchObject(users.map(user => user.email).sort())
   })
 
   test('POST - no email - 400 error', async () => {
