@@ -7,13 +7,13 @@ import {
 } from 'react-router-dom'
 
 import { store } from './redux/store.js'
-import App from './App'
+import MainPage from './MainPage'
 import './index.css'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />,
+    element: <MainPage />,
   },
 ])
 
