@@ -1,0 +1,35 @@
+.auth-form {
+  width: 100%;
+}
+
+.auth-form input {
+  display: block;
+  width: 300px;
+
+  outline: none;
+
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 14px;
+
+  border: none;
+  border-radius: 5px;
+
+  padding: 6px 6px 8px 6px;
+  height: auto;
+
+  color: floralwhite;
+  background: #303030;
+
+  margin: 10px auto;
+}
+
+.auth-form input:hover,
+.auth-form input:active {
+  background: #505050;
+  color: black;
+}
+
+.auth-form input:focus {
+  background: #808080;
+  color: black;
+}
