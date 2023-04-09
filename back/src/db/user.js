@@ -5,9 +5,6 @@ const User = sequelize.define('User', {
   email: {
     type: DataTypes.STRING,
   },
-  passwordHash: {
-    type: DataTypes.STRING,
-  }
 })
 
 module.exports = User
