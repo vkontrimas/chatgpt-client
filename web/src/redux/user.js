@@ -13,19 +13,6 @@ const initialState = () => {
   return { token }
 }
 
-export const login = createAsyncThunk(
-  'user/login',
-  async ({ email, password }, thunkAPI) => {
-    const state = thunkAPI.getState()
-    if (state.user.token) {
-      throw 'already logged in'
-    }
-
-    const response = await axios.post(ENDPOINT, { email, password })
-    return response.data?.token 
-  }
-)
-
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -39,21 +26,19 @@ export const userSlice = createSlice({
       state.token = null
       removeLocalToken()
     },
+    login: (state, { payload }) => {
+      if (state.token) {
+        throw 'a user is already logged in'
+      }
+      console.log(payload)
+      state.token = payload.token
+      setLocalToken(payload.token)
+    }
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(login.fulfilled, (state, { payload }) => {
-        state.token = payload
-        setLocalToken(payload)
-        console.log('login worked!')
-      })
-      .addCase(login.rejected, (state, action) => {
-        console.error('login failed')
-      })
-  },
+  extraReducers: (builder) => { },
 })
 
-export const { logout } = userSlice.actions
+export const { login, logout } = userSlice.actions
 
 export default userSlice.reducer
 

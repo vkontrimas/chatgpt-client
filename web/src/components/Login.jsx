@@ -13,26 +13,26 @@ const Auth = () => {
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const userState = useSelector(state => state.user)
+  const { token } = useSelector(state => state.user)
 
   useEffect(() => {
     // If logged in, go to chat
-    if (userState.token) {
+    if (token) {
       navigate('/chat')
     }
-  }, [userState])
+  }, [token])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
-      const response = await axios.post('/api/login', { email, password })
-      dispatch(login(response))
+      const response = await axios.post('http://localhost:3000/api/login', { email, password })
+      dispatch(login(response.data))
     } catch (error) {
       if (error.name !== 'AxiosError') {
         throw error
       }
 
-      console.error('login failed\n', error)
+      console.error('login failed\n', error.message, '\n', error.response.data.error)
     }
   }
 
