@@ -1,15 +1,18 @@
 const express = require('express')
 require('express-async-errors')
 const cors = require('cors')
-const morgan = require('morgan')
 const unknownEndpoint = require('./mid/unknown_endpoint')
 const errorHandler = require('./mid/error_handler')
 const messageRouter = require('./api/message')
 const usersRouter = require('./api/users')
 const loginRouter = require('./api/login')
+const { ENVIRONMENT } = require('./config')
 
 const app = express()
-app.use(morgan('tiny'))
+if (ENVIRONMENT !== 'test') {
+  const morgan = require('morgan')
+  app.use(morgan('tiny'))
+}
 app.use(cors())
 app.use(express.json())
 app.use('/api/message', messageRouter)
