@@ -2,7 +2,7 @@ const { Sequelize } = require('sequelize')
 const { DB_PATH, DB_LOG } = require('../config')
 
 const initializeUser = require('./user')
-const { initializeMessage } = require('./message')
+const { initializeMessage, MessageType } = require('./message')
 
 const initializeDb = () => {
   const sequelize = new Sequelize(DB_PATH, {
@@ -21,6 +21,7 @@ const initializeDb = () => {
   return {
     sequelize,
     User,
+    Message,
   }
 }
 

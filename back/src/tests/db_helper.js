@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt')
 
-const { sequelize, User } = require('../db/db')
+const { sequelize, User, Message } = require('../db/db')
+const { MessageType } = require('../db/message')
+
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const modelUser = () => ({
@@ -12,10 +14,48 @@ const initialUsers = [
   {
     email: 'bob@example.com',
     password: 'sekret',
+
+    messages: [
+      {
+        content: 'Hello',
+        type: MessageType.USER,
+      },
+      {
+        content: 'hi! how can I help?',
+        type: MessageType.ASSISTANT,
+      },
+      {
+        content: 'bye!',
+        type: MessageType.USER,
+      },
+    ],
   },
   {
     email: 'alice@example.com',
     password: 'password123',
+
+    messages: [
+      {
+        content: 'Wazaaaaap',
+        type: MessageType.USER,
+      },
+      {
+        content: 'Waaaaaaazaaaaaaaaaaaap',
+        type: MessageType.ASSISTANT,
+      },
+      {
+        content: 'Waaaaaaaaaaaaaaaaaazaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaap',
+        type: MessageType.USER,
+      },
+      {
+        content: 'Waaaaaaazaaaaaaaaaaaap',
+        type: MessageType.ASSISTANT,
+      },
+      {
+        content: ':(',
+        type: MessageType.USER,
+      },
+    ],
   },
 ]
 
@@ -23,16 +63,30 @@ const fetchAllUsers = async () => {
   return await User.findAll()
 }
 
+const getUserMessages = async (id) => {
+  const user = await User.findByPk(id)
+  return user.getMessages()
+}
+
 const initializeDB = async () => {
   await sequelize.drop()
   await sequelize.sync()
-  await Promise.all(initialUsers.map(async (user) => {
-    const newUser = {
+
+  for (const user of initialUsers) {
+    const newUser = await User.create({
       email: user.email,
       passwordHash: await bcrypt.hash(user.password, PASSWORD_HASH_ROUNDS),
+    })
+    user.id = newUser.id
+
+    for (const message of user.messages) {
+      const newMessage = await Message.create({
+        ...message,
+        UserId: user.id,
+      })
+      message.id = newMessage.id
     }
-    await User.create(newUser)
-  }))
+  }
 }
 
 const wipeDB = async () => {
