@@ -1,10 +1,6 @@
 const { DataTypes } = require('sequelize')
-const sequelize = require('./sequelize')
 
-const Message = sequelize.define('Message', {
-  chat: {
-    // TODO: Chat id
-  },
+module.exports = (sql) => sql.define('Message', {
   inProgress: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
@@ -15,5 +11,3 @@ const Message = sequelize.define('Message', {
     allowNull: false,
   },
 })
-
-module.exports = Message

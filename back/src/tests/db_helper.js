@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt')
 
-const sequelize = require('../db/sequelize')
-const User = require('../db/user')
+const { sequelize, User } = require('../db/db')
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const modelUser = () => ({

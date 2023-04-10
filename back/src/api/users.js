@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 
-const User = require('../db/user')
+const { User } = require('../db/db')
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 usersRouter.get('/', async (request, response) => {

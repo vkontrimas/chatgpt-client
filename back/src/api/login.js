@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const loginRouter = require('express').Router()
 
 const { LOGIN_TOKEN_SECRET } = require('../config')
-const User = require('../db/user')
+const { User } = require('../db/db')
 
 const INVALID_CREDENTIALS_ERROR = 'incorrect credentials'
 
