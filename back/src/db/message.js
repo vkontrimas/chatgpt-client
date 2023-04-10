@@ -6,6 +6,12 @@ const MessageType = {
 }
 
 const initializeMessage = (sql) => sql.define('Message', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    allowNull: false,
+    primaryKey: true,
+  },
   type: {
     type: DataTypes.TEXT,
     allowNull: false,
