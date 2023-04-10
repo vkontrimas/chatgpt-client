@@ -1,12 +1,14 @@
 const { Sequelize } = require('sequelize')
-const { DB_PATH } = require('../config')
+const { DB_PATH, DB_LOG } = require('../config')
 
 const initializeUser = require('./user')
 const initializeChat = require('./chat')
 const initializeMessage = require('./message')
 
 const initializeDb = () => {
-  const sequelize = new Sequelize(DB_PATH)
+  const sequelize = new Sequelize(DB_PATH, {
+    logging: DB_LOG ? console.log : null,
+  })
 
   const User = initializeUser(sequelize)
   const Chat = initializeChat(sequelize)
