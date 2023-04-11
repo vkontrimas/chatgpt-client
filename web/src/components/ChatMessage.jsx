@@ -1,7 +1,7 @@
-import './Message.css'
+import './ChatMessage.css'
 import ReactMarkdown from 'react-markdown'
 
-const Message = ({ message }) => {
+const ChatMessage = ({ message }) => {
   const { type, content, state } = message
 
   return (
@@ -11,4 +11,4 @@ const Message = ({ message }) => {
   )
 }
 
-export default Message
+export default ChatMessage

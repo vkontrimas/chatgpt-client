@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import Message from './Message'
+import ChatMessage from './ChatMessage'
 import ChatInput from './ChatInput'
 import { fetchAll } from '../redux/message'
 import './Chat.css'
@@ -22,7 +22,7 @@ const Chat = () => {
   return (
     <div className="chat">
       <div className="chat-messages" ref={messagesRef}>
-        {messages.map((message, i) => <Message key={i} message={message}/>)}
+        {messages.map((message, i) => <ChatMessage key={i} message={message}/>)}
       </div>
       <ChatInput />
     </div>
