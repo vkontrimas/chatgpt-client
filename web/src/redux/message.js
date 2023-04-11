@@ -28,10 +28,10 @@ export const messageSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(create.pending, (state, { meta }) => {
-        const { user, content } = meta.arg
+        const { type, content } = meta.arg
         state.messages.push({
-          content: user === 'user' ? content : '*thinking...*',
-          user,
+          content: type === 'user' ? content : '*thinking...*',
+          type,
           state: 'pending',
           requestId: meta.requestId
         })

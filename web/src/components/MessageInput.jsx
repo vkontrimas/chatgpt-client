@@ -14,8 +14,8 @@ const MessageInput = () => {
       setMessage('')
       // TODO: Find out if the markdownified message significantly affects
       //       GPT replies. (Also definitely should add tokens? Maybe not?)
-      dispatch(create({ user: 'user', content: message.replace(/\n/g, '  \n') }))
-      dispatch(create({ user: 'assistant' }))
+      dispatch(create({ type: 'user', content: message.replace(/\n/g, '  \n') }))
+      dispatch(create({ type: 'assistant' }))
     }
   }
 

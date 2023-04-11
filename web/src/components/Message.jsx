@@ -2,11 +2,11 @@ import './Message.css'
 import ReactMarkdown from 'react-markdown'
 
 const Message = ({ message }) => {
-  const { user, content, state } = message
+  const { type, content, state } = message
 
   return (
-    <div className={`message-container ${user}`}>
-      <div className={`message ${user} ${state || ''}`}>
+    <div className={`message-container ${type}`}>
+      <div className={`message ${type} ${state || ''}`}>
         <ReactMarkdown>{content}</ReactMarkdown>
       </div>
     </div>
