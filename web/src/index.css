@@ -2,27 +2,18 @@
   box-sizing: border-box;
 }
 
-html {
-  height: 100%;
-}
-
 body {
-  margin: none;
+  margin: 0;
+  padding: 0;
   font-family: 'Fira Sans', sans-serif;
   font-size: 14px;
   background: #252525;
   color: floralwhite;
-  overflow: hidden;
-  height: 100%;
-}
-
-#root {
-  height: 100%;
 }
 
 .Page {
-  width: 60%;
-  height: 100%;
-  margin: auto;
-  padding-bottom: 20px;
+  margin: 0 auto;
+  width: 80vw;
+  height: 100vh;
+  padding: 20px;
 }
