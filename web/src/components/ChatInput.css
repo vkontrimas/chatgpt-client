@@ -1,24 +1,41 @@
+.send-button {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  margin: 1px 1px 1px 5px;
+  color: floralwhite;
+  background: #303030;
+}
+
+.send-button:hover {
+  background: #505050;
+  color: black;
+}
+
+.send-button:active {
+  background: #808080;
+  color: black;
+}
+
 .message-form {
-  width: 100%;
+  display: flex;
+  flex-direction: row;
 }
 
 .message-input {
+  flex-grow: 1;
+
+  border: none;
+  border-radius: 5px;
+  padding: 6px 6px 8px 6px;
   outline: none;
+  resize: none;
 
   font-family: 'Fira Sans', sans-serif;
   font-size: 14px;
 
-  border: none;
-  border-radius: 5px;
-
-  padding: 6px 6px 8px 6px;
-  width: 100%;
-  height: auto;
-
   color: floralwhite;
   background: #303030;
-
-  resize: none;
 }
 
 .message-input:hover,

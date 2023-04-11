@@ -56,6 +56,7 @@ const ChatInput = () => {
         onChange={handleChange}
         ref={inputRef}
       />
+      <button className="send-button" action="submit">{'send'}</button>
     </form>
   )
 }
