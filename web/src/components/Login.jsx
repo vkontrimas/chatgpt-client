@@ -14,28 +14,19 @@ const Auth = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
-  const destination = location.state?.from?.pathname || '/'
-  const { token } = useSelector(state => state.user)
+  const currentToken = useSelector(state => state.user.token)
 
   useEffect(() => {
     // If logged in, go to chat
-    if (token) {
+    if (currentToken) {
+      const destination = location.state?.from?.pathname || '/'
       navigate(destination, { replace: true })
     }
-  }, [token])
+  }, [currentToken])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    try {
-      const response = await axios.post('http://localhost:3000/api/login', { email, password })
-      dispatch(login(response.data))
-    } catch (error) {
-      if (error.name !== 'AxiosError') {
-        throw error
-      }
-
-      console.error('login failed\n', error.message, '\n', error.response.data.error)
-    }
+    dispatch(login({ email, password }))
   }
 
   return (

@@ -10,6 +10,7 @@ import { store } from './redux/store'
 import HomePage from './pages/Home'
 import LoginPage from './pages/Login'
 import Authorized from './components/Authorized'
+import SessionExpiryProvider from './components/SessionExpiryProvider'
 import './index.css'
 
 const router = createBrowserRouter([
@@ -30,7 +31,9 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ReduxProvider store={store}>
     <StrictMode>
-      <RouterProvider router={router} />
+      <SessionExpiryProvider>
+        <RouterProvider router={router} />
+      </SessionExpiryProvider>
     </StrictMode>
   </ReduxProvider>,
 )
