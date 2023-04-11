@@ -1,7 +1,11 @@
+.chat-scroll {
+  border-radius: 5px;
+  overflow: hidden auto;
+  flex-grow: 1;
+}
+
 .chat-messages {
   padding-right: 10px;
-
-  overflow: hidden auto;
   gap: 6px;
 
   display: flex;

@@ -14,15 +14,17 @@ const Chat = () => {
     dispatch(fetchAll())
   }, [])
 
-  const messagesRef = useRef(null)
+  const scrollRef = useRef(null)
   useEffect(() => {
-    messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
+    scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages])
 
   return (
     <div className="chat">
-      <div className="chat-messages" ref={messagesRef}>
+      <div className="chat-scroll" ref={scrollRef}>
+        <div className="chat-messages">
         {messages.map((message, i) => <ChatMessage key={i} message={message}/>)}
+        </div>
       </div>
       <ChatInput />
     </div>
