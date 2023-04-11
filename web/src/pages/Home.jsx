@@ -1,9 +1,9 @@
-import Messages from '../components/Messages'
+import Chat from '../components/Chat'
 
 const MainPage = () => {
   return (
     <div className="Page">
-      <Messages />
+      <Chat />
     </div>
   )
 }

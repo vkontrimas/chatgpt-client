@@ -1,21 +1,9 @@
-.message-container {
-  margin-bottom: 5px;
-}
-
-.message-container.user {
-  text-align: right;
-}
-
 .message {
-  min-width: 20px;
   max-width: 98%;
-  width: auto;
 
-  display: inline-block;
   padding: 6px;
   border-radius: 5px;
-
-  text-align: left;
+  margin-bottom: 5px;
 
   color: floralwhite;
   background: #005f7f;
@@ -26,6 +14,7 @@
 }
 
 .message.user {
+  align-self: flex-end;
   background: #007F5F;
 }
 
@@ -34,11 +23,12 @@
 }
 
 .message.assistant {
-  color: floralwhite;
+  align-self: flex-start;
   background: #005f7f;
 }
 
 .message.assistant.pending {
+  align-self: center;
   background: #003547;
 }
 

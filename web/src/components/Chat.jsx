@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import Message from './Message'
 import MessageInput from './MessageInput'
 import { fetchAll } from '../redux/message'
-import './Messages.css'
+import './Chat.css'
 
-const Messages = () => {
+const Chat = () => {
   const messages = useSelector(state => state.message.messages)
   const dispatch = useDispatch()
 
@@ -20,13 +20,13 @@ const Messages = () => {
   }, [messages])
 
   return (
-    <>
-      <div className="messages" ref={messagesRef}>
+    <div className="chat">
+      <div className="chat-messages" ref={messagesRef}>
         {messages.map((message, i) => <Message key={i} message={message}/>)}
       </div>
       <MessageInput />
-    </>
+    </div>
   )
 }
 
-export default Messages
+export default Chat

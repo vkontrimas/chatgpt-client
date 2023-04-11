@@ -1,0 +1,14 @@
+.chat-messages {
+  padding-right: 10px;
+
+  overflow: hidden auto;
+
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.chat {
+  display: flex;
+  flex-direction: column;
+}
