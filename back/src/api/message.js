@@ -20,7 +20,6 @@ messageRouter.get('/', async (request, response) => {
     type: message.type,
     content: message.content,
   }))
-  console.log(messagesJson)
   response.status(200).json(messagesJson)
 })
 
