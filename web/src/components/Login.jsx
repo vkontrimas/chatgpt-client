@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { login } from '../redux/user'
 
-import { useNavigate } from 'react-router'
+import { useNavigate, useLocation } from 'react-router'
 
 import './Login.css'
 
@@ -13,12 +13,14 @@ const Auth = () => {
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location = useLocation()
+  const destination = location.state?.from?.pathname || '/'
   const { token } = useSelector(state => state.user)
 
   useEffect(() => {
     // If logged in, go to chat
     if (token) {
-      navigate('/chat')
+      navigate(destination, { replace: true })
     }
   }, [token])
 

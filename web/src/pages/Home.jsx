@@ -1,5 +1,4 @@
-import Messages from './components/Messages'
-import Auth from './components/Login'
+import Messages from '../components/Messages'
 
 const MainPage = () => {
   return (
