@@ -43,8 +43,8 @@ const api = createOpenAIApi()
 const getCompletion = async (messages) => {
   const completion = await api.createChatCompletion({
     model: "gpt-3.5-turbo",
-    messages: messages.map(({ user, content }) => ({
-      role: user,
+    messages: messages.map(({ type, content }) => ({
+      role: type,
       content,
     }))
   })

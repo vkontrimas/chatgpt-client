@@ -1,118 +1,201 @@
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
-const { 
-  MESSAGE_ENDPOINT,
-  initialMessages,
-  getStoredMessages
-} = require('./message_helper')
-const User = require('../../message/user')
 
+const { MessageType } = require('../../db/message')
+const { initialUsers, wipeDB, initializeDB, fetchUserMessages } = require('../db_helper')
 
-describe(`API ${MESSAGE_ENDPOINT}`, () => {
-  test('GET - 200 - returns all messages', async () => {
+const ENDPOINT = '/api/message'
+
+const bearerToken = async ({email, password}) => {
+  const response = await api.post('/api/login')
+    .send({ email, password })
+    .expect(200)
+  return `Bearer ${response.body.token}`
+}
+
+describe(`API ${ENDPOINT}`, () => {
+  beforeEach(async () => {
+    await wipeDB()
+    await initializeDB()
+  })
+  test('GET - no bearer - 401 - unauthorised', async () => {
     const response = await api
-      .get(MESSAGE_ENDPOINT)
+      .get(ENDPOINT)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('unauthorized')
+  })
+
+  test('GET - logged in - 200 - returns all messages', async () => {
+    const user = initialUsers[0] 
+
+    const response = await api
+      .get(ENDPOINT)
+      .set('Authorization', await bearerToken(user))
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
     const messages = response.body
-    expect(messages.length).toBe(initialMessages.length)
+    expect(messages.length).toBe(user.messages.length)
   })
 
-  test('POST - user but no content - 400 - error', async () => {
+  test('POST - no bearer - 401 - unauthorized', async () => {
     const newMessage = {
-      user: User.user,
+      type: MessageType.USER,
+      content: 'foo',
+    }
+
+    const response = await api
+      .post(ENDPOINT)
+      .send(newMessage)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('unauthorized')
+  })
+
+  test('POST - type but no content - 400 - error', async () => {
+    const user = initialUsers[0]
+
+    const newMessage = {
+      type: MessageType.USER,
       content: undefined,
     }
 
-    const messagesBefore = getStoredMessages()
-
     const response = await api
-      .post(MESSAGE_ENDPOINT)
+      .post(ENDPOINT)
       .send(newMessage)
+      .set('Authorization', await bearerToken(user))
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
     expect(response.body.error).toContain('content missing')
 
-    const messagesAfter = getStoredMessages()
-    expect(messagesBefore).toMatchObject(messagesAfter)
+    const messagesAfter = await fetchUserMessages(user.id)
+    expect(user.messages.length).toBe(messagesAfter.length)
   })
 
-  test('POST - no user - 400 - error', async () => {
+  test('POST - no type - 400 - error', async () => {
+    const user = initialUsers[0]
+
     const newMessage = {
-      user: undefined,
+      type: undefined,
       content: 'hello world'
     }
 
-    const messagesBefore = getStoredMessages()
-
     const response = await api
-      .post(MESSAGE_ENDPOINT)
+      .post(ENDPOINT)
       .send(newMessage)
+      .set('Authorization', await bearerToken(user))
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.error).toContain('user missing')
+    expect(response.body.error).toContain('type missing')
 
-    const messagesAfter = getStoredMessages()
-    expect(messagesBefore).toMatchObject(messagesAfter)
+    const messagesAfter = await fetchUserMessages(user.id)
+    expect(user.messages.length).toBe(messagesAfter.length)
   })
 
   test('POST - user with content - 201 - adds user message', async () => {
+    const user = initialUsers[0]
+
     const newMessage = {
-      user: User.user,
+      type: MessageType.USER,
       content: 'hello world! this is a brand new test message',
     }
 
-    const initialIds = getStoredMessages().map(message => message.id)
+    const initialIds = (await fetchUserMessages(user.id)).map(message => message.id)
 
     const response = await api
-      .post(MESSAGE_ENDPOINT)
+      .post(ENDPOINT)
       .send(newMessage)
+      .set('Authorization', await bearerToken(user))
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const responseMessage = response.body
     expect(responseMessage).toMatchObject({
       ...newMessage,
-      user: User.user,
+      type: MessageType.USER,
     })
     expect(responseMessage.id).toBeDefined()
     expect(responseMessage.content).toBe(newMessage.content)
     expect(initialIds).not.toContain(responseMessage.id)
 
-    const storedMessages = getStoredMessages()
+    const storedMessages = await fetchUserMessages(user.id)
     expect(storedMessages.length).toBe(initialIds.length + 1)
     expect(storedMessages.map(message => message.content))
       .toContain(newMessage.content)
   })
 
-  test('POST - assistant - 201 - generates new message', async () => {
+  test('POST - creating user message doesn\'t affect other user\'s message', async () => {
+    const user = initialUsers[0]
+    const otherUser = initialUsers[1]
+
     const newMessage = {
-      user: User.assistant,
+      type: MessageType.USER,
+      content: 'hello world! this is a brand new test message',
     }
 
-    const initialIds = getStoredMessages().map(message => message.id)
+    const response = await api
+      .post(ENDPOINT)
+      .send(newMessage)
+      .set('Authorization', await bearerToken(user))
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const messagesAfter = await fetchUserMessages(otherUser.id)
+    expect(otherUser.messages.length).toBe(messagesAfter.length)
+  })
+
+  test('POST - assistant - 201 - generates new message', async () => {
+    const user = initialUsers[0]
+
+    const newMessage = {
+      type: MessageType.ASSISTANT,
+    }
+
+    const initialIds = (await fetchUserMessages(user.id)).map(message => message.id)
 
     const response = await api
-      .post(MESSAGE_ENDPOINT)
+      .post(ENDPOINT)
       .send(newMessage)
+      .set('Authorization', await bearerToken(user))
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
     const responseMessage = response.body
     expect(responseMessage).toMatchObject({
       ...newMessage,
-      user: User.assistant,
+      type: MessageType.ASSISTANT,
     })
     expect(responseMessage.id).toBeDefined()
     expect(typeof responseMessage.content).toBe('string')
     expect(initialIds).not.toContain(responseMessage.id)
 
-    const storedMessages = getStoredMessages()
+    const storedMessages = await fetchUserMessages(user.id)
     expect(storedMessages.length).toBe(initialIds.length + 1)
     expect(storedMessages.map(message => message.id))
       .toContain(responseMessage.id)
+  })
+
+  test('POST - creating assistant message doesn\'t affect other user\'s message', async () => {
+    const user = initialUsers[0]
+    const otherUser = initialUsers[1]
+
+    const newMessage = {
+      type: MessageType.ASSISTANT,
+    }
+
+    const response = await api
+      .post(ENDPOINT)
+      .send(newMessage)
+      .set('Authorization', await bearerToken(user))
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const messagesAfter = await fetchUserMessages(otherUser.id)
+    expect(otherUser.messages.length).toBe(messagesAfter.length)
   })
 })

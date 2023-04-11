@@ -63,7 +63,7 @@ const fetchAllUsers = async () => {
   return await User.findAll()
 }
 
-const getUserMessages = async (id) => {
+const fetchUserMessages = async (id) => {
   const user = await User.findByPk(id)
   return user.getMessages()
 }
@@ -99,4 +99,5 @@ module.exports = {
   fetchAllUsers,
   initializeDB,
   wipeDB,
+  fetchUserMessages,
 }

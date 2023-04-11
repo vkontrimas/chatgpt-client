@@ -1,34 +1,79 @@
+const jwt = require('jsonwebtoken')
 const messageRouter = require('express').Router()
-const User = require('../message/user')
-const { 
-  addMessage,
-  getAllMessages,
-  generateNextReply,
-} = require('../message/messages')
 
-messageRouter.get('/', (request, response) => {
-  response.json(getAllMessages())
+const { User } = require('../db/db')
+const { MessageType } = require('../db/message')
+const { LOGIN_TOKEN_SECRET } = require('../config')
+const { getCompletion } = require('../openai/openai')
+
+messageRouter.get('/', async (request, response) => {
+  const token = jwt.verify(request.userToken, LOGIN_TOKEN_SECRET)
+  if (!token.id) {
+    return response
+      .status(401)
+      .json({ error: 'unauthorized' })
+  }
+
+  const user = await User.findByPk(token.id)
+  const messages = await user.getMessages()
+  const messagesJson = messages.map(message => ({
+    type: message.type,
+    content: message.content,
+  }))
+  console.log(messagesJson)
+  response.status(200).json(messagesJson)
 })
 
 messageRouter.post('/', async (request, response) => {
+  const token = jwt.verify(request.userToken, LOGIN_TOKEN_SECRET)
+  if (!token.id) {
+    return response
+      .status(401)
+      .json({ error: 'unauthorized' })
+  }
+
   if (!request.body) {
     return response.status(400).json({ error: 'no body' })
   }
 
-  const { user, content } = request.body
-  if (!user) {
-    return response.status(400).json({ error: 'user missing' })
+  const { type, content } = request.body
+  if (!type) {
+    return response.status(400).json({ error: 'type missing' })
   }
 
-  if (user === User.user) {
+  const user = await User.findByPk(token.id)
+
+  if (type === MessageType.USER) {
     if (!content) {
       return response.status(400).json({ error: 'content missing' })
     }
-    const addedMessage = addMessage({ user, content })
-    return response.status(201).json(addedMessage)
+
+    const message = await user.createMessage({ type, content })
+    return response.status(201).json({
+      id: message.id,
+      type: message.type,
+      content: message.content,
+    })
+  } else if (type === MessageType.ASSISTANT) {
+    const messages = await user.getMessages()
+    const messagesJson = messages.map((message) => ({
+      type: message.type, content: message.content
+    }))
+    const completion = await getCompletion(messagesJson)
+    const choice = completion?.choices[0]?.message
+
+    const assistantReply = await user.createMessage({
+      type: choice.role,
+      content: choice.content,
+    })
+
+    return response.status(201).json({
+      id: assistantReply.id,
+      type: assistantReply.type,
+      content: assistantReply.content,
+    })
   } else {
-    const assistantMessage = await generateNextReply()
-    return response.status(201).json(assistantMessage)
+    throw 'unexpected type'
   }
 })
 
