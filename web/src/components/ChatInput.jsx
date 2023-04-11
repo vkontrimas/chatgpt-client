@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect, } from 'react'
 import { useDispatch } from 'react-redux'
 import { create } from '../redux/message'
-import './MessageInput.css'
+import './ChatInput.css'
 
-const MessageInput = () => {
+const ChatInput = () => {
   const dispatch = useDispatch()
 
   const [message, setMessage] = useState('')
@@ -60,4 +60,4 @@ const MessageInput = () => {
   )
 }
 
-export default MessageInput
+export default ChatInput
