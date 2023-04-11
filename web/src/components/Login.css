@@ -1,11 +1,19 @@
+.form-container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .auth-form {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .auth-form input {
-  display: block;
-  width: 300px;
-
+  width: 25em;
   outline: none;
 
   font-family: 'Fira Sans', sans-serif;
@@ -19,8 +27,6 @@
 
   color: floralwhite;
   background: #303030;
-
-  margin: 10px auto;
 }
 
 .auth-form input:hover,
@@ -32,4 +38,34 @@
 .auth-form input:focus {
   background: #808080;
   color: black;
+}
+
+.auth-form button {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  color: floralwhite;
+  background: #007F5F;
+
+  align-self: stretch;
+}
+
+.auth-form button:hover {
+  background: #039e77;
+  color: black;
+}
+
+.auth-form button:active {
+  background: #02cc99;
+  color: black;
+}
+
+.message.user {
+  align-self: flex-end;
+  background: #007F5F;
+}
+
+.message.user.pending {
+  background: #004433;
 }
