@@ -8,9 +8,14 @@ const getLocalToken = () => localStorage.getItem(TOKEN_KEY) || null
 const setLocalToken = (token) => localStorage.setItem(TOKEN_KEY, token)
 const removeLocalToken = () => localStorage.removeItem(TOKEN_KEY)
 
+const bearer = (token) => `Bearer ${token}`
+
 const initialState = () => {
   const token = getLocalToken()
-  return { token }
+  return { 
+    token,
+    bearer: bearer(token),
+  }
 }
 
 export const userSlice = createSlice({
@@ -24,14 +29,15 @@ export const userSlice = createSlice({
       }
 
       state.token = null
+      state.bearer = null
       removeLocalToken()
     },
     login: (state, { payload }) => {
       if (state.token) {
         throw 'a user is already logged in'
       }
-      console.log(payload)
       state.token = payload.token
+      state.bearer = bearer(payload.token)
       setLocalToken(payload.token)
     }
   },

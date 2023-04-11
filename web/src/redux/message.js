@@ -1,23 +1,34 @@
+import axios from 'axios'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 import { getAllMessages, createMessage } from '../api/message'
+
+const baseUrl = 'http://localhost:3000/api/message'
 
 const initialState = {
   messages: [],
 }
 
+const authConfig = (bearer) => ({
+  headers: {
+    Authorization: bearer
+  }
+})
+
 export const fetchAll = createAsyncThunk(
   'message/fetchAll',
-  async () => {
-    const messages = await getAllMessages()
-    return messages
+  async (_, thunkApi) => {
+    const bearer = thunkApi.getState().user.bearer
+    const response = await axios.get(baseUrl, authConfig(bearer))
+    return response.data
   }
 )
 
 export const create = createAsyncThunk(
   'message/create',
-  async (message) => {
-    const newMessages = await createMessage(message)
-    return newMessages
+  async (message, thunkApi) => {
+    const bearer = thunkApi.getState().user.bearer
+    const response = await axios.post(baseUrl, message, authConfig(bearer))
+    return response.data
   }
 )
 
