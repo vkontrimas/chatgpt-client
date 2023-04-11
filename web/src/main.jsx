@@ -6,9 +6,10 @@ import {
   RouterProvider,
 } from 'react-router-dom'
 
-import { store } from './redux/store.js'
+import { store } from './redux/store'
 import MainPage from './MainPage'
 import LoginPage from './LoginPage'
+import Authorized from './components/Authorized'
 import './index.css'
 
 const router = createBrowserRouter([
@@ -18,7 +19,7 @@ const router = createBrowserRouter([
   },
   {
     path: '/chat',
-    element: <MainPage />,
+    element: <Authorized> <MainPage /> </Authorized>,
   },
 ])
 
