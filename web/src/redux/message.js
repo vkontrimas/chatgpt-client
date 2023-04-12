@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
-import { getAllMessages, createMessage } from '../api/message'
 
 const baseUrl = 'http://localhost:3000/api/message'
 
