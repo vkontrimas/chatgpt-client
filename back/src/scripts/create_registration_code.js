@@ -2,11 +2,9 @@ const inquirer = require('inquirer')
 const bcrypt = require('bcrypt')
 
 const { RegistrationCode } = require('../db/db')
-const { ENVIRONMENT, DB_PATH } = require('../config')
+const { ENVIRONMENT } = require('../config')
 
 const run = async () => {
-  console.log(DB_PATH)
-
   const { remainingUses } = await inquirer.prompt([
     {
       name: 'remainingUses',
