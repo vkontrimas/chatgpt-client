@@ -20,7 +20,7 @@ messageRouter.get('/', async (request, response) => {
       .json({ error: 'unauthorized' })
   }
 
-  const messages = await user.getMessages()
+  const messages = await Message.findAll({ where: { UserId: user.id } })
   const messagesJson = messages.map(message => ({
     type: message.type,
     content: message.content,
@@ -64,7 +64,7 @@ messageRouter.post('/', async (request, response) => {
       content: message.content,
     })
   } else if (type === MessageType.ASSISTANT) {
-    const messages = await user.getMessages()
+    const messages = await Message.findAll({ where: { UserId: user.id, } })
     const messagesJson = messages.map((message) => ({
       type: message.type, content: message.content
     }))
