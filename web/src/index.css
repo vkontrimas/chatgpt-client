@@ -14,6 +14,21 @@ body {
 .Page {
   margin: 0 auto;
   width: 80vw;
+  /* fallback in case svh unsupported */
   height: 100vh;
+  /*
+   * firefox and chrome do different things
+   * with this..........
+   *
+   * so going with what looks best in chrome. 😡
+   */
+  height: 100svh;
   padding: 20px;
+}
+
+@media screen and (max-width: 1000px) {
+  .Page {
+    margin: 0;
+    width: 100vw;
+  }
 }
