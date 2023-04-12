@@ -1,0 +1,16 @@
+.Home {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  gap: 1em;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.sidebar-chats {
+  width: 15em;
+}

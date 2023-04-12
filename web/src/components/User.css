@@ -1,0 +1,45 @@
+.user-vertical {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 3px;
+}
+
+.user-name {
+  text-align: left;
+  font-weight: 600;
+  font-size: 1.25em;
+  color: #808080;
+}
+
+.user-button {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  padding: 6px;
+  color: #808080;
+  background: #303030;
+}
+
+.send-button {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  margin: 1px 1px 1px 5px;
+  padding: 6px;
+  color: floralwhite;
+  background: #303030;
+}
+
+
+.user-button:hover {
+  background: #505050;
+  color: black;
+}
+
+.user-button:active {
+  background: #808080;
+  color: black;
+}

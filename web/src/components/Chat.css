@@ -1,7 +1,6 @@
 .chat-scroll {
   border-radius: 5px;
   overflow: hidden auto;
-  flex-grow: 1;
 }
 
 .chat-messages {
@@ -11,7 +10,6 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  flex-grow: 1;
 }
 
 .chat {

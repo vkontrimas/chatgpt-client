@@ -2,7 +2,6 @@
   outline: none;
   border: none;
   border-radius: 5px;
-  margin: 1px 1px 1px 5px;
   padding: 6px;
   color: floralwhite;
   background: #303030;
@@ -21,6 +20,7 @@
 .message-form {
   display: flex;
   flex-direction: row;
+  gap: 4px;
 }
 
 .message-input {
