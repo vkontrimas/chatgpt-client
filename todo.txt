@@ -6,3 +6,4 @@
 [x] Handle token expiration!
 [] Fix message fetching happening before we check for token expiry...
 [] Refetch user info from DB in case it changed!
+[] Handle login expiry when sleeping
