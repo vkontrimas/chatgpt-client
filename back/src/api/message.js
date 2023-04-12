@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const messageRouter = require('express').Router()
 
-const { User } = require('../db/db')
+const { User, Message } = require('../db/db')
 const { MessageType } = require('../db/message')
 const { LOGIN_TOKEN_SECRET } = require('../config')
 const { getCompletion } = require('../openai/openai')
@@ -84,6 +84,29 @@ messageRouter.post('/', async (request, response) => {
   } else {
     throw 'unexpected type'
   }
+})
+
+messageRouter.delete('/', async (request, response) => {
+  const token = jwt.verify(request.userToken, LOGIN_TOKEN_SECRET)
+  if (!token.id) {
+    return response
+      .status(401)
+      .json({ error: 'unauthorized' })
+  }
+
+  const user = await User.findByPk(token.id)
+  if (!user) {
+    return response
+      .status(401)
+      .json({ error: 'unauthorized' })
+  }
+
+  await Message.destroy({
+    where: {
+      UserId: token.id,
+    }
+  })
+  response.status(204).end()
 })
 
 module.exports = messageRouter

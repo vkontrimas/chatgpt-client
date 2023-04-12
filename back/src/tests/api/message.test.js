@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
-const { User } = require('../../db/db')
+const { User, Message } = require('../../db/db')
 const { MessageType } = require('../../db/message')
 const { initialUsers, wipeDB, initializeDB, fetchUserMessages } = require('../db_helper')
 
@@ -55,6 +55,7 @@ describe(`API ${ENDPOINT}`, () => {
 
     const messages = response.body
     expect(messages.length).toBe(user.messages.length)
+    expect(messages.map(message => message.content)).toMatchObject(user.messages.map(message => message.content))
   })
 
   test('POST - no bearer - 401 - unauthorized', async () => {
@@ -235,5 +236,62 @@ describe(`API ${ENDPOINT}`, () => {
 
     const messagesAfter = await fetchUserMessages(otherUser.id)
     expect(otherUser.messages.length).toBe(messagesAfter.length)
+  })
+
+  test('DELETE - root, no bearer - 401 - unauthorised', async () => {
+    const response = await api
+      .delete(ENDPOINT)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('unauthorized')
+  })
+
+  test('DELETE - root, bearer for non-existing user - 401 - unauthorised', async () => {
+    const user = initialUsers[1]
+    const token = await bearerToken(user)
+    const dbUser = await User.findByPk(user.id)
+    await dbUser.destroy()
+
+    const response = await api
+      .delete(ENDPOINT)
+      .set('Authorization', token)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('unauthorized')
+  })
+
+
+  test('DELETE - root - 204 - deletes all messages', async () => {
+    const user = initialUsers[0]
+
+    const allMessagesBefore = await Message.findAll()
+
+    const response = await api
+      .delete(ENDPOINT)
+      .set('Authorization', await bearerToken(user))
+      .expect(204)
+
+    const [messagesAfter, allMessagesAfter] = await Promise.all([
+      fetchUserMessages(user.id), Message.findAll()
+    ])
+
+    expect(messagesAfter.length).toBe(0)
+    expect(allMessagesAfter.length).toBe(allMessagesBefore.length - user.messages.length)
+  })
+
+  test('DELETE - root - 204 - does not delete other user messages', async () => {
+    const user = initialUsers[0]
+    const otherUser = initialUsers[1]
+
+    const response = await api
+      .delete(ENDPOINT)
+      .set('Authorization', await bearerToken(user))
+      .expect(204)
+
+    const messagesAfter = await fetchUserMessages(otherUser.id)
+    expect(messagesAfter.length).toBe(otherUser.messages.length)
+    expect(messagesAfter.map(message => message.content)).toMatchObject(otherUser.messages.map(message => message.content))
   })
 })
