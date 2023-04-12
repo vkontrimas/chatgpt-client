@@ -6,6 +6,8 @@ import ChatInput from './ChatInput'
 import { fetchAll, create } from '../redux/message'
 import './Chat.css'
 
+import User from './User'
+
 const Chat = () => {
   const messages = useSelector(state => state.message.messages)
   const dispatch = useDispatch()
@@ -34,6 +36,11 @@ const Chat = () => {
 
   return (
     <div className="chat">
+
+      {/* HACK: <User> and chat-mobile-stretch are here until I figure out sidebar on mobile*/}
+      <User />
+      <div className="chat-mobile-stretch"></div>
+
       <div className="chat-scroll" ref={scrollRef}>
         <div className="chat-messages">
         {messages.map((message, i) => <ChatMessage key={i} message={message}/>)}
