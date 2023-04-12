@@ -3,4 +3,5 @@
 [] Move pending and failed assistant message logic to backend
 [] Rework message loading so we only load a portion of the chat
 [] Set up some kind of superproject to test both the frontend and backend simultaneously
-[] Handle token expiration!
+[x] Handle token expiration!
+[] Fix message fetching happening before we check for token expiry...
