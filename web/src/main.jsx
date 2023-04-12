@@ -9,6 +9,7 @@ import {
 import { store } from './redux/store'
 import HomePage from './pages/Home'
 import LoginPage from './pages/Login'
+import RegisterPage from './pages/Register'
 import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 import './index.css'
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/register/:code',
+    element: <RegisterPage />,
   },
   {
     path: '/test',
