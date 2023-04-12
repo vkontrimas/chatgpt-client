@@ -3,21 +3,34 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import ChatMessage from './ChatMessage'
 import ChatInput from './ChatInput'
-import { fetchAll } from '../redux/message'
+import { fetchAll, create } from '../redux/message'
 import './Chat.css'
 
 const Chat = () => {
   const messages = useSelector(state => state.message.messages)
   const dispatch = useDispatch()
+  const scrollRef = useRef(null)
 
   useEffect(() => {
     dispatch(fetchAll())
   }, [])
 
-  const scrollRef = useRef(null)
+  // bandaid for generating assistant replies in sequenced way
+  useEffect(() => {
+    if (messages.length > 0 && messages[messages.length - 1].type === 'user') {
+      dispatch(create({ type: 'assistant' }))
+    }
+  }, [messages])
+
   useEffect(() => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
   }, [messages])
+
+  // Either there's no messsages
+  // or the last message is from assisant and has no state (pending / failed)
+  const chatInputEnabled = messages.length === 0 
+        || (!messages[messages.length - 1].state 
+          && !messages[messages.length - 1].type !== 'user')
 
   return (
     <div className="chat">
@@ -26,7 +39,7 @@ const Chat = () => {
         {messages.map((message, i) => <ChatMessage key={i} message={message}/>)}
         </div>
       </div>
-      <ChatInput />
+      <ChatInput enabled={chatInputEnabled}/>
     </div>
   )
 }

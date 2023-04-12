@@ -49,6 +49,8 @@
   background: #007F5F;
 
   align-self: stretch;
+
+  cursor: pointer;
 }
 
 .auth-form button:hover {

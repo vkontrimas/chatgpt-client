@@ -28,6 +28,7 @@
   color: #808080;
   background: #303030;
   flex: 1;
+  cursor: pointer;
 }
 
 .user-button:hover {

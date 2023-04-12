@@ -5,6 +5,7 @@
   padding: 6px;
   color: floralwhite;
   background: #303030;
+  cursor: pointer;
 }
 
 .send-button:hover {
@@ -48,4 +49,16 @@
 .message-input:focus {
   background: #808080;
   color: black;
+}
+
+.message-input:disabled {
+  border: 2px solid #303030;
+  background: #252525;
+}
+
+.send-button:disabled {
+  border: 2px solid #303030;
+  background: #252525;
+  color: #808080;
+  cursor: default;
 }
