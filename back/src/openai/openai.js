@@ -25,7 +25,6 @@ const createOpenAIApi = () => {
     const config = new Configuration({
       apiKey: OPENAI_API_KEY,
     })
-    console.log(config)
     return new OpenAIApi(config)
   }
   else {
@@ -41,7 +40,6 @@ const createOpenAIApi = () => {
 const api = createOpenAIApi()
 
 const getCompletion = async (messages, userId) => {
-  console.log(messages)
   if (messages.length === 0) {
     throw 'cannot complete empty message list'
   }
