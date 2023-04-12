@@ -22,11 +22,11 @@ const getFakeResponse = () => ({
 const createOpenAIApi = () => {
   if (!OPENAI_FAKE_MESSAGES
       && (ENVIRONMENT === 'production' || ENVIRONMENT === 'development')) {
-    return new OpenAIApi(
-      new Configuration({
-        apiKey: OPENAI_API_KEY,
-      })
-    )
+    const config = new Configuration({
+      apiKey: OPENAI_API_KEY,
+    })
+    console.log(config)
+    return new OpenAIApi(config)
   }
   else {
     console.log('Running with fake AI messages.')
@@ -39,7 +39,6 @@ const createOpenAIApi = () => {
 }
 
 const api = createOpenAIApi()
-console.log(api)
 
 const getCompletion = async (messages, userId) => {
   console.log(messages)
