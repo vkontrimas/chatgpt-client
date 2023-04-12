@@ -39,16 +39,19 @@ const createOpenAIApi = () => {
 }
 
 const api = createOpenAIApi()
+console.log(api)
 
 const getCompletion = async (messages, userId) => {
-  console.log(messages)
+  if (messages.length === 0) {
+    throw 'cannot complete empty message list'
+  }
   const completion = await api.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: messages.map(({ type, content }) => ({
       role: type,
       content,
     })),
-    // user: userId,
+    user: userId,
   })
   return completion.data
 }
