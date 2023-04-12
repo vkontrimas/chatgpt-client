@@ -37,6 +37,14 @@ export const create = createAsyncThunk(
   }
 )
 
+export const clear = createAsyncThunk(
+  'message/clear',
+  async (_, thunkApi) => {
+    const bearer = thunkApi.getState().user.token?.bearer
+    const response = await axios.delete(baseUrl, authConfig(bearer))
+  }
+)
+
 export const messageSlice = createSlice({
   name: 'message',
   initialState,
@@ -69,6 +77,9 @@ export const messageSlice = createSlice({
       })
       .addCase(fetchAll.fulfilled, (state, action) => {
         state.messages = action.payload
+      })
+      .addCase(clear.fulfilled, (state) => {
+        state.messages = []
       })
   },
 })

@@ -1,14 +1,14 @@
 import { useDispatch } from 'react-redux'
 
 import { logout } from '../redux/user'
+import { clear } from '../redux/message'
 
 import './User.css'
 
 const User = () => {
   const dispatch = useDispatch()
-
   const handleLogout = () => dispatch(logout())
-  const handleClear = () => {}
+  const handleClear = () => dispatch(clear())
 
   return (
     <div className="user-vertical">
