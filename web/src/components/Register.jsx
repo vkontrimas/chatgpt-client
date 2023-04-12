@@ -39,7 +39,10 @@ const Auth = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
     try {
-      const resp = await axios.post(`http://localhost:3000/api/register/${code}`)
+      const resp = await axios.post(
+        `http://localhost:3000/api/register/${code}`,
+        { name, email, password }
+      )
       dispatch(login({ email, password }))
     }
     catch (e) {
