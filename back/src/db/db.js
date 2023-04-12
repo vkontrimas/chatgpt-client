@@ -6,6 +6,7 @@ const { initializeMessage, MessageType } = require('./message')
 const initializeRegistrationCode = require('./registration_code')
 
 const initializeDb = () => {
+  console.log('DB PATH:', DB_PATH)
   const sequelize = new Sequelize(DB_PATH, {
     logging: DB_LOG ? console.log : null,
   })
