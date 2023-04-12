@@ -7,7 +7,7 @@ module.exports = (sql) => sql.define('RegistrationCode', {
     allowNull: false,
     primaryKey: true,
   },
-  maxUses: {
+  remainingUses: {
     type: DataTypes.INTEGER,
     allowNull: false,
   }

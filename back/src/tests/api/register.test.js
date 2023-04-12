@@ -1,8 +1,8 @@
-const uuid = require('uuid')
+const { v4: uuidv4 } = require('uuid')
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
-const { initializeDB, wipeDB, modelUser, initialUsers } = require('../db_helper')
+const { initializeDB, wipeDB, modelUser, initialUsers, fetchAllUsers } = require('../db_helper')
 const { RegistrationCode } = require('../../db/db')
 
 const ENDPOINT = '/api/register'
@@ -10,9 +10,10 @@ const endpoint = (id) => `${ENDPOINT}/${id}`
 
 const fakeId = async () => {
   let uuid = null
+  let existing = null
   do {
-    uuid = uuid.uuidv4()
-    const existing = await RegistrationCode.findByPk(uuid)
+    uuid = uuidv4()
+    existing = await RegistrationCode.findByPk(uuid)
   }
   while (existing)
   return uuid
@@ -58,20 +59,20 @@ describe(`API ${ENDPOINT}`, () => {
   })
 
   test('POST - register with valid code until it expires - 201 * n, then 403', async () => {
-    const remainingUses = 3
-    const code = await RegistrationCode.create({ remainingUses })
+    const code = await RegistrationCode.create({ remainingUses: 3 })
 
-    const useCode = (code) => api
-      .post(endpoint(code.id))
-      .expect(code)
-      .expect('Content-Type', /application\/json/)
+    const useCode = (expected, user) => {
+      return api
+        .post(endpoint(code.id))
+        .send(user)
+        .expect(expected)
+        .expect('Content-Type', /application\/json/)
+    }
 
-    const [,,, errorResponse] = await Promise.all([
-      useCode(201),
-      useCode(201),
-      useCode(201),
-      useCode(403),
-    ])
+    await useCode(201, { name: 'A', email: 'a@b.com', password: 'foo' })
+    await useCode(201, { name: 'B', email: 'b@b.com', password: 'foo' })
+    await useCode(201, { name: 'C', email: 'c@b.com', password: 'foo' })
+    const errorResponse = await useCode(403, { name: 'D', email: 'd@b.com', password: 'foo' })
 
     expect(errorResponse.body.error).toContain('registration expired')
   })
