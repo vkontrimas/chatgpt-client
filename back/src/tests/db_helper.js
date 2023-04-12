@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt')
 
-const { sequelize, User, Message } = require('../db/db')
+const { sequelize, User, Message, RegistrationCode } = require('../db/db')
 const { MessageType } = require('../db/message')
 
 const { PASSWORD_HASH_ROUNDS } = require('../config')
