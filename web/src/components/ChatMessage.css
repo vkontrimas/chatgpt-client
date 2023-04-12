@@ -8,10 +8,6 @@
   background: #005f7f;
 }
 
-.message.failed {
-  background: firebrick;
-}
-
 .message.user {
   align-self: flex-end;
   background: #007F5F;
@@ -29,6 +25,11 @@
 .message.assistant.pending {
   align-self: center;
   background: #003547;
+}
+
+.message.failed {
+  /* HACK: we have these classes copied all over the place :( */
+  background: #7f1f00 !important;
 }
 
 .message p:first-of-type {
