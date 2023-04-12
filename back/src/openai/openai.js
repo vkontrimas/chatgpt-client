@@ -42,6 +42,7 @@ const api = createOpenAIApi()
 console.log(api)
 
 const getCompletion = async (messages, userId) => {
+  console.log(messages)
   if (messages.length === 0) {
     throw 'cannot complete empty message list'
   }
