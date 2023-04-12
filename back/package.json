@@ -9,7 +9,8 @@
     "test": "NODE_ENV=test jest --verbose",
     "dev": "NODE_ENV=development nodemon src/main.js",
     "sqlite": "sqlite3 -header -column",
-    "create-user": "node src/scripts/create_user.js"
+    "create-user": "node src/scripts/create_user.js",
+    "create-registration-code": "node src/scripts/create_registration_code.js"
   },
   "author": "Vytautas Kontrimas",
   "dependencies": {
