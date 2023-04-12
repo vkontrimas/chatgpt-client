@@ -2,7 +2,7 @@ const inquirer = require('inquirer')
 const bcrypt = require('bcrypt')
 
 const { RegistrationCode } = require('../db/db')
-const { ENVIRONMENT, DB_PATh } = require('../config')
+const { ENVIRONMENT, DB_PATH } = require('../config')
 
 const run = async () => {
   console.log(DB_PATH)
