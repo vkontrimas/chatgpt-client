@@ -1,8 +1,7 @@
 .user-vertical {
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
+  justify-content: flex-end;
   gap: 10px;
   margin-bottom: 3px;
 }
@@ -14,6 +13,13 @@
   color: #808080;
 }
 
+.button-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  gap: 8px;
+}
+
 .user-button {
   outline: none;
   border: none;
@@ -21,18 +27,8 @@
   padding: 6px;
   color: #808080;
   background: #303030;
+  flex: 1;
 }
-
-.send-button {
-  outline: none;
-  border: none;
-  border-radius: 5px;
-  margin: 1px 1px 1px 5px;
-  padding: 6px;
-  color: floralwhite;
-  background: #303030;
-}
-
 
 .user-button:hover {
   background: #505050;
