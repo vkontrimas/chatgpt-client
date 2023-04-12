@@ -1,6 +1,4 @@
 .message {
-  max-width: 98%;
-
   padding: 6px;
   border-radius: 5px;
 
@@ -11,6 +9,7 @@
 .message.user {
   align-self: flex-end;
   background: #007F5F;
+  margin-left: 30px;
 }
 
 .message.user.pending {
@@ -20,6 +19,7 @@
 .message.assistant {
   align-self: flex-start;
   background: #005f7f;
+  margin-right: 30px;
 }
 
 .message.assistant.pending {
