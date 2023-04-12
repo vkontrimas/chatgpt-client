@@ -26,7 +26,7 @@ const Auth = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    dispatch(login({ email, password }))
+    dispatch(login({ email: email.trim(), password }))
   }
 
   return (
