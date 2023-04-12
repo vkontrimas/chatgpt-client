@@ -38,6 +38,8 @@
 
   color: floralwhite;
   background: #303030;
+
+  overflow: hidden;
 }
 
 .message-input:hover,
