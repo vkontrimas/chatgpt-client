@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../redux/user'
+import { logout, Session } from '../redux/user'
 
 const SessionExpiryContext = createContext(null)
 
@@ -21,7 +21,7 @@ const SessionExpiryProvider = ({ children }) => {
     const timeUntilExpiryMs = (token.expiry * 1000) - now
     console.log(token, 'new timer', timeUntilExpiryMs)
     const newTimerId = setTimeout(() => {
-      dispatch(logout())
+      dispatch(logout(Session.expired))
     }, timeUntilExpiryMs - 200)
     setTimerId(newTimerId)
   }, [token])

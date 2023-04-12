@@ -17,10 +17,20 @@ const tokenState = (token) => {
   }
 }
 
+export const Session = {
+  active: "active",
+  inactive: "inactive",
+  pending: "pending",
+  error: "error",
+  warning: "warning",
+}
+
 const initialState = () => {
   const localToken = localStorage.getItem(LOCAL_STORAGE_KEY)
 
   return {
+    session: localToken ? Session.active : Session.inactive,
+    sessionMessage: '',
     token: localToken ? tokenState(localToken) : null,
   }
 }
@@ -42,25 +52,27 @@ export const login = createAsyncThunk('user/login',
   }
 )
 
-const loginPendingReducer = (value) => {
-  // TODO: loading state
+const loginPendingReducer = (state) => {
+  state.session = Session.pending
 }
 
 const loginFulfilledReducer = (state, action) => {
-  // TODO: loading state
+  state.session = Session.active
   state.token = action.payload
   localStorage.setItem(LOCAL_STORAGE_KEY, action.payload.token)
 }
 
 const loginRejectedReducer = () => {
-  // TODO: loading state
+  state.session = Session.error
+  state.sessionMessage = 'login failed'
   console.error('login failed')
 }
 
-const logoutReducer = (state) => {
+const logoutReducer = (state, { payload }) => {
   if (!state.token) {
     console.warn('no user logged in')
   }
+  state.session = payload || Session.inactive
   state.token = null
   localStorage.removeItem(LOCAL_STORAGE_KEY)
 }

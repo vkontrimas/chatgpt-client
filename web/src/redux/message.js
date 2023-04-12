@@ -8,16 +8,21 @@ const initialState = {
   messages: [],
 }
 
-const authConfig = (bearer) => ({
-  headers: {
-    Authorization: bearer
+const authConfig = (bearer) => { 
+  if (!bearer) {
+    throw 'bearer null'
   }
-})
+  return {
+    headers: {
+      Authorization: bearer
+    }
+  }
+}
 
 export const fetchAll = createAsyncThunk(
   'message/fetchAll',
   async (_, thunkApi) => {
-    const bearer = thunkApi.getState().user.bearer
+    const bearer = thunkApi.getState().user.token?.bearer
     const response = await axios.get(baseUrl, authConfig(bearer))
     return response.data
   }
@@ -26,7 +31,7 @@ export const fetchAll = createAsyncThunk(
 export const create = createAsyncThunk(
   'message/create',
   async (message, thunkApi) => {
-    const bearer = thunkApi.getState().user.bearer
+    const bearer = thunkApi.getState().user.token?.bearer
     const response = await axios.post(baseUrl, message, authConfig(bearer))
     return response.data
   }
