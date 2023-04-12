@@ -6,12 +6,14 @@ const { MessageType } = require('../db/message')
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const modelUser = () => ({
+  name: 'Eve',
   email: 'eve@example.com',
   password: 'topsekret',
 })
 
 const initialUsers = [
   {
+    name: 'Bob',
     email: 'bob@example.com',
     password: 'sekret',
 
@@ -31,6 +33,7 @@ const initialUsers = [
     ],
   },
   {
+    name: 'Alice',
     email: 'alice@example.com',
     password: 'password123',
 
@@ -74,6 +77,7 @@ const initializeDB = async () => {
 
   for (const user of initialUsers) {
     const newUser = await User.create({
+      name: user.name,
       email: user.email,
       passwordHash: await bcrypt.hash(user.password, PASSWORD_HASH_ROUNDS),
     })

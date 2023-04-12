@@ -5,7 +5,11 @@ const { User } = require('../db/db')
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const run = async () => {
-  const { email, password } = await inquirer.prompt([
+  const { name, email, password } = await inquirer.prompt([
+    {
+      name: 'name',
+      message: 'Name:',
+    },
     {
       name: 'email',
       validate: (input) => {
@@ -26,7 +30,7 @@ const run = async () => {
   const passwordHash = await bcrypt.hash(password, PASSWORD_HASH_ROUNDS)
 
   try {
-    const user = await User.create({ email, passwordHash, })
+    const user = await User.create({ name, email, passwordHash, })
     console.log('Created user!')
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {

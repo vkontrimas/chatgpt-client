@@ -19,7 +19,7 @@ loginRouter.post('/', async (request, response) => {
   }
 
   const queryResults = await User.findAll({
-    attributes: [ 'id', 'passwordHash' ],
+    attributes: [ 'id', 'name', 'passwordHash' ],
     where: { email: credentials.email, },
   })
 
@@ -46,7 +46,11 @@ loginRouter.post('/', async (request, response) => {
     { expiresIn: 60 * 60 },
   )
 
-  response.status(200).json({ email: credentials.email, token })
+  response.status(200).json({
+    name: user.name,
+    email: credentials.email,
+    token,
+  })
 })
 
 module.exports = loginRouter

@@ -8,6 +8,7 @@ usersRouter.get('/', async (request, response) => {
   const users = await User.findAll()
   const result = users.map(user => ({
     id: user.id,
+    name: user.name,
     email: user.email,
   }))
   response.status(200).json(result)
@@ -16,6 +17,9 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const newUser = request.body
 
+  if (!newUser.name) {
+    return response.status(400).json({ error: 'no name' })
+  }
   if (!newUser.email) {
     return response.status(400).json({ error: 'no email' })
   }
@@ -27,11 +31,13 @@ usersRouter.post('/', async (request, response) => {
 
   try {
     const user = await User.create({
+      name: newUser.name,
       email: newUser.email,
       passwordHash,
     })
     response.status(201).json({
       id: user.id,
+      name: user.name,
       email: user.email,
     })
   } catch (error) {

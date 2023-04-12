@@ -33,11 +33,22 @@ describe(`API ${ENDPOINT}`, () => {
       .toMatchObject(users.map(user => user.email).sort())
   })
 
+  test('POST - no name - 400 error', async () => {
+    const request = modelUser()
+    delete request.name
+
+    const response = await api
+      .post(ENDPOINT)
+      .send(request)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toMatch(/no name/)
+  })
+
   test('POST - no email - 400 error', async () => {
-    const request = {
-      ...modelUser(),
-      email: undefined,
-    }
+    const request = modelUser()
+    delete request.email
 
     const response = await api
       .post(ENDPOINT)
@@ -49,10 +60,8 @@ describe(`API ${ENDPOINT}`, () => {
   })
 
   test('POST - no password - 400 error', async () => {
-    const request = {
-      ...modelUser(),
-      password: undefined,
-    }
+    const request = modelUser()
+    delete request.password
 
     const response = await api
       .post(ENDPOINT)
@@ -88,6 +97,7 @@ describe(`API ${ENDPOINT}`, () => {
       .expect('Content-Type', /application\/json/)
 
     const user = response.body
+    expect(user.name).toBe(request.name)
     expect(user.email).toBe(request.email)
     expect(user.passwordHash).not.toBeDefined()
     expect(user.id).toBeDefined()

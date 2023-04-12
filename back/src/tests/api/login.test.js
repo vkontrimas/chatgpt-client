@@ -72,7 +72,7 @@ describe(`API ${ENDPOINT}`, () => {
   })
 
   test('POST - valid email and password - 200 get token', async () => {
-    const { email, password } = initialUsers[0]
+    const { name, email, password } = initialUsers[0]
     const request = { email, password }
 
     const response = await api
@@ -82,5 +82,7 @@ describe(`API ${ENDPOINT}`, () => {
       .expect('Content-Type', /application\/json/)
 
     expect(typeof response.body.token).toBe('string')
+    expect(response.body.email).toBe(email)
+    expect(response.body.name).toBe(name)
   })
 })
