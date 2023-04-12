@@ -50,7 +50,7 @@ export const login = createAsyncThunk('user/login',
     }
 
     const response = await axios.post(
-      'http://localhost:3000/api/login',
+      '/api/login',
       { email, password },
     )
 

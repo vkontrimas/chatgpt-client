@@ -20,7 +20,7 @@ const Auth = () => {
 
   /*
   useEffect(async () => {
-    const resp = await axios.get(`http://localhost:3000/api/register/${code}`)
+    const resp = await axios.get(`/api/register/${code}`)
     if (resp.data.status === 'expired') {
       // TODO: handle gracefully
       console.error('registration link expired!')
@@ -40,7 +40,7 @@ const Auth = () => {
     event.preventDefault()
     try {
       const resp = await axios.post(
-        `http://localhost:3000/api/register/${code}`,
+        `/api/register/${code}`,
         { name, email, password }
       )
       dispatch(login({ email, password }))
