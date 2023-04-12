@@ -15,7 +15,7 @@ if (ENVIRONMENT !== 'test') {
   const morgan = require('morgan')
   app.use(morgan('tiny'))
 }
-if (ENVIRONMENT === 'development' || environment === 'test') {
+if (ENVIRONMENT === 'development' || ENVIRONMENT === 'test') {
   const cors = require('cors')
   app.use(cors())
 }
