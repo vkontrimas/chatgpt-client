@@ -19,7 +19,6 @@ const SessionExpiryProvider = ({ children }) => {
 
     const now = Date.now()
     const timeUntilExpiryMs = (token.expiry * 1000) - now
-    console.log(token, 'new timer', timeUntilExpiryMs)
     const newTimerId = setTimeout(() => {
       dispatch(logout(Session.expired))
     }, timeUntilExpiryMs - 200)
