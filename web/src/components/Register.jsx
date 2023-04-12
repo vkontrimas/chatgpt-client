@@ -4,33 +4,56 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { login } from '../redux/user'
 
-import { useNavigate, useLocation } from 'react-router'
+import { useNavigate, useLocation, useParams } from 'react-router'
 
-import './Login.css'
+import './Register.css'
 
 const Auth = () => {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()
-  const currentToken = useSelector(state => state.user.token)
+  const token = useSelector(state => state.user.token)
+  const { code } = useParams()
+
+  /*
+  useEffect(async () => {
+    const resp = await axios.get(`http://localhost:3000/api/register/${code}`)
+    if (resp.data.status === 'expired') {
+      // TODO: handle gracefully
+      console.error('registration link expired!')
+    }
+  }, [])
+  */
 
   useEffect(() => {
     // If logged in, go to chat
-    if (currentToken) {
+    if (token) {
       const destination = location.state?.from?.pathname || '/'
       navigate(destination, { replace: true })
     }
-  }, [currentToken])
+  }, [token])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    dispatch(login({ email, password }))
+    try {
+      const resp = await axios.post(`http://localhost:3000/api/register/${code}`)
+      dispatch(login({ email, password }))
+    }
+    catch (e) {
+      throw e
+    }
   }
 
   return (
     <form className="auth-form" onSubmit={handleSubmit}>
+      <input
+        placeholder="name"
+        value={name}
+        onChange={e => setName(e.target.value)}
+      />
       <input
         placeholder="email"
         value={email}
@@ -41,7 +64,7 @@ const Auth = () => {
         type="password"
         onChange={e => setPassword(e.target.value)}
       />
-      <button type="submit"> Login </button>
+      <button type="submit"> Register </button>
     </form>
   )
 }
