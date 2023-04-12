@@ -40,22 +40,16 @@ const createOpenAIApi = () => {
 
 const api = createOpenAIApi()
 
-const getCompletion = async (messages) => {
-  try {
-    const completion = await api.createChatCompletion({
-      model: "gpt-3.5-turbo",
-      messages: messages.map(({ type, content }) => ({
-        role: type,
-        content,
-      }))
-    })
-    return completion.data
-  }
-  catch (e) {
-    console.error('OpenAI request error:', e.name, '\n', e.message, '\nStatus:', e.response.statusText)
-    throw e
-  }
-
+const getCompletion = async (messages, userId) => {
+  const completion = await api.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: messages.map(({ type, content }) => ({
+      role: type,
+      content,
+    })),
+    user: userId,
+  })
+  return completion.data
 }
 
 module.exports = {

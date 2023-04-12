@@ -68,7 +68,7 @@ messageRouter.post('/', async (request, response) => {
     const messagesJson = messages.map((message) => ({
       type: message.type, content: message.content
     }))
-    const completion = await getCompletion(messagesJson)
+    const completion = await getCompletion(messagesJson, user.id)
     const choice = completion?.choices[0]?.message
 
     const assistantReply = await user.createMessage({
