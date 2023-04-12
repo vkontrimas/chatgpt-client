@@ -1,6 +1,8 @@
+const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
+const { User } = require('../../db/db')
 const { MessageType } = require('../../db/message')
 const { initialUsers, wipeDB, initializeDB, fetchUserMessages } = require('../db_helper')
 
@@ -21,6 +23,21 @@ describe(`API ${ENDPOINT}`, () => {
   test('GET - no bearer - 401 - unauthorised', async () => {
     const response = await api
       .get(ENDPOINT)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('unauthorized')
+  })
+
+  test('GET - bearer for non-existing user - 401 - unauthorised', async () => {
+    const user = initialUsers[1]
+    const token = await bearerToken(user)
+    const dbUser = await User.findByPk(user.id)
+    await dbUser.destroy()
+
+    const response = await api
+      .get(ENDPOINT)
+      .set('Authorization', token)
       .expect(401)
       .expect('Content-Type', /application\/json/)
 
@@ -49,6 +66,27 @@ describe(`API ${ENDPOINT}`, () => {
     const response = await api
       .post(ENDPOINT)
       .send(newMessage)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toContain('unauthorized')
+  })
+
+  test('POST - bearer for non-existing user - 401 - unauthorized', async () => {
+    const user = initialUsers[1]
+    const token = await bearerToken(user)
+    const dbUser = await User.findByPk(user.id)
+    await dbUser.destroy()
+
+    const newMessage = {
+      type: MessageType.USER,
+      content: 'foo',
+    }
+
+    const response = await api
+      .post(ENDPOINT)
+      .send(newMessage)
+      .set('Authorization', token)
       .expect(401)
       .expect('Content-Type', /application\/json/)
 

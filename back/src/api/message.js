@@ -13,8 +13,13 @@ messageRouter.get('/', async (request, response) => {
       .status(401)
       .json({ error: 'unauthorized' })
   }
-
   const user = await User.findByPk(token.id)
+  if (!user) {
+    return response
+      .status(401)
+      .json({ error: 'unauthorized' })
+  }
+
   const messages = await user.getMessages()
   const messagesJson = messages.map(message => ({
     type: message.type,
@@ -31,6 +36,13 @@ messageRouter.post('/', async (request, response) => {
       .json({ error: 'unauthorized' })
   }
 
+  const user = await User.findByPk(token.id)
+  if (!user) {
+    return response
+      .status(401)
+      .json({ error: 'unauthorized' })
+  }
+
   if (!request.body) {
     return response.status(400).json({ error: 'no body' })
   }
@@ -39,8 +51,6 @@ messageRouter.post('/', async (request, response) => {
   if (!type) {
     return response.status(400).json({ error: 'type missing' })
   }
-
-  const user = await User.findByPk(token.id)
 
   if (type === MessageType.USER) {
     if (!content) {
