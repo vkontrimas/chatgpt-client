@@ -1,14 +1,39 @@
 const { Sequelize } = require('sequelize')
-const { DB_PATH, DB_LOG } = require('../config')
+const { getEnvironmentDBPath, DB_LOG, ENVIRONMENT } = require('../config')
 
 const initializeUser = require('./user')
 const { initializeMessage, MessageType } = require('./message')
 const initializeRegistrationCode = require('./registration_code')
 
+const initializePostgres = () => {
+  console.log('Using Postgres')
+  return new Sequelize(
+    getEnvironmentDBPath(),
+    {
+      logging: DB_LOG ? console.log : null,
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        }
+      }
+    }
+  )
+}
+
+const initializeSqlite = () => {
+  console.log('Using sqlite')
+  return new Sequelize(
+    getEnvironmentDBPath(),
+    { logging: DB_LOG ? console.log : null, }
+  )
+}
+
+
 const initializeDb = () => {
-  const sequelize = new Sequelize(DB_PATH, {
-    logging: DB_LOG ? console.log : null,
-  })
+  const sequelize = ENVIRONMENT === 'production' 
+    ? initializePostgres()
+    : initializeSqlite()
 
   const User = initializeUser(sequelize)
   const Message = initializeMessage(sequelize)
