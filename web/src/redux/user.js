@@ -29,6 +29,8 @@ const initialState = () => {
   const localToken = localStorage.getItem(LOCAL_STORAGE_KEY)
 
   return {
+    id: null,
+    name: null,
     session: localToken ? Session.active : Session.inactive,
     sessionMessage: '',
     token: localToken ? tokenState(localToken) : null,
@@ -47,8 +49,10 @@ export const login = createAsyncThunk('user/login',
       { email, password },
     )
 
-    const { token } = response.data
-    return tokenState(token)
+    return {
+      ...response.data,
+      token: tokenState(response.data.token),
+    }
   }
 )
 
@@ -57,9 +61,12 @@ const loginPendingReducer = (state) => {
 }
 
 const loginFulfilledReducer = (state, action) => {
+  const { id, name, token } = action.payload
+  state.id = id
+  state.name = name
+  state.token = token
   state.session = Session.active
-  state.token = action.payload
-  localStorage.setItem(LOCAL_STORAGE_KEY, action.payload.token)
+  localStorage.setItem(LOCAL_STORAGE_KEY, token.token)
 }
 
 const loginRejectedReducer = () => {
