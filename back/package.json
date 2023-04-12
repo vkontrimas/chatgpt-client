@@ -7,7 +7,6 @@
   "scripts": {
     "test": "NODE_ENV=test jest --verbose",
     "dev": "NODE_ENV=development nodemon src/main.js",
-
     "sqlite": "sqlite3 -header -column",
     "create-user": "node src/scripts/create_user.js"
   },
@@ -23,7 +22,8 @@
     "morgan": "^1.10.0",
     "openai": "^3.2.1",
     "sequelize": "^6.30.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "jest": "^29.5.0",
