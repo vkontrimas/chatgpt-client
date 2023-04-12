@@ -12,11 +12,6 @@ const Authorized = ({ children }) => {
     return <Navigate to='/login' replace state={{ from: location }}/>
   }
 
-  const now = Date.now() / 1000.0
-  if (currentToken.expiry <= now) {
-    dispatch(logout())
-  }
-
   return children
 }
 
