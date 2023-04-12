@@ -11,6 +11,12 @@
   justify-content: space-between;
 }
 
+@media screen and (max-width: 1000px) {
+  .sidebar {
+    display: none;
+  }
+}
+
 .sidebar-chats {
   width: 18em;
 }
