@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.0",
     "morgan": "^1.10.0",
     "openai": "^3.2.1",
+    "pg": "^8.10.0",
     "sequelize": "^6.30.0",
     "sqlite3": "^5.1.6",
     "uuid": "^9.0.0"
