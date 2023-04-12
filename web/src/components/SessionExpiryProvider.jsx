@@ -10,10 +10,12 @@ const SessionExpiryProvider = ({ children }) => {
   const dispatch = useDispatch()
 
   useEffect(() => {
+    if (timerId !== null) {
+      clearTimeout(timerId)
+      setTimerId(null)
+    }
+
     if (!token) { 
-      if (timerId !== null) {
-        clearTimeout(timerId)
-      }
       return
     }
 
