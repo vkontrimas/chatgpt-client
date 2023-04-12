@@ -47,7 +47,7 @@ const getCompletion = async (messages, userId) => {
       role: type,
       content,
     })),
-    user: userId,
+    // user: userId,
   })
   return completion.data
 }
