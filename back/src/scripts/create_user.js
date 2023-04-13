@@ -1,7 +1,7 @@
 const inquirer = require('inquirer')
 const bcrypt = require('bcrypt')
 
-const { User } = require('../db/db')
+const { sequelize, User } = require('../db/db')
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const run = async () => {
@@ -39,6 +39,8 @@ const run = async () => {
       throw error
     }
   }
+
+  await sequelize.close()
 }
 
 run()

@@ -1,7 +1,7 @@
 const inquirer = require('inquirer')
 const bcrypt = require('bcrypt')
 
-const { RegistrationCode } = require('../db/db')
+const { sequelize, RegistrationCode } = require('../db/db')
 const { ENVIRONMENT } = require('../config')
 
 const run = async () => {
@@ -31,6 +31,8 @@ const run = async () => {
     : 'http://localhost:5173/register'
 
   console.log('\nCreated code: \n\n    ', `${urlPrefix}/${code.id}\n`)
+
+  await sequelize.close()
 }
 
 run()
