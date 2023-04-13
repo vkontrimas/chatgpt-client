@@ -8,3 +8,4 @@
 [] Refetch user info from DB in case it changed!
 [] Handle login expiry when sleeping
 [] Parallelise tests 
+[] Set up prod db creds for new db module
