@@ -4,7 +4,7 @@ const api = supertest(require('../../app'))
 
 const { User, Message } = require('../../db/db')
 const { MessageType } = require('../../db/message')
-const { initialUsers, wipeDB, initializeDB, fetchUserMessages } = require('../db_helper')
+const { initialUsers, initializeDB, fetchUserMessages } = require('../db_helper')
 
 const ENDPOINT = '/api/message'
 
@@ -17,7 +17,6 @@ const bearerToken = async ({email, password}) => {
 
 describe(`API ${ENDPOINT}`, () => {
   beforeEach(async () => {
-    await wipeDB()
     await initializeDB()
   })
   test('GET - no bearer - 401 - unauthorised', async () => {

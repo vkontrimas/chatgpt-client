@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid')
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
-const { initializeDB, wipeDB, modelUser, initialUsers, fetchAllUsers } = require('../db_helper')
+const { initializeDB, modelUser, initialUsers, fetchAllUsers } = require('../db_helper')
 const { RegistrationCode } = require('../../db/db')
 
 const ENDPOINT = '/api/register'
@@ -21,7 +21,6 @@ const fakeId = async () => {
 
 describe(`API ${ENDPOINT}`, () => {
   beforeEach(async () => {
-    await wipeDB()
     await initializeDB()
   })
 

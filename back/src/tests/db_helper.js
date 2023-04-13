@@ -72,8 +72,10 @@ const fetchUserMessages = async (id) => {
 }
 
 const initializeDB = async () => {
-  await sequelize.drop()
   await sequelize.sync()
+  await sequelize.truncate({
+    cascade: true,
+  })
 
   for (const user of initialUsers) {
     const newUser = await User.create({
@@ -93,15 +95,10 @@ const initializeDB = async () => {
   }
 }
 
-const wipeDB = async () => {
-  await sequelize.drop()
-}
-
 module.exports = {
   modelUser,
   initialUsers,
   fetchAllUsers,
   initializeDB,
-  wipeDB,
   fetchUserMessages,
 }

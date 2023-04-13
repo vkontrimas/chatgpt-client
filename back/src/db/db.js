@@ -40,7 +40,7 @@ const initializeDb = () => {
   User.belongsToMany(RegistrationCode, { through: registrationCodeJunctionTable })
   RegistrationCode.belongsToMany(User, { through: registrationCodeJunctionTable })
 
-  sequelize.sync() // TODO: remove this
+  // sequelize.sync()
 
   return {
     sequelize,

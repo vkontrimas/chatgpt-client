@@ -7,13 +7,11 @@ const {
   modelUser,
   initialUsers,
   initializeDB,
-  wipeDB,
   fetchAllUsers,
 } = require('../db_helper')
 
 describe(`API ${ENDPOINT}`, () => {
   beforeEach(async () => {
-    await wipeDB()
     await initializeDB()
   })
 
