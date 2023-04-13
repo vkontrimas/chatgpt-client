@@ -1,7 +1,7 @@
 const { initializeDB } = require('./db_helper')
 const { User } = require('db')
 
-const { createUser } = require('../users')
+const { createUser, verifyUser } = require('../users')
 
 beforeEach(async () => {
   await initializeDB()
@@ -99,3 +99,60 @@ describe('createUser', () => {
       .rejects.toMatch('no password')
   })
 })
+
+describe('verifyUser', () => {
+  test('throws if no password', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    await createUser(user)
+    await expect(verifyUser({ email: user.email, })).rejects.toMatch('no password')
+    await expect(verifyUser({ email: user.email, password: '' })).rejects.toMatch('no password')
+  })
+
+  test('throws if no email', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    await createUser(user)
+    await expect(verifyUser({ password: user.password })).rejects.toMatch('no email')
+    await expect(verifyUser({ email: '', password: user.password })).rejects.toMatch('no email')
+  })
+
+  test('throws if user doesnt exist', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    await expect(verifyUser({ email: user.email, password: user.password })).rejects.toMatch('not found')
+  })
+
+  test('throws if password incorrect', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    const model = await createUser(user)
+    await expect(verifyUser({ email: user.email, password: 'wrongpassword' })).rejects.toMatch('wrong password')
+  })
+
+  test('returns user if found', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+
+    const expected = await createUser(user)
+    const result = await verifyUser({ email: user.email, password: user.password })
+
+    expect(result.toJSON()).toMatchObject(expected.toJSON())
+  })
+})
+

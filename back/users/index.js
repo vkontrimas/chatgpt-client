@@ -32,6 +32,25 @@ const createUser = async (user) => {
   }
 }
 
+const verifyUser = async (user) => {
+  if (!user.email) { throw 'no email' }
+  if (!user.password) { throw 'no password' }
+
+  const model = await User.findOne({
+    where: {
+      email: user.email,
+    }
+  })
+
+  if (!model) { throw 'not found' }
+
+  const passwordCorrect = await bcrypt.compare(user.password, model.passwordHash)
+  if (!passwordCorrect) { throw 'wrong password' }
+
+  return model
+}
+
 module.exports = {
   createUser,
+  verifyUser,
 }
