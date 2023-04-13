@@ -6,7 +6,7 @@ module.exports = {
     password: 'huddle',
     database: 'huddle_dev',
     host: 'localhost',
-    port: 5432,
+    port: 3003,
     dialect: 'postgres',
   },
   test: {
@@ -14,7 +14,7 @@ module.exports = {
     password: 'huddle',
     database: 'huddle_test',
     host: 'localhost',
-    port: 5432,
+    port: 3003,
     dialect: 'postgres',
   },
   production: {
