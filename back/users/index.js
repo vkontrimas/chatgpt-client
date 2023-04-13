@@ -52,7 +52,7 @@ const createSessionToken = async (user) => {
     email: model.email,
     id: model.id,
   }
-  const token = jwt.sign(payload, SESSION_TOKEN_SECRET)
+  const token = jwt.sign(payload, SESSION_TOKEN_SECRET, { expiresIn: '2d' })
 
   return [token, model]
 }
