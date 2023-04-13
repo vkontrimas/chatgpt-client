@@ -6,7 +6,7 @@
   "main": "main.js",
   "scripts": {
     "start": "NODE_ENV=production node src/main.js",
-    "test": "NODE_ENV=test jest --verbose",
+    "test": "NODE_ENV=test jest --verbose --runInBand",
     "dev": "NODE_ENV=development nodemon src/main.js",
     "sqlite": "sqlite3 -header -column",
     "create-user": "node src/scripts/create_user.js",
