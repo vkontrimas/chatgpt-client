@@ -1,30 +1,13 @@
 const { Sequelize } = require('sequelize')
-const { getEnvironmentDBPath, DB_LOG, ENVIRONMENT } = require('../config')
+const { getDBConfig } = require('../config')
 
 const initializeUser = require('./user')
 const { initializeMessage, MessageType } = require('./message')
 const initializeRegistrationCode = require('./registration_code')
 
-const connectProd = () => new Sequelize(
-  getEnvironmentDBPath(), 
-  {
-    logging: DB_LOG ? console.log : null,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      }
-    }
-  }
-)
-
-const connectLocal = () => new Sequelize(
-  getEnvironmentDBPath(), 
-  { logging: DB_LOG ? console.log : null, }
-)
-
 const initializeDb = () => {
-  const sequelize = ENVIRONMENT === 'production' ? connectProd() : connectLocal()
+  const config = getDBConfig()
+  const sequelize = new Sequelize(config.url, config)
   const User = initializeUser(sequelize)
   const Message = initializeMessage(sequelize)
 
