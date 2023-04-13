@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      models.Chat.hasMany(Message)
+      Message.belongsTo(models.Chat)
     }
   }
   Message.init({
