@@ -27,14 +27,14 @@ const DB_CONFIG = {
     },
   },
   development: {
-    url: 'postgres://huddle:huddle@localhost:3003/huddle_development',
+    url: 'postgres://postgres:huddle@localhost:3003/huddle_dev',
     logging: DB_LOG ? console.log : null,
     pool: {
       idle: 1000
     }
   },
   test: {
-    url: 'postgres://huddle:huddle@localhost:3003/huddle_test',
+    url: 'postgres://postgres:huddle@localhost:3003/postgres',
     logging: DB_LOG ? console.log : null,
     pool: {
       idle: 1000,
