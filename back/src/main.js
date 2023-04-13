@@ -1,4 +1,7 @@
 const app = require('./app')
 const { PORT } = require('./config')
+const { sequelize } = require('./db/db')
 
-app.listen(PORT, () => { console.log(`Server listening on ${PORT}`)})
+sequelize.sync().then(() => {
+  app.listen(PORT, () => { console.log(`Server listening on ${PORT}`)})
+})
