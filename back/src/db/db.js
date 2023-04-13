@@ -5,8 +5,9 @@ const initializeUser = require('./user')
 const { initializeMessage, MessageType } = require('./message')
 const initializeRegistrationCode = require('./registration_code')
 
-const initializeDb = () => {
-  const sequelize = new Sequelize(getEnvironmentDBPath(), {
+const connectProd = () => new Sequelize(
+  getEnvironmentDBPath(), 
+  {
     logging: DB_LOG ? console.log : null,
     dialectOptions: {
       ssl: {
@@ -14,8 +15,16 @@ const initializeDb = () => {
         rejectUnauthorized: false,
       }
     }
-  })
+  }
+)
 
+const connectLocal = () => new Sequelize(
+  getEnvironmentDBPath(), 
+  { logging: DB_LOG ? console.log : null, }
+)
+
+const initializeDb = () => {
+  const sequelize = ENVIRONMENT === 'production' ? connectProd() : connectLocal()
   const User = initializeUser(sequelize)
   const Message = initializeMessage(sequelize)
 

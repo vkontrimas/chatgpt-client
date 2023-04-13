@@ -16,8 +16,10 @@ const LOGIN_TOKEN_SECRET = required('HUDDLE_LOGIN_TOKEN_SECRET')
 
 const DB_PATH = {
   production: process.env.DATABASE_URL,
-  development: 'sqlite:db.sqlite',
-  test: 'sqlite::memory:',
+  // development: 'sqlite:db.sqlite',
+  // test: 'sqlite::memory:',
+  development: 'postgres://huddle:huddle@localhost:3003/huddle_development',
+  test: 'postgres://huddle:huddle@localhost:3003/huddle_test',
 }
 
 const getEnvironmentDBPath = () => DB_PATH[ENVIRONMENT]
