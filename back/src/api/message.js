@@ -56,10 +56,10 @@ messageRouter.post('/', async (request, response) => {
   }
 
   if (type === MessageType.USER) {
+    console.log('GENERATE MESSAGE FOR USER')
     if (!content) {
       return response.status(400).json({ error: 'content missing' })
     }
-
     const message = await user.createMessage({ type, content })
     return response.status(201).json({
       id: message.id,
@@ -67,6 +67,7 @@ messageRouter.post('/', async (request, response) => {
       content: message.content,
     })
   } else if (type === MessageType.ASSISTANT) {
+    console.log('GENERATE MESSAGE FOR ASSISTANT')
     const messages = await Message.findAll({
       where: {
         UserId: user.id,
