@@ -6,4 +6,4 @@ if [[ "$1" == "test" ]]; then
 fi
 
 echo "Connecting to $database database"
-psql -U huddle -d "huddle_$database" -h localhost -p 3003
+psql -U postgres -d "huddle_$database" -h localhost -p 3003

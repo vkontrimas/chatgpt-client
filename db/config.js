@@ -2,7 +2,7 @@ const fs = require('fs');
 
 module.exports = {
   development: {
-    username: 'huddle',
+    username: 'postgres',
     password: 'huddle',
     database: 'huddle_dev',
     host: 'localhost',
@@ -10,7 +10,7 @@ module.exports = {
     dialect: 'postgres',
   },
   test: {
-    username: 'huddle',
+    username: 'postgres',
     password: 'huddle',
     database: 'huddle_test',
     host: 'localhost',

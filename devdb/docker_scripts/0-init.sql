@@ -1,1 +1,0 @@
-CREATE USER huddle WITH PASSWORD 'huddle';
