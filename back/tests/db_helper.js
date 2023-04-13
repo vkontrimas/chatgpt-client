@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt')
+const uuid = require('uuid')
 
 const { sequelize, User, Message, RegistrationCode } = require('db')
 
@@ -79,12 +80,14 @@ const initializeDB = async () => {
 
   for (const user of initialUsers) {
     const newUser = await User.create({
+      id: uuid.v4(),
       name: user.name,
       email: user.email,
       passwordHash: await bcrypt.hash(user.password, PASSWORD_HASH_ROUNDS),
     })
     user.id = newUser.id
 
+    /*
     for (const message of user.messages) {
       const newMessage = await Message.create({
         ...message,
@@ -92,6 +95,7 @@ const initializeDB = async () => {
       })
       message.id = newMessage.id
     }
+    */
   }
 }
 
