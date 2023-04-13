@@ -2,9 +2,9 @@ const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
-const { User, Message } = require('../../db/db')
-const { MessageType } = require('../../db/message')
-const { initialUsers, initializeDB, fetchUserMessages } = require('../db_helper')
+const { User, Message } = require('db')
+const MessageType = require('../../chat/message_type')
+const { initialUsers, initializeDB } = require('../db_helper')
 
 const ENDPOINT = '/api/message'
 
@@ -110,7 +110,8 @@ describe(`API ${ENDPOINT}`, () => {
 
     expect(response.body.error).toContain('content missing')
 
-    const messagesAfter = await fetchUserMessages(user.id)
+    const dbUser = await User.findByPk(user.id)
+    const messagesAfter = dbUser.getMessages()
     expect(user.messages.length).toBe(messagesAfter.length)
   })
 

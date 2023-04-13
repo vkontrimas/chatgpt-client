@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt')
 const usersRouter = require('express').Router()
 
-const { User } = require('../db/db')
+const { User } = require('db')
 const { ENVIRONMENT, PASSWORD_HASH_ROUNDS } = require('../config')
 
 if (ENVIRONMENT === 'development' || ENVIRONMENT === 'test') {

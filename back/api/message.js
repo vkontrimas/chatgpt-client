@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken')
 const messageRouter = require('express').Router()
 
-const { User, Message } = require('../db/db')
-const { MessageType } = require('../db/message')
+const { User, Message } = require('db')
+const MessageType = require('../chat/message_type')
 const { LOGIN_TOKEN_SECRET } = require('../config')
 const { getCompletion } = require('../openai/openai')
 

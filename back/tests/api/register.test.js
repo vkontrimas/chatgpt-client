@@ -3,7 +3,7 @@ const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
 const { initializeDB, modelUser, initialUsers, fetchAllUsers } = require('../db_helper')
-const { RegistrationCode } = require('../../db/db')
+const { RegistrationCode } = require('db')
 
 const ENDPOINT = '/api/register'
 const endpoint = (id) => `${ENDPOINT}/${id}`

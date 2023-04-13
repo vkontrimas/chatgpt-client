@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt')
 const registerRouter = require('express').Router()
 
 const { PASSWORD_HASH_ROUNDS } = require('../config')
-const { sequelize, User, RegistrationCode } = require('../db/db')
+const { sequelize, User, RegistrationCode } = require('db')
 
 registerRouter.get('/:id', async (request, response) => {
   const code = await RegistrationCode.findByPk(request.params.id)
