@@ -1,0 +1,18 @@
+{
+  "name": "huddle-database",
+  "version": "1.0.0",
+  "description": "Database module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vytautas Kontrimas",
+  "dependencies": {
+    "pq": "^0.0.3",
+    "sequelize": "^6.31.0",
+    "sqlite3": "^5.1.6"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.6.0"
+  }
+}
