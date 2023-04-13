@@ -1,8 +1,8 @@
 #!/bin/bash
 
-database='development'
-if [[ "$1" == "test" ]]; then
-  database='test'
+database='dev'
+if [[ -n "$1" ]]; then
+  database="$1"
 fi
 
 echo "Connecting to $database database"
