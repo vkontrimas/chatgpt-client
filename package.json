@@ -3,8 +3,8 @@
     "build-frontend": "cd web && npm run build -- --outDir '../back/public'",
     "heroku-prebuild": "./scripts/build_prod.sh",
     "start": "cd back && npm start",
-    "dev-db": "docker compose -f dev-db.yml up",
-    "wipe-dev-db": "docker compose -f dev-db.yml down -v",
-    "dev-psql": "psql -U huddle -d $1 -h localhost -p 3003"
+    "devdb": "docker compose -f devdb/docker_compose.yml up",
+    "wipe-devdb": "docker compose -f devdb/docker_compose.yml down -v",
+    "psql": "./devdb/run_psql.sh"
   }
 }
