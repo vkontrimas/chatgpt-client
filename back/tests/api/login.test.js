@@ -52,7 +52,7 @@ describe(`API ${ENDPOINT}`, () => {
       .expect(401)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.error).toMatch(/incorrect credentials/)
+    expect(response.body.error).toMatch(/unauthorized/)
   })
 
   test('POST - wrong password - 401 error', async () => {
@@ -66,7 +66,7 @@ describe(`API ${ENDPOINT}`, () => {
       .expect(401)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.error).toMatch(/incorrect credentials/)
+    expect(response.body.error).toMatch(/unauthorized/)
   })
 
   test('POST - valid email and password - 200 get token', async () => {

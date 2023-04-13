@@ -42,7 +42,7 @@ const verifyUser = async (user) => {
     }
   })
 
-  if (!model) { throw 'not found' }
+  if (!model) { throw 'user not found' }
 
   const passwordCorrect = await bcrypt.compare(user.password, model.passwordHash)
   if (!passwordCorrect) { throw 'wrong password' }

@@ -4,41 +4,16 @@ const loginRouter = require('express').Router()
 
 const { LOGIN_TOKEN_SECRET } = require('../config')
 const { User } = require('db')
+const { verifyUser } = require('../users')
 
 const INVALID_CREDENTIALS_ERROR = 'incorrect credentials'
 
 loginRouter.post('/', async (request, response) => {
-  const credentials = request.body
-
-  if (!credentials.email) {
-    return response.status(400).json({ error: 'no email' })
-  }
-
-  if (!credentials.password) {
-    return response.status(400).json({ error: 'no password' })
-  }
-
-  const queryResults = await User.findAll({
-    attributes: [ 'id', 'name', 'passwordHash' ],
-    where: { email: credentials.email, },
-  })
-
-  if (queryResults.length === 0) {
-    return response.status(401).json({ error: INVALID_CREDENTIALS_ERROR })
-  }
-  else if (queryResults > 1) {
-    throw 'more than one user fetched via email' 
-  }
-
-  const [user] = queryResults
-  const passwordCorrect = await bcrypt.compare(credentials.password, user.passwordHash)
-  if (!passwordCorrect) {
-    return response.status(401).json({ error: INVALID_CREDENTIALS_ERROR })
-  }
+  const model = await verifyUser(request.body)
 
   const tokenData = {
-    id: user.id,
-    email: credentials.email,
+    id: model.id,
+    email: model.email,
   }
   const token = jwt.sign(
     tokenData,
@@ -47,8 +22,8 @@ loginRouter.post('/', async (request, response) => {
   )
 
   response.status(200).json({
-    name: user.name,
-    email: credentials.email,
+    name: model.name,
+    email: model.email,
     token,
   })
 })
