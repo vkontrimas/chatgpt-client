@@ -4,7 +4,7 @@ const uuid = require('uuid')
 const { sequelize, User, Message, RegistrationCode } = require('db')
 
 const MessageType = require('../chat/message_type.js')
-const { PASSWORD_HASH_ROUNDS } = require('../config')
+const { PASSWORD_SALT_ROUNDS } = require('../config')
 
 const modelUser = () => ({
   name: 'Eve',
@@ -83,7 +83,7 @@ const initializeDB = async () => {
       id: uuid.v4(),
       name: user.name,
       email: user.email,
-      passwordHash: await bcrypt.hash(user.password, PASSWORD_HASH_ROUNDS),
+      passwordHash: await bcrypt.hash(user.password, PASSWORD_SALT_ROUNDS),
     })
     user.id = newUser.id
 

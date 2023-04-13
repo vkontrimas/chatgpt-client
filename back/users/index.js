@@ -1,8 +1,9 @@
+const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 const { User } = require('db')
 
-const PASSWORD_SALT_ROUNDS = 10
+const { PASSWORD_SALT_ROUNDS, SESSION_TOKEN_SECRET } = require('../config')
 
 const createUser = async (user) => {
   if (!user.email) { throw 'no email' }
@@ -32,7 +33,7 @@ const createUser = async (user) => {
   }
 }
 
-const verifyUser = async (user) => {
+const createSessionToken = async (user) => {
   if (!user.email) { throw 'no email' }
   if (!user.password) { throw 'no password' }
 
@@ -47,10 +48,16 @@ const verifyUser = async (user) => {
   const passwordCorrect = await bcrypt.compare(user.password, model.passwordHash)
   if (!passwordCorrect) { throw 'wrong password' }
 
-  return model
+  const payload = {
+    email: model.email,
+    id: model.id,
+  }
+  const token = jwt.sign(payload, SESSION_TOKEN_SECRET)
+
+  return [token, model]
 }
 
 module.exports = {
   createUser,
-  verifyUser,
+  createSessionToken,
 }

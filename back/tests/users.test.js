@@ -1,7 +1,8 @@
+const jwt = require('jsonwebtoken')
 const { initializeDB } = require('./db_helper')
 const { User } = require('db')
 
-const { createUser, verifyUser } = require('../users')
+const { createUser, createSessionToken } = require('../users')
 
 beforeEach(async () => {
   await initializeDB()
@@ -100,7 +101,7 @@ describe('createUser', () => {
   })
 })
 
-describe('verifyUser', () => {
+describe('createSessionToken', () => {
   test('throws if no password', async () => {
     const user = {
       name: 'David',
@@ -108,8 +109,8 @@ describe('verifyUser', () => {
       password: 'davidboy28183',
     }
     await createUser(user)
-    await expect(verifyUser({ email: user.email, })).rejects.toMatch('no password')
-    await expect(verifyUser({ email: user.email, password: '' })).rejects.toMatch('no password')
+    await expect(createSessionToken({ email: user.email, })).rejects.toMatch('no password')
+    await expect(createSessionToken({ email: user.email, password: '' })).rejects.toMatch('no password')
   })
 
   test('throws if no email', async () => {
@@ -119,8 +120,8 @@ describe('verifyUser', () => {
       password: 'davidboy28183',
     }
     await createUser(user)
-    await expect(verifyUser({ password: user.password })).rejects.toMatch('no email')
-    await expect(verifyUser({ email: '', password: user.password })).rejects.toMatch('no email')
+    await expect(createSessionToken({ password: user.password })).rejects.toMatch('no email')
+    await expect(createSessionToken({ email: '', password: user.password })).rejects.toMatch('no email')
   })
 
   test('throws if user doesnt exist', async () => {
@@ -129,7 +130,7 @@ describe('verifyUser', () => {
       email: 'david@example.com',
       password: 'davidboy28183',
     }
-    await expect(verifyUser({ email: user.email, password: user.password })).rejects.toMatch('not found')
+    await expect(createSessionToken({ email: user.email, password: user.password })).rejects.toMatch('not found')
   })
 
   test('throws if password incorrect', async () => {
@@ -139,20 +140,21 @@ describe('verifyUser', () => {
       password: 'davidboy28183',
     }
     const model = await createUser(user)
-    await expect(verifyUser({ email: user.email, password: 'wrongpassword' })).rejects.toMatch('wrong password')
+    await expect(createSessionToken({ email: user.email, password: 'wrongpassword' })).rejects.toMatch('wrong password')
   })
 
-  test('returns user if found', async () => {
+  test('returns a token and user if valid credentials', async () => {
     const user = {
       name: 'David',
       email: 'david@example.com',
       password: 'davidboy28183',
     }
 
-    const expected = await createUser(user)
-    const result = await verifyUser({ email: user.email, password: user.password })
-
-    expect(result.toJSON()).toMatchObject(expected.toJSON())
+    const userModel = await createUser(user)
+    const [token, resultModel] = await createSessionToken({ email: user.email, password: user.password })
+    expect(typeof token).toBe('string')
+    expect(token.length > 0).toBe(true)
+    expect(resultModel.toJSON()).toMatchObject(userModel.toJSON())
   })
 })
 

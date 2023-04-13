@@ -12,9 +12,9 @@ const PORT = process.env.PORT || 3000
 const ENVIRONMENT = process.env.NODE_ENV || "development"
 const OPENAI_API_KEY = process.env.HUDDLE_OPENAI_API_KEY
 const OPENAI_FAKE_MESSAGES = process.env.HUDDLE_OPENAI_FAKE_MESSAGES
-const LOGIN_TOKEN_SECRET = required('HUDDLE_LOGIN_TOKEN_SECRET')
+const SESSION_TOKEN_SECRET = required('HUDDLE_LOGIN_TOKEN_SECRET')
 const DB_LOG = process.env.HUDDLE_DB_LOG || false
-const PASSWORD_HASH_ROUNDS = 10
+const PASSWORD_SALT_ROUNDS = 10
 const DB_CONFIG = {
   production: {
     url: process.env.DATABASE_URL,
@@ -49,7 +49,7 @@ module.exports = {
   ENVIRONMENT,
   OPENAI_API_KEY,
   OPENAI_FAKE_MESSAGES,
-  PASSWORD_HASH_ROUNDS,
-  LOGIN_TOKEN_SECRET,
+  PASSWORD_SALT_ROUNDS,
+  SESSION_TOKEN_SECRET,
   getDBConfig,
 }
