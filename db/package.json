@@ -1,7 +1,7 @@
 {
-  "name": "huddle-database",
+  "name": "db",
   "version": "1.0.0",
-  "description": "Database module",
+  "description": "Huddle database module",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
