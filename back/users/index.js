@@ -57,7 +57,29 @@ const createSessionToken = async (user) => {
   return [token, model]
 }
 
+const verifySessionToken = async (token) => {
+  if (!token) { throw 'session token missing' }
+
+  try {
+    const payload = jwt.verify(token, SESSION_TOKEN_SECRET)
+    if (!payload.id) { throw 'session token invalid' }
+    const model = await User.findByPk(payload.id) 
+    if (!model) { throw 'session token invalid' }
+    return model
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      throw 'session token expired'
+    }
+    if (error.name === 'JsonWebTokenError') {
+      throw 'session token invalid'
+    }
+
+    throw error
+  }
+}
+
 module.exports = {
   createUser,
   createSessionToken,
+  verifySessionToken,
 }

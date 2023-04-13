@@ -2,7 +2,12 @@ const jwt = require('jsonwebtoken')
 const { initializeDB } = require('./db_helper')
 const { User } = require('db')
 
-const { createUser, createSessionToken } = require('../users')
+const { 
+  createUser,
+  createSessionToken,
+  verifySessionToken,
+} = require('../users')
+const { SESSION_TOKEN_SECRET } = require('../config')
 
 beforeEach(async () => {
   await initializeDB()
@@ -158,3 +163,62 @@ describe('createSessionToken', () => {
   })
 })
 
+describe('verifySessionToken', () => {
+  test('throws if token missing', async () => {
+    await expect(verifySessionToken(undefined)).rejects.toMatch('session token missing')
+    await expect(verifySessionToken(null)).rejects.toMatch('session token missing')
+  })
+
+  test('throws if token expired', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    const model = await createUser(user)
+    const expiredToken = jwt.sign({ id: model.id, email: model.email, }, SESSION_TOKEN_SECRET, { expiresIn: '2s' })
+    await new Promise((res) => setTimeout(res, 3000))
+    await expect(verifySessionToken(expiredToken)).rejects.toMatch('session token expired')
+  })
+
+  test('throws if payload missing id', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    const model = await createUser(user)
+    const tokenWithoutId = jwt.sign({ email: model.email, }, SESSION_TOKEN_SECRET, { expiresIn: '7d' })
+    await expect(verifySessionToken(tokenWithoutId)).rejects.toMatch('session token invalid')
+    const tokenWithBlankId = jwt.sign({ id: '', email: model.email, }, SESSION_TOKEN_SECRET, { expiresIn: '7d' })
+    await expect(verifySessionToken(tokenWithBlankId)).rejects.toMatch('session token invalid')
+  })
+
+  test('throws if payload id doesnt exist', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+
+    const model = await createUser(user)
+    const id = model.id
+    await model.destroy()
+
+    const tokenWithInvalidId = jwt.sign({ id, email: model.email, }, SESSION_TOKEN_SECRET, { expiresIn: '7d' })
+    await expect(verifySessionToken(tokenWithInvalidId)).rejects.toMatch('session token invalid')
+  })
+
+  test('returns user if valid', async () => {
+    const user = {
+      name: 'David',
+      email: 'david@example.com',
+      password: 'davidboy28183',
+    }
+    const expected = await createUser(user)
+    const [token] = await createSessionToken(user)
+    const result = await verifySessionToken(token)
+
+    expect(expected.toJSON()).toMatchObject(result.toJSON())
+  })
+})
