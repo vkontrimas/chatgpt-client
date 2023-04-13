@@ -8,6 +8,7 @@ module.exports = {
     host: 'localhost',
     port: 3003,
     dialect: 'postgres',
+    logging: process.env.DB_LOG ? console.log : null,
   },
   test: {
     username: 'postgres',
@@ -16,6 +17,7 @@ module.exports = {
     host: 'localhost',
     port: 3003,
     dialect: 'postgres',
+    logging: process.env.DB_LOG ? console.log : null,
   },
   production: {
     username: process.env.PROD_DB_USERNAME,
@@ -29,6 +31,7 @@ module.exports = {
         require: true,
         rejectUnauthorized: false,
       }
-    }
+    },
+    logging: process.env.DB_LOG ? console.log : null,
   }
 }
