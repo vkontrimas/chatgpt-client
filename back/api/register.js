@@ -1,6 +1,6 @@
 const registerRouter = require('express').Router()
 
-const { keyToBase64, keyFromBase64 } = require('../base64_key')
+const { idToBase64, idFromBase64 } = require('../base64_key')
 const { createUserWithRegistrationCode } = require('../registration')
 const { RegistrationCode } = require('db')
 
@@ -19,7 +19,7 @@ registerRouter.get('/:id', async (request, response) => {
 
 registerRouter.post('/:base64Key', async (request, response) => {
   const [user] = await createUserWithRegistrationCode(
-    keyFromBase64(request.params.base64Key),
+    idFromBase64(request.params.base64Key),
     request.body
   )
   response.status(201).json({

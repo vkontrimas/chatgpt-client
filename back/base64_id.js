@@ -1,16 +1,16 @@
 const uuid = require('uuid')
 
-const keyToBase64 = (id) => {
+const idToBase64 = (id) => {
   try {
     return Buffer.from(uuid.parse(id)).toString('base64url')
   } catch (error) {
     if (error.name === 'TypeError' && error.message === 'Invalid UUID') {
-      throw 'invalid key'
+      throw 'invalid id'
     }
     throw error
   }
 }
-const keyFromBase64 = (base64) => {
+const idFromBase64 = (base64) => {
   try {
     return uuid.stringify(Buffer.from(base64, 'base64url'))
   } catch (error) {
@@ -21,5 +21,5 @@ const keyFromBase64 = (base64) => {
   }
 }
 
-module.exports = { keyToBase64, keyFromBase64 }
+module.exports = { idToBase64, idFromBase64 }
 
