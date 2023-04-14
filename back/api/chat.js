@@ -1,5 +1,24 @@
 const chatRouter = require('express').Router()
 
+const { Configuration, OpenAIApi } = require('openai')
+const { OPENAI_API_KEY, } = require('../config')
+
+const config = new Configuration({
+  apiKey: OPENAI_API_KEY,
+})
+const api = new OpenAIApi(config)
+
+const getCompletion = async (messages) => {
+  const completion = await api.createChatCompletion({
+    model: "gpt-3.5-turbo",
+    messages: messages,
+    user: 'testing',
+    stream: true,
+  })
+  return completion
+}
+
+
 chatRouter.get('/test', async (request, response) => {
   response.write('{ "header": 0 }')
 
@@ -48,6 +67,17 @@ chatRouter.get('/test', async (request, response) => {
     role: 'assistant',
     index: 1,
   }))
+
+  const messages = [
+    {
+      role: 'user',
+      content: 'Hello! Please generate me a C++ hello world program!',
+    },
+  ]
+
+  const completion = await getCompletion(messages)
+  completion.data = []
+  console.log(completion)
 
   response.end()
 })

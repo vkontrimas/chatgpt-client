@@ -13,7 +13,27 @@ const Chat = () => {
   const dispatch = useDispatch()
   const scrollRef = useRef(null)
 
-  return
+  useEffect(() => {
+    const test = async () => {
+      const request = new Request('/api/chat/test', {
+        method: 'GET',
+      })
+
+      const response = await fetch(request)
+      const reader = response.body
+        .pipeThrough(new TextDecoderStream())
+        .getReader()
+
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) { break }
+        console.log(value)
+      }
+    }
+    test()
+  }, [])
+  
+  return <div></div>
 
   useEffect(() => {
     dispatch(fetchAll())
