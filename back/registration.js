@@ -38,7 +38,17 @@ const createUserWithRegistrationCode = async ({ user, codeId }) => {
   })
 }
 
+const getRegistrationCode = async (id) => {
+  if (!id) { throw 'missing registration code' }
+
+  const code = await RegistrationCode.findByPk(id)
+  if (!code) { throw 'invalid registration code' }
+
+  return code
+}
+
 module.exports = {
   createRegistrationCode,
-  createUserWithRegistrationCode
+  createUserWithRegistrationCode,
+  getRegistrationCode,
 }

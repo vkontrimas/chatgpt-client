@@ -2,6 +2,7 @@ const uuid = require('uuid')
 const {
   createRegistrationCode,
   createUserWithRegistrationCode,
+  getRegistrationCode,
 } = require('../registration')
 
 const { User, RegistrationCode } = require('db')
@@ -226,4 +227,23 @@ describe('createUserWithRegistrationCode', () => {
     expect(usesAfter.length).toBe(usesBefore.length + 1)
   })
   */
+})
+
+describe('getRegistrationCode', () => {
+  test('throws if no code', async () => {
+    await expect(getRegistrationCode()).rejects.toMatch('missing registration code')
+  })
+
+  test('throws if code invalid', async () => {
+    const code = await createRegistrationCode({ remainingUses: 1 })
+    const id = code.id
+    await code.destroy()
+    await expect(getRegistrationCode(id)).rejects.toMatch('invalid registration code')
+  })
+
+  test('returns registration code', async () => {
+    const expected = await createRegistrationCode({ remainingUses: 2, note: 'test' })
+    const got = await getRegistrationCode(expected.id)
+    expect(got.toJSON()).toMatchObject(expected.toJSON())
+  })
 })
