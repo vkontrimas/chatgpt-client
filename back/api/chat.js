@@ -1,14 +1,11 @@
+const fetch = require('node-fetch')
 const chatRouter = require('express').Router()
 
-const { Configuration, OpenAIApi } = require('openai')
 const { OPENAI_API_KEY, } = require('../config')
 
-const config = new Configuration({
-  apiKey: OPENAI_API_KEY,
-})
-const api = new OpenAIApi(config)
 
 const getCompletion = async (messages) => {
+  const api = {}
   const completion = await api.createChatCompletion({
     model: "gpt-3.5-turbo",
     messages: messages,
@@ -68,6 +65,8 @@ chatRouter.get('/test', async (request, response) => {
     index: 1,
   }))
 
+  // OPENAI
+
   const messages = [
     {
       role: 'user',
@@ -75,9 +74,43 @@ chatRouter.get('/test', async (request, response) => {
     },
   ]
 
-  const completion = await getCompletion(messages)
-  completion.data = []
-  console.log(completion)
+  const openaiRequest = {
+    model: 'gpt-3.5-turbo',
+    messages: [
+      {
+        role: 'user',
+        content: 'Hello! Please generate me a C++ hello world program!',
+      },
+    ],
+    stream: true,
+  }
+
+  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify(openaiRequest)
+  })
+
+  try {
+    for await (const chunk of resp.body) {
+      const completionDeltas = chunk
+        .toString()
+        .split('\n\n')
+        .filter(s => s.startsWith('data:'))
+        .map(s => s.replace('data: ', ''))
+        .filter(s => s !== '[DONE]')
+        .map(s => JSON.parse(s))
+
+      for (const delta of completionDeltas) {
+        writeMessage(delta)
+      }
+    }
+  } catch (error) {
+    console.log('openai resp error', error)
+  }
 
   response.end()
 })
