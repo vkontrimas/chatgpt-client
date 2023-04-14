@@ -37,7 +37,7 @@ describe(`API ${ENDPOINT}`, () => {
     const code = await createRegistrationCode({ remainingUses: 1 })
 
     const response = await api
-      .get(endpoint(code.id))
+      .get(endpoint(idToBase64(code.id)))
       .expect(200)
       .expect('Content-Type', /application\/json/)
 

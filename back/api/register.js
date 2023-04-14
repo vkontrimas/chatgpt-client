@@ -1,20 +1,29 @@
 const registerRouter = require('express').Router()
 
 const { idToBase64, idFromBase64 } = require('../base64_id')
-const { createUserWithRegistrationCode } = require('../registration')
+const { 
+  createUserWithRegistrationCode,
+  getRegistrationCode
+} = require('../registration')
 const { RegistrationCode } = require('db')
 
-registerRouter.get('/:id', async (request, response) => {
-  const code = await RegistrationCode.findByPk(request.params.id)
-  if (!code) {
-    return response.status(200).json({ status: 'expired' })
+registerRouter.get('/:base64Id', async (request, response) => {
+  try {
+    const code = await getRegistrationCode(idFromBase64(request.params.base64Id))
+    if (code.remainingUses > 0) {
+      return response.status(200).json({ status: 'valid' })
+    } else {
+      return response.status(200).json({ status: 'used' })
+    }
+  } catch (error) {
+    switch (error) {
+    case 'invalid base64 id':
+    case 'invalid registration code':
+      return response.status(404).json({ error: 'invalid registration url' })
+    default:
+        throw error
+    }
   }
-
-  if (!code.remainingUses || code.remainingUses <= 0) {
-    return response.status(200).json({ status: 'expired' })
-  }
-
-  response.status(200).json({ status: 'valid' })
 })
 
 registerRouter.post('/:base64Id', async (request, response) => {
@@ -30,7 +39,7 @@ registerRouter.post('/:base64Id', async (request, response) => {
     })
   } catch (error) {
     switch (error) {
-    case 'invalid id':
+    case 'invalid base64 id':
     case 'invalid registration code':
       return response.status(404).json({ error: 'invalid registration url' })
     case 'no registration code uses left':
