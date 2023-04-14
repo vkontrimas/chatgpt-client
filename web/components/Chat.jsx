@@ -13,6 +13,8 @@ const Chat = () => {
   const dispatch = useDispatch()
   const scrollRef = useRef(null)
 
+  return
+
   useEffect(() => {
     dispatch(fetchAll())
   }, [])
