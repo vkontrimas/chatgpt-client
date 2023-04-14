@@ -32,6 +32,6 @@ module.exports = {
 
   async down (queryInterface, Sequelize) {
     await queryInterface.removeColumn('Chats', 'UserId')
-    await queryInterface.removeColumn('Messages', 'UserId')
+    await queryInterface.removeColumn('Messages', 'ChatId')
   }
 };
