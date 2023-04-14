@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   RegistrationCode.init({
     remainingUses: DataTypes.INTEGER,
+    note: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
   }, {
     sequelize,
     modelName: 'RegistrationCode',
