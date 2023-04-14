@@ -10,11 +10,11 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      models.User.hasOne(RegistrationCodeUse)
+      /*models.User.hasOne(RegistrationCodeUse)
       RegistrationCodeUse.belongsTo(models.User)
 
       models.RegistrationCode.hasMany(RegistrationCodeUse)
-      RegistrationCodeUse.belongsTo(models.RegistrationCodeUse)
+      RegistrationCodeUse.belongsTo(models.RegistrationCodeUse)*/
     }
   }
   RegistrationCodeUse.init({
