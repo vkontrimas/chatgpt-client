@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import ReactMarkdown from 'react-markdown'
 
 import ChatMessage from './ChatMessage'
 import ChatInput from './ChatInput'
@@ -13,7 +14,11 @@ const Chat = () => {
   const dispatch = useDispatch()
   const scrollRef = useRef(null)
 
-  useEffect(() => {
+  const [testMessage, setTestMessage] = useState('')
+  const [type, setType] = useState(true)
+
+  const writeMessage = useCallback((type) => {
+    console.log('typewriter', type)
     const test = async () => {
       const request = new Request('/api/chat/test', {
         method: 'GET',
@@ -24,16 +29,61 @@ const Chat = () => {
         .pipeThrough(new TextDecoderStream())
         .getReader()
 
+      let currentMessage = ''
       while (true) {
         const { done, value } = await reader.read()
         if (done) { break }
-        console.log(value)
+
+        let start = 0
+        let end = 0
+        while (end !== value.length) {
+          const index = value.indexOf('}{', start)
+          end = index === -1 ? value.length : index + 1
+
+          const str = value.substring(start, end)
+          start = end 
+
+          const json = JSON.parse(str)
+          const content = json.choices && json.choices[0]?.delta?.content
+
+          if (content) {
+            if (type) {
+              for (const char of content) {
+                currentMessage = currentMessage.concat(char)
+                setTestMessage(currentMessage)
+                const delayMs = 10
+                await new Promise(res => setTimeout(res, delayMs))
+              }
+            }
+            else {
+              currentMessage = currentMessage.concat(content)
+              setTestMessage(currentMessage)
+            }
+          }
+        }
       }
     }
+
+    setTestMessage('')
     test()
-  }, [])
-  
-  return <div></div>
+  }, [type])
+
+  const toggleTypewriter = useCallback(() => {
+    const newType = !type
+    setType(newType)
+    writeMessage(newType)
+  }, [type, writeMessage])
+
+
+  return (
+    <div>
+      {testMessage && <div className='message assistant'>
+        <ReactMarkdown>{testMessage}</ReactMarkdown>
+      </div>}
+      <button style={{marginTop: '20px'}}onClick={toggleTypewriter}>{type ? 'disable typewriter' : 'enable typewriter'}</button>
+      <button onClick={() => writeMessage(type)}>Write message</button>
+    </div>
+  )
 
   useEffect(() => {
     dispatch(fetchAll())
