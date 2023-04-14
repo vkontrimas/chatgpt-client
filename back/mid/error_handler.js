@@ -4,8 +4,12 @@ const errorHandler = (error, request, response, next) => {
   }
   if (typeof error === 'string') {
     switch (error) {
+    case 'no name':
+      return response.status(400).json({ error: 'no name' })
     case 'no email':
       return response.status(400).json({ error: 'no email' })
+    case 'email collision':
+      return response.status(400).json({ error: 'email in use' })
     case 'no password':
       return response.status(400).json({ error: 'no password' })
     case 'user not found':
