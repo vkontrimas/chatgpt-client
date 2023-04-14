@@ -23,20 +23,6 @@ beforeEach(async () => {
 })
 
 describe('userSession middleware', () => {
-  test('no bearer throws', async () => {
-    const next = jest.fn()
-    expect(() => { userSession(mockRequest(undefined), {}, next) })
-      .toThrow('missing bearer token')
-    expect(next).not.toHaveBeenCalled()
-  })
-
-  test('invalid auth throws', async () => {
-    const next = jest.fn()
-    expect(() => { userSession(mockRequest('foozle barrrzle'), {}, next) })
-      .toThrow('missing bearer token')
-    expect(next).not.toHaveBeenCalled()
-  })
-
   test('bearer with token creates lazy loader, calls next', async () => {
     const user = {
       name: 'Roger',
@@ -115,4 +101,17 @@ describe('userSession middleware', () => {
 
     await expect(req.verifyUserSession()).rejects.toMatch('session token invalid')
   })
+
+  test('lazy loader throws for no bearer', async () => {
+    const req = mockRequest(undefined)
+    userSession(req, {}, () => {})
+    await expect(req.verifyUserSession).rejects.toMatch('missing bearer token')
+  })
+
+  test('lazy loader throws for unexpected auth header', async () => {
+    const req = mockRequest('foozle barrrzle')
+    userSession(req, {}, () => {})
+    await expect(req.verifyUserSession).rejects.toMatch('missing bearer token')
+  })
+
 })
