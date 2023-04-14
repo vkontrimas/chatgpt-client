@@ -40,3 +40,7 @@ describe('createRegistrationCode', () => {
     expect(codesAfter).toMatchObject(codesBefore)
   })
 })
+
+describe('useRegistrationCode', () => {
+
+})
