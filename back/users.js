@@ -3,9 +3,9 @@ const bcrypt = require('bcrypt')
 const uuid = require('uuid')
 const { User } = require('db')
 
-const { PASSWORD_SALT_ROUNDS, SESSION_TOKEN_SECRET } = require('../config')
+const { PASSWORD_SALT_ROUNDS, SESSION_TOKEN_SECRET } = require('./config')
 
-const createUser = async (user) => {
+const createUser = async (user, sequelizeOptions) => {
   if (!user.email) { throw 'no email' }
   if (!user.password) { throw 'no password' }
   if (!user.name) { throw 'no name' }
@@ -20,7 +20,7 @@ const createUser = async (user) => {
       name,
       email,
       passwordHash,
-    })
+    }, { sequelizeOptions })
   } catch (error) {
     if (error.name === 'SequelizeUniqueConstraintError') {
       error.errors.forEach(e => {
