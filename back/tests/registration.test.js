@@ -47,6 +47,18 @@ describe('createRegistrationCode', () => {
     const codesAfter = await RegistrationCode.findAll({ raw: true })
     expect(codesAfter).toMatchObject(codesBefore)
   })
+
+  test('saves note if given', async () => {
+    const codeWith = await createRegistrationCode({ remainingUses: 1, note: 'test note!' })
+    expect(codeWith.note).toBe('test note!')
+
+    const codeWithout = await createRegistrationCode({ remainingUses: 1 })
+    expect(codeWithout.note).toBeNull()
+
+    const codesAfter = await RegistrationCode.findAll({ raw: true })
+    expect(codesAfter).toContainEqual(codeWith.toJSON())
+    expect(codesAfter).toContainEqual(codeWithout.toJSON())
+  })
 })
 
 describe('createUserWithRegistrationCode', () => {

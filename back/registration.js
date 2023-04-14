@@ -3,12 +3,16 @@ const { sequelize, RegistrationCode, RegistrationCodeUses } = require('db')
 
 const { createUser } = require('./users')
 
-const createRegistrationCode = async ({ remainingUses }) => {
-  if (typeof remainingUses !== 'number') { throw 'expected remaining registration uses' }
-  if (remainingUses <= 0) { throw 'remaining registration uses lower than 1' }
+const createRegistrationCode = async (data) => {
+  if (typeof data.remainingUses !== 'number') { throw 'expected remaining registration uses' }
+  if (data.remainingUses <= 0) { throw 'remaining registration uses lower than 1' }
 
   const id = uuid.v4()
-  const model = await RegistrationCode.create({ id, remainingUses })
+  const model = await RegistrationCode.create({
+    id,
+    remainingUses: data.remainingUses,
+    note: data.note,
+  })
   return model
 }
 
