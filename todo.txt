@@ -10,3 +10,5 @@
 [] Parallelise tests 
 [] add RegistrationCodeUse records whenever someone signs up
 [] make code blocks expand to 100% message width as soon as started!
+[] upgrade to typescript
+  [] define schema for chat completion chunks

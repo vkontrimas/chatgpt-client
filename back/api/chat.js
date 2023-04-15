@@ -1,20 +1,7 @@
 const fetch = require('node-fetch')
 const chatRouter = require('express').Router()
 
-const { OPENAI_API_KEY, } = require('../config')
-
-
-const getCompletion = async (messages) => {
-  const api = {}
-  const completion = await api.createChatCompletion({
-    model: "gpt-3.5-turbo",
-    messages: messages,
-    user: 'testing',
-    stream: true,
-  })
-  return completion
-}
-
+const OpenAIChatModel = require('../llm/openai_chat_model')
 
 chatRouter.get('/test', async (request, response) => {
   const writeMessage = (msg) => new Promise(resolve => {
@@ -49,28 +36,9 @@ chatRouter.get('/test', async (request, response) => {
     },
   ]
 
-  const openaiRequest = {
-    model: 'gpt-3.5-turbo',
-    messages: [
-      {
-        role: 'user',
-        content: 'Hello! Please generate me a C++ hello world program!',
-      },
-    ],
-    stream: true,
-  }
-
-  const resp = await fetch('https://api.openai.com/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
-    },
-    body: JSON.stringify(openaiRequest)
-  })
-
+  const openai = new OpenAIChatModel()
   try {
-    for await (const chunk of resp.body) {
+    for await (const chunk of await openai.getCompletionStream(messages)) {
       const completionDeltas = chunk
         .toString()
         .split('\n\n')
