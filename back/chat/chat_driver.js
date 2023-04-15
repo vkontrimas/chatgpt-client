@@ -4,19 +4,32 @@ const { User, Chat } = require('db')
 const { selectChatModel } = require('../llm')
 
 class ChatDriver {
-  constructor(aiModel, db, messages) {
+  constructor(aiModel, id) {
     if (!aiModel) { throw 'Chat instance requires aiModel' }
-    if (!db) { throw 'Chat instance requires db' }
+    if (!id) { throw 'Chat instance requires id' }
+    this.id = id
     this.aiModel = aiModel
-    this.messages = messages || []
-    this.db = db
+    this.messages = []
     this.currentResponseStream = null
+    this.destroyed = false
   }
 
   /*
    * Opens an existing chat
    */
-  static async open(id) {}
+  static async open(userId, id) {
+    if (!userId) { throw 'missing user id' }
+    if (!id) { throw 'missing chat id' }
+
+    const chat = await Chat.findByPk(id)
+    if (!chat) { throw 'invalid chat id' }
+
+    if (chat.UserId !== userId) { throw 'unauthorized' }
+
+    const driver = new ChatDriver(selectChatModel('potato'), chat.id)
+    await driver.fetchMessages(userId)
+    return driver
+  }
 
   /*
    * Creates a new chat
@@ -36,28 +49,45 @@ class ChatDriver {
 
     const aiModel = selectChatModel(modelName)
 
-    return new ChatDriver(aiModel, db, [])
+    return new ChatDriver(aiModel, db.id, [])
   }
 
   /*
    * Adds a message to the current thread
    */
-  async postMessage(message) {
-
+  async postMessage(userId, message) {
+    if (this.destroyed) { throw 'chat destroyed' }
   }
 
   /*
    * Completes existing thread with new AI response!
    * Returns completion stream.
    */
-  async completeCurrentThread() {
+  async completeCurrentThread(userId) {
+    if (this.destroyed) { throw 'chat destroyed' }
 
   }
 
   /*
    * Returns current messages
    */
-  async getMessages() {
+  async fetchMessages(userId) {
+    if (this.destroyed) { throw 'chat destroyed' }
+  }
+
+  /*
+   * Destroys the chat
+   */
+  async destroy(userId) {
+    if (!userId) { throw 'missing user id' }
+
+    const chat = await Chat.findByPk(this.id)
+    if (chat) {
+      if (chat.UserId !== userId) { throw 'unauthorized' }
+      await chat.destroy()
+    }
+
+    this.destroyed = true
   }
 }
 

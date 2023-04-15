@@ -31,6 +31,7 @@ describe('create ChatDriver', () => {
       email: 'robbo@example.com',
       password: 'to',
     })
+
     await expect(ChatDriver.create(user.id)).rejects.toMatch('missing chat model name')
     await expect(ChatDriver.create(user.id, null)).rejects.toMatch('missing chat model name')
     await expect(ChatDriver.create(user.id, '')).rejects.toMatch('missing chat model name')
@@ -74,6 +75,162 @@ describe('create ChatDriver', () => {
     const chatsAfter = await Chat.findAll({ raw: true })
 
     expect(chatsAfter.length).toBe(chatsBefore.length + 1)
-    expect(chatsAfter).toContainEqual(chatDriver.db.toJSON())
+
+    const chat = await Chat.findByPk(chatDriver.id)
+    expect(chat).toBeDefined()
+    expect(chat).not.toBeNull()
   })
+})
+
+describe('open ChatDriver', () => {
+  test('if no chat id, throws', async () => {
+    const rob = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    await expect(ChatDriver.open(rob)).rejects.toMatch('missing chat id')
+    await expect(ChatDriver.open(rob, null)).rejects.toMatch('missing chat id')
+    await expect(ChatDriver.open(rob, '')).rejects.toMatch('missing chat id')
+  })
+
+  test('if no user id, throws', async () => {
+    const rob = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(rob.id, 'potato')
+
+    await expect(ChatDriver.open(undefined, chat.id)).rejects.toMatch('missing user id')
+    await expect(ChatDriver.open(null, chat.id)).rejects.toMatch('missing user id')
+    await expect(ChatDriver.open('', chat.id)).rejects.toMatch('missing user id')
+  })
+
+  test('if id doesnt exist, throws', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    const id = chat.id
+    await chat.destroy(user.id)
+
+    await expect(ChatDriver.open(user.id, id)).rejects.toMatch('invalid chat id')
+  })
+
+  test('if chat doesnt belong to user, throws', async () => {
+    const rob = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const eve = await createUser({
+      name: 'Evelynn',
+      email: 'eveeee@example.com',
+      password: 'shhhhh'
+    })
+
+    const robsChat = await ChatDriver.create(rob.id, 'potato')
+
+    await expect(ChatDriver.open(eve.id, robsChat.id)).rejects.toMatch('unauthorized')
+  })
+
+  test('if both ids exist and chat belongs to user, opens chat', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const createdChat = await ChatDriver.create(user.id, 'potato')
+    const openChat = await ChatDriver.open(user.id, createdChat.id)
+    expect(openChat).toBeDefined()
+    expect(openChat instanceof ChatDriver).toBe(true)
+    expect(openChat.id).toBe(createdChat.id)
+  })
+})
+
+describe('destroy ChatDriver', () => {
+  test('if no user id, throws', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await expect(chat.destroy()).rejects.toMatch('missing user id')
+    await expect(chat.destroy(null)).rejects.toMatch('missing user id')
+    await expect(chat.destroy('')).rejects.toMatch('missing user id')
+  })
+
+  test('if chat doesnt belong to user, throws', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const eve = await createUser({
+      name: 'Evelynn',
+      email: 'eveeee@example.com',
+      password: 'shhhhh'
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    await expect(chat.destroy(eve.id)).rejects.toMatch('unauthorized')
+  })
+
+  test('if chat no longer exists, succeeds', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.destroy(user.id)
+
+    await expect(chat.destroy(user.id)).resolves.toBeUndefined()
+  })
+
+  test('if chat exists and belongs to user, removes chat from db', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+    
+    const chatsBefore = await Chat.findAll({ raw: true })
+    await expect(chat.destroy(user.id)).resolves.toBeUndefined()
+    const foundChat = await Chat.findByPk(chat.id)
+    expect(foundChat).toBeNull()
+    const chatsAfter = await Chat.findAll({ raw: true })
+    expect(chatsAfter.length).toBe(chatsBefore.length - 1)
+  })
+
+  test('other operations on chat fail once destroyed', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    await chat.destroy(user.id)
+
+    await expect(chat.postMessage(user.id, 'foo')).rejects.toMatch('chat destroyed')
+    await expect(chat.completeCurrentThread(user.id)).rejects.toMatch('chat destroyed')
+    await expect(chat.fetchMessages(user.id)).rejects.toMatch('chat destroyed')
+  })
+})
+
+describe('ChatDriver state', () => {
+  test('placeholder', async () => {})
 })
