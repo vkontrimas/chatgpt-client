@@ -8,7 +8,7 @@ module.exports = {
       {
         type: Sequelize.DataTypes.UUID,
         references: {
-          model: 'Messages',
+          model: 'Users',
           key: 'id',
         },
         onUpdate: 'CASCADE',
