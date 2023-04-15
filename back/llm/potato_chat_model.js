@@ -10,10 +10,7 @@ class PotatoDeltaStream extends Readable {
 
   _read() {
     if (this.potatoSent < this.potatoCount) {
-      this.push({
-        role: 'assistant',
-        content: 'potato'
-      })
+      this.push({ delta: 'potato' })
       ++this.potatoSent
     } else {
       this.push(null)
@@ -22,14 +19,17 @@ class PotatoDeltaStream extends Readable {
 }
 
 class PotatoChatModel extends ChatCompletionModel {
-  constructor(potatoCount) {
+  constructor(config) {
     super()
-    this.potatoCount = potatoCount
+    this.config = {
+      deltaCount: 1,
+      ...config
+    }
   }
 
   async getCompletionStream(messages) {
     if (!messages || messages.length === 0) { throw 'no messages' }
-    return new PotatoDeltaStream(this.potatoCount)
+    return new PotatoDeltaStream(this.config.deltaCount)
   }
 }
 
