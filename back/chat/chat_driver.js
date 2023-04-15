@@ -96,6 +96,20 @@ class ChatDriver {
    */
   async fetchMessages() {
     if (this.destroyed) { throw 'chat destroyed' }
+
+    const messages = await Message.findAll({
+      where: {
+        ChatId: this.id,
+      },
+      orderBy: [['createdAt', 'ASC']],
+    })
+
+    this.messages = messages.map(msg => ({
+      id: msg.id,
+      content: msg.content,
+      role: msg.role,
+      status: msg.status,
+    }))
   }
 
   /*

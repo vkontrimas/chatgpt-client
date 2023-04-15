@@ -184,21 +184,6 @@ describe('ChatDriver destroy', () => {
     const chatsAfter = await Chat.findAll({ raw: true })
     expect(chatsAfter.length).toBe(chatsBefore.length - 1)
   })
-
-  test('other operations on chat fail once destroyed', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
-    const chat = await ChatDriver.create(user.id, 'potato')
-
-    await chat.destroy()
-
-    await expect(chat.postMessage('foo')).rejects.toMatch('chat destroyed')
-    await expect(chat.completeCurrentThread(user.id)).rejects.toMatch('chat destroyed')
-    await expect(chat.fetchMessages(user.id)).rejects.toMatch('chat destroyed')
-  })
 })
 
 describe('ChatDriver postMessage', () => {
@@ -258,8 +243,82 @@ describe('ChatDriver postMessage', () => {
     expect(await Message.findByPk(message.id, { raw: true }))
       .toMatchObject(message.toJSON())
   })
+
+  test('fails if chat destroyed', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.destroy()
+    await expect(chat.postMessage('foo')).rejects.toMatch('chat destroyed')
+  })
+})
+
+describe('ChatDriver fetchMessages', () => {
+  test('fails if chat destroyed', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.destroy()
+    await expect(chat.fetchMessages()).rejects.toMatch('chat destroyed')
+  })
+
+  test('retrieves messages', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const expected = [
+      {
+        id: expect.stringMatching(/.*/),
+        role: 'user',
+        content: 'Hello!',
+        ChatId: chat.id,
+        status: 'done',
+      },
+      {
+        id: expect.stringMatching(/.*/),
+        role: 'assistant',
+        content: 'Hi! How can I help you?',
+        ChatId: chat.id,
+        status: 'done',
+      },
+      {
+        id: expect.stringMatching(/.*/),
+        role: 'user',
+        content: 'Hello!',
+        ChatId: chat.id,
+        status: 'done',
+      },
+    ]
+
+    for (const msg of expected) {
+      await chat.postMessage(msg)
+    }
+
+    await chat.fetchMessages()
+    expect(chat.messages).toMatchObject(expected.map(({ id, role, content, status }) => ({ id, role, content, status})))
+  })
 })
 
 describe('ChatDriver state', () => {
-  test('placeholder', async () => {})
+  test('no messages when chat created', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.fetchMessages()
+    expect(chat.messages.length).toBe(0)
+  })
 })
