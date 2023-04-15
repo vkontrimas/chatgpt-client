@@ -1,3 +1,4 @@
-const ChatInstance = require('./chat_instance')
+const ChatDriver = require('./chat_driver')
+
 
 module.exports = { Chat }

@@ -1,4 +1,4 @@
-class ChatInstance {
+class ChatDriver {
   constructor(id, aiModel, messages) {
     if (!id) { throw 'Chat instance requires id' }
     if (!aiModel) { throw 'Chat instance requires aiModel' }
@@ -8,8 +8,15 @@ class ChatInstance {
     this.messages = messages
   }
 
-  static open(id, aiModel) {
-  }
+  /*
+   * Opens an existing chat
+   */
+  static open(id) {}
+
+  /*
+   * Creates a new chat
+   */
+  static create() {}
 
   /*
    * Adds a message to the current thread
@@ -33,4 +40,4 @@ class ChatInstance {
   }
 }
 
-module.exports = ChatInstance
+module.exports = ChatDriver
