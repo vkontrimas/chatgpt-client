@@ -1,4 +1,4 @@
 const ChatDriver = require('./chat_driver')
 
 
-module.exports = { Chat }
+module.exports = { ChatDriver }
