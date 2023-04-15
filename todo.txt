@@ -12,3 +12,4 @@
 [] make code blocks expand to 100% message width as soon as started!
 [] upgrade to typescript
   [] define schema for chat completion chunks
+[] log unauthorized access attempts
