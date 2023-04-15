@@ -117,7 +117,7 @@ describe('ChatDriver open', () => {
 
     const chat = await ChatDriver.create(user.id, 'potato')
     const id = chat.id
-    await chat.destroy(user.id)
+    await chat.destroy()
 
     await expect(ChatDriver.open(user.id, id)).rejects.toMatch('invalid chat id')
   })
@@ -156,36 +156,6 @@ describe('ChatDriver open', () => {
 })
 
 describe('ChatDriver destroy', () => {
-  test('if no user id, throws', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
-    const chat = await ChatDriver.create(user.id, 'potato')
-    await expect(chat.destroy()).rejects.toMatch('missing user id')
-    await expect(chat.destroy(null)).rejects.toMatch('missing user id')
-    await expect(chat.destroy('')).rejects.toMatch('missing user id')
-  })
-
-  test('if chat doesnt belong to user, throws', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
-
-    const eve = await createUser({
-      name: 'Evelynn',
-      email: 'eveeee@example.com',
-      password: 'shhhhh'
-    })
-
-    const chat = await ChatDriver.create(user.id, 'potato')
-
-    await expect(chat.destroy(eve.id)).rejects.toMatch('unauthorized')
-  })
-
   test('if chat no longer exists, succeeds', async () => {
     const user = await createUser({
       name: 'Robbo',
@@ -194,9 +164,9 @@ describe('ChatDriver destroy', () => {
     })
 
     const chat = await ChatDriver.create(user.id, 'potato')
-    await chat.destroy(user.id)
+    await chat.destroy()
 
-    await expect(chat.destroy(user.id)).resolves.toBeUndefined()
+    await expect(chat.destroy()).resolves.toBeUndefined()
   })
 
   test('if chat exists and belongs to user, removes chat from db', async () => {
@@ -208,7 +178,7 @@ describe('ChatDriver destroy', () => {
     const chat = await ChatDriver.create(user.id, 'potato')
     
     const chatsBefore = await Chat.findAll({ raw: true })
-    await expect(chat.destroy(user.id)).resolves.toBeUndefined()
+    await expect(chat.destroy()).resolves.toBeUndefined()
     const foundChat = await Chat.findByPk(chat.id)
     expect(foundChat).toBeNull()
     const chatsAfter = await Chat.findAll({ raw: true })
@@ -223,33 +193,15 @@ describe('ChatDriver destroy', () => {
     })
     const chat = await ChatDriver.create(user.id, 'potato')
 
-    await chat.destroy(user.id)
+    await chat.destroy()
 
-    await expect(chat.postMessage(user.id, 'foo')).rejects.toMatch('chat destroyed')
+    await expect(chat.postMessage('foo')).rejects.toMatch('chat destroyed')
     await expect(chat.completeCurrentThread(user.id)).rejects.toMatch('chat destroyed')
     await expect(chat.fetchMessages(user.id)).rejects.toMatch('chat destroyed')
   })
 })
 
 describe('ChatDriver postMessage', () => {
-  test('if user id missing, throw', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
-    const chat = await ChatDriver.create(user.id, 'potato')
-
-    const message = {
-      role: 'user',
-      content: 'message',
-    }
-
-    await expect(chat.postMessage(undefined, message)).rejects.toMatch('missing user id')
-    await expect(chat.postMessage(null, message)).rejects.toMatch('missing user id')
-    await expect(chat.postMessage('', message)).rejects.toMatch('missing user id')
-  })
-
   test('if message missing, throw', async () => {
     const user = await createUser({
       name: 'Robbo',
@@ -258,8 +210,8 @@ describe('ChatDriver postMessage', () => {
     })
     const chat = await ChatDriver.create(user.id, 'potato')
 
-    await expect(chat.postMessage(user.id)).rejects.toMatch('missing message')
-    await expect(chat.postMessage(user.id, null)).rejects.toMatch('missing message')
+    await expect(chat.postMessage()).rejects.toMatch('missing message')
+    await expect(chat.postMessage(null)).rejects.toMatch('missing message')
   })
 
   test('message validation', async () => {
@@ -270,26 +222,8 @@ describe('ChatDriver postMessage', () => {
     })
     const chat = await ChatDriver.create(user.id, 'potato')
 
-    await expect(chat.postMessage(user.id, { role: 'user', })).rejects.toMatch('missing content')
-    await expect(chat.postMessage(user.id, { content: 'foo' })).rejects.toMatch('missing role')
-  })
-
-  test('cannot post to other user\'s chats', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
-    const chat = await ChatDriver.create(user.id, 'potato')
-
-    const eve = await createUser({
-      name: 'Evelynn',
-      email: 'eveeee@example.com',
-      password: 'shhhhh'
-    })
-
-    await expect(chat.postMessage(eve.id, { role: 'user', content: 'I\'m in!' }))
-      .rejects.toMatch('unauthorized')
+    await expect(chat.postMessage({ role: 'user', })).rejects.toMatch('missing content')
+    await expect(chat.postMessage({ content: 'foo' })).rejects.toMatch('missing role')
   })
 
   test('posts message', async () => {
@@ -300,7 +234,7 @@ describe('ChatDriver postMessage', () => {
     })
     const chat = await ChatDriver.create(user.id, 'potato')
 
-    const message = await chat.postMessage(user.id, {
+    const message = await chat.postMessage({
       role: 'user',
       content: 'hello world!',
     })

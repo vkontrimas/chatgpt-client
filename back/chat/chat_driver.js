@@ -55,17 +55,14 @@ class ChatDriver {
   /*
    * Adds a message to the current thread
    */
-  async postMessage(userId, messageData) {
+  async postMessage(messageData) {
     if (this.destroyed) { throw 'chat destroyed' }
-    if (!userId) { throw 'missing user id' }
     if (!messageData) { throw 'missing message' }
     if (!messageData.role) { throw 'missing role' }
     if (!messageData.content) { throw 'missing content' }
 
     const chat = await Chat.findByPk(this.id)
     if (!chat) { throw 'chat no longer exists' }
-
-    if (chat.UserId !== userId) { throw 'unauthorized' }
 
     const message = await Message.create({
       id: uuid.v4(),
@@ -89,7 +86,7 @@ class ChatDriver {
    * Completes existing thread with new AI response!
    * Returns completion stream.
    */
-  async completeCurrentThread(userId) {
+  async completeCurrentThread() {
     if (this.destroyed) { throw 'chat destroyed' }
 
   }
@@ -97,19 +94,16 @@ class ChatDriver {
   /*
    * Returns current messages
    */
-  async fetchMessages(userId) {
+  async fetchMessages() {
     if (this.destroyed) { throw 'chat destroyed' }
   }
 
   /*
    * Destroys the chat
    */
-  async destroy(userId) {
-    if (!userId) { throw 'missing user id' }
-
+  async destroy() {
     const chat = await Chat.findByPk(this.id)
     if (chat) {
-      if (chat.UserId !== userId) { throw 'unauthorized' }
       await chat.destroy()
     }
 
