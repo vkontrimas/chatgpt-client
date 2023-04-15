@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Message.init({
     content: DataTypes.STRING,
-    type: DataTypes.STRING
+    role: DataTypes.STRING,
   }, {
     sequelize,
     modelName: 'Message',
