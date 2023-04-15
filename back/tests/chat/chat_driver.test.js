@@ -1,4 +1,4 @@
-const { Chat } = require('db')
+const { Chat, Message } = require('db')
 const { ChatDriver } = require('../../chat')
 const { createUser } = require('../../users')
 const { initializeDB } = require('../db_helper')
@@ -7,7 +7,7 @@ beforeEach(async () => {
   await initializeDB()
 })
 
-describe('create ChatDriver', () => {
+describe('ChatDriver create', () => {
   let chatsBefore = []
 
   beforeEach(async () => {
@@ -50,7 +50,7 @@ describe('create ChatDriver', () => {
   })
 })
 
-describe('create ChatDriver', () => {
+describe('ChatDriver create', () => {
   test('valid user creates chat', async () => {
     const user = await createUser({
       name: 'Robbo',
@@ -82,7 +82,7 @@ describe('create ChatDriver', () => {
   })
 })
 
-describe('open ChatDriver', () => {
+describe('ChatDriver open', () => {
   test('if no chat id, throws', async () => {
     const rob = await createUser({
       name: 'Robbo',
@@ -155,7 +155,7 @@ describe('open ChatDriver', () => {
   })
 })
 
-describe('destroy ChatDriver', () => {
+describe('ChatDriver destroy', () => {
   test('if no user id, throws', async () => {
     const user = await createUser({
       name: 'Robbo',
@@ -228,6 +228,101 @@ describe('destroy ChatDriver', () => {
     await expect(chat.postMessage(user.id, 'foo')).rejects.toMatch('chat destroyed')
     await expect(chat.completeCurrentThread(user.id)).rejects.toMatch('chat destroyed')
     await expect(chat.fetchMessages(user.id)).rejects.toMatch('chat destroyed')
+  })
+})
+
+describe('ChatDriver postMessage', () => {
+  test('if user id missing, throw', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const message = {
+      role: 'user',
+      content: 'message',
+    }
+
+    await expect(chat.postMessage(undefined, message)).rejects.toMatch('missing user id')
+    await expect(chat.postMessage(null, message)).rejects.toMatch('missing user id')
+    await expect(chat.postMessage('', message)).rejects.toMatch('missing user id')
+  })
+
+  test('if message missing, throw', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    await expect(chat.postMessage(user.id)).rejects.toMatch('missing message')
+    await expect(chat.postMessage(user.id, null)).rejects.toMatch('missing message')
+  })
+
+  test('message validation', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    await expect(chat.postMessage(user.id, { role: 'user', })).rejects.toMatch('missing content')
+    await expect(chat.postMessage(user.id, { content: 'foo' })).rejects.toMatch('missing role')
+  })
+
+  test('cannot post to other user\'s chats', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const eve = await createUser({
+      name: 'Evelynn',
+      email: 'eveeee@example.com',
+      password: 'shhhhh'
+    })
+
+    await expect(chat.postMessage(eve.id, { role: 'user', content: 'I\'m in!' }))
+      .rejects.toMatch('unauthorized')
+  })
+
+  test('posts message', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const message = await chat.postMessage(user.id, {
+      role: 'user',
+      content: 'hello world!',
+    })
+    expect(message).toBeDefined()
+    expect(message.toJSON()).toMatchObject({
+      id: expect.stringMatching(/.*/),
+      ChatId: chat.id,
+      role: 'user',
+      content: 'hello world!',
+      status: 'done',
+    })
+
+    expect(chat.messages[chat.messages.length - 1])
+      .toMatchObject({
+        id: message.id,
+        role: 'user',
+        content: 'hello world!',
+        status: 'done',
+      })
+
+    expect(await Message.findByPk(message.id, { raw: true }))
+      .toMatchObject(message.toJSON())
   })
 })
 

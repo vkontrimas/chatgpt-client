@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const { User, Chat } = require('db')
+const { User, Chat, Message } = require('db')
 
 const { selectChatModel } = require('../llm')
 
@@ -55,8 +55,34 @@ class ChatDriver {
   /*
    * Adds a message to the current thread
    */
-  async postMessage(userId, message) {
+  async postMessage(userId, messageData) {
     if (this.destroyed) { throw 'chat destroyed' }
+    if (!userId) { throw 'missing user id' }
+    if (!messageData) { throw 'missing message' }
+    if (!messageData.role) { throw 'missing role' }
+    if (!messageData.content) { throw 'missing content' }
+
+    const chat = await Chat.findByPk(this.id)
+    if (!chat) { throw 'chat no longer exists' }
+
+    if (chat.UserId !== userId) { throw 'unauthorized' }
+
+    const message = await Message.create({
+      id: uuid.v4(),
+      ChatId: chat.id,
+      role: messageData.role,
+      content: messageData.content,
+      status: 'done',
+    })
+
+    this.messages.push({
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      status: message.status,
+    })
+
+    return message
   }
 
   /*
