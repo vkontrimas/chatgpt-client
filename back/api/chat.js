@@ -42,7 +42,6 @@ chatRouter.get('/test', async (request, response) => {
     }, latency)
   })
 
-  // OPENAI
   const messages = [
     {
       role: 'user',
