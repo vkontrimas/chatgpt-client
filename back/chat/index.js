@@ -1,11 +1,3 @@
-const Chat = require('./chat')
+const ChatInstance = require('./chat_instance')
 
-class ChatManager {
-  async getChat(id) {
-    const chat = new Chat(id, aiModel)
-    await chat.initializeFromDB()
-    return chat
-  }
-}
-
-module.exports = ChatManager
+module.exports = { Chat }

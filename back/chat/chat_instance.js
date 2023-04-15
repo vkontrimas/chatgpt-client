@@ -1,19 +1,14 @@
-class Chat {
-  constructor(id, aiModel) {
+class ChatInstance {
+  constructor(id, aiModel, messages) {
     if (!id) { throw 'Chat instance requires id' }
     if (!aiModel) { throw 'Chat instance requires aiModel' }
     this.id = id
     this.aiModel = aiModel
-
     this.currentResponseStream = null
-    this.messages = []
+    this.messages = messages
   }
 
-  /*
-   * Loads initial chat message state from DB
-   */
-  async initializeFromDB() {
-
+  static open(id, aiModel) {
   }
 
   /*
@@ -30,6 +25,12 @@ class Chat {
   async completeCurrentThread() {
 
   }
+
+  /*
+   * Returns current messages
+   */
+  async getMessages() {
+  }
 }
 
-module.exports = Chat
+module.exports = ChatInstance
