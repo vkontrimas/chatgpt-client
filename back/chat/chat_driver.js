@@ -4,11 +4,11 @@ const { User, Chat, Message } = require('db')
 const { selectChatModel } = require('../llm')
 
 class ChatDriver {
-  constructor(aiModel, id) {
-    if (!aiModel) { throw 'Chat instance requires aiModel' }
+  constructor(ai, id) {
+    if (!ai) { throw 'Chat instance requires ai' }
     if (!id) { throw 'Chat instance requires id' }
     this.id = id
-    this.aiModel = aiModel
+    this.ai = ai
     this.messages = []
     this.currentResponseStream = null
     this.destroyed = false
@@ -26,7 +26,9 @@ class ChatDriver {
 
     if (chat.UserId !== userId) { throw 'unauthorized' }
 
-    const driver = new ChatDriver(selectChatModel('potato'), chat.id)
+    const ai = selectChatModel(chat.aiModelName, chat.aiModelConfig && JSON.parse(chat.aiModelConfig))
+
+    const driver = new ChatDriver(ai, chat.id)
     await driver.fetchMessages(userId)
     return driver
   }
@@ -41,15 +43,16 @@ class ChatDriver {
     const user = await User.findByPk(userId)
     if (!user) { throw 'invalid user id' }
 
+    const ai = selectChatModel(modelName)
+
     const db = await Chat.create({
       id: uuid.v4(),
       title: null,
       UserId: user.id,
+      aiModelName: modelName,
     })
 
-    const aiModel = selectChatModel(modelName)
-
-    return new ChatDriver(aiModel, db.id, [])
+    return new ChatDriver(ai, db.id, [])
   }
 
   /*
@@ -88,7 +91,6 @@ class ChatDriver {
    */
   async completeCurrentThread() {
     if (this.destroyed) { throw 'chat destroyed' }
-
   }
 
   /*

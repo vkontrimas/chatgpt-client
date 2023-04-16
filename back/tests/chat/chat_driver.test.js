@@ -2,6 +2,7 @@ const { Chat, Message } = require('db')
 const { ChatDriver } = require('../../chat')
 const { createUser } = require('../../users')
 const { initializeDB } = require('../db_helper')
+const { PotatoChatModel } = require('../../llm')
 
 beforeEach(async () => {
   await initializeDB()
@@ -318,7 +319,65 @@ describe('ChatDriver state', () => {
     })
 
     const chat = await ChatDriver.create(user.id, 'potato')
+    expect(chat.messages.length).toBe(0)
+
     await chat.fetchMessages()
     expect(chat.messages.length).toBe(0)
   })
+
+  test('no messages when empty chat opened', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    const openChat = await ChatDriver.open(user.id, chat.id)
+    expect(openChat.messages.length).toBe(0)
+  })
+
+  test('remembers posted messages when chat opened', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const messages = [
+      { role: 'user', content: 'Hello!' },
+      { role: 'assistant', content: 'Hi! How may I help you?' },
+      { role: 'user', content: 'Make me a coffee, please!' },
+      { role: 'assistant', content: 'I\'m sorry, Dave. I\'m afraid I can\'t do that.' },
+    ]
+    for (const message of messages) {
+      await chat.postMessage(message)
+    }
+
+    const openChat = await ChatDriver.open(user.id, chat.id)
+    expect(chat.messages).toMatchObject(messages.map(({ role, content }) => ({
+      role, content,
+      id: expect.stringMatching(/.*/),
+      status: 'done',
+    })))
+  })
+
+  test('remembers ai model when opened', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    const modelConfig = chat.ai.config
+
+    const openedChat = await ChatDriver.open(user.id, chat.id)
+
+    expect(openedChat.ai instanceof PotatoChatModel).toBe(true)
+    expect(openedChat.ai.config).toMatchObject(modelConfig)
+  })
 })
+
