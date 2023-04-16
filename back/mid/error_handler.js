@@ -4,22 +4,27 @@ const errorHandler = (error, request, response, next) => {
   }
   if (typeof error === 'string') {
     switch (error) {
-    case 'missing bearer token':
-      return response.status(400).json({ error })
-    case 'no name':
-      return response.status(400).json({ error })
-    case 'no email':
-      return response.status(400).json({ error })
-    case 'email collision':
-      return response.status(400).json({ error: 'email in use' })
-    case 'no password':
-      return response.status(400).json({ error })
-    case 'session token invalid':
-    case 'user not found':
-    case 'wrong password': 
-      return response.status(401).json({ error: 'unauthorized' })
-    default:
-        break;
+      case 'cannot post chat message while completion is running':
+      case 'cannot post message after a message with an error':
+        return response.status(409).json({ error })
+      case 'invalid chat id':
+        return response.status(404).json({ error })
+      case 'missing bearer token':
+      case 'no name':
+      case 'no email':
+      case 'no password':
+      case 'missing role':
+      case 'missing content':
+        return response.status(400).json({ error })
+      case 'email collision':
+        return response.status(400).json({ error: 'email in use' })
+      case 'session token invalid':
+      case 'user not found':
+      case 'wrong password': 
+      case 'unauthorized':
+        return response.status(401).json({ error: 'unauthorized' })
+      default:
+        break
     }
   }
   console.error(error)
