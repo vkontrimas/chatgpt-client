@@ -6,6 +6,9 @@ const errorHandler = (error, request, response, next) => {
     switch (error) {
       case 'cannot post chat message while completion is running':
       case 'cannot post message after a message with an error':
+      case 'cannot complete chat with no messages':
+      case 'cannot complete chat while another completion is running':
+      case 'cannot complete chat when last message has error':
         return response.status(409).json({ error })
       case 'invalid chat id':
         return response.status(404).json({ error })

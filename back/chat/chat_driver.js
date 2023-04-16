@@ -92,9 +92,9 @@ class ChatDriver {
 
   async completeCurrentThread() {
     if (this.destroyed) { throw 'chat destroyed' }
-    if (!this.messages || this.messages.length === 0) { throw 'no chat messages to complete' }
-    if (this.lastMessageCompleting()) { throw 'cannot complete chat message while another completion is running' }
-    if (this.lastMessageHasError()) { throw 'cannot complete after a message with an error' }
+    if (!this.messages || this.messages.length === 0) { throw 'cannot complete chat with no messages' }
+    if (this.lastMessageCompleting()) { throw 'cannot complete chat while another completion is running' }
+    if (this.lastMessageHasError()) { throw 'cannot complete chat when last message has error' }
 
     const chat = await Chat.findByPk(this.id)
     if (!chat) { throw 'chat no longer exists' }

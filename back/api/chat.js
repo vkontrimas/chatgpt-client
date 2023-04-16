@@ -45,4 +45,28 @@ chatRouter.post('/:base64Id/add', async (request, response) => {
   })
 })
 
+chatRouter.post('/:base64Id/complete', async (request, response) => {
+  const user = await request.verifyUserSession()
+  const chatId = idFromBase64(request.params.base64Id)
+  const chat = await ChatDriver.open(user.id, chatId)
+
+  const [message, stream] = await chat.completeCurrentThread()
+  response.status(201)
+  response.set('Content-Type', '/application/octet-stream')
+  response.write(JSON.stringify({
+    id: message.id,
+    status: 'pending',
+  }))
+
+  for await (const delta of stream) {
+    response.write(JSON.stringify(delta))
+  }
+
+  response.write(JSON.stringify({
+    status: 'done',
+  }))
+
+  response.end()
+})
+
 module.exports = chatRouter

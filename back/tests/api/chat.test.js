@@ -1,6 +1,8 @@
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
+const { Writable } = require('stream')
+
 const uuid = require('uuid')
 const { idToBase64 } = require('../../base64_id')
 
@@ -308,5 +310,164 @@ describe('POST /chat/:id/add - add message', () => {
       content: body.content,
       status: 'done',
     })
+  })
+})
+
+class CompletionStreamWritable extends Writable {
+  constructor(resolve, reject) {
+    super()
+    this.responseItems = []
+    this.resolveCallback = resolve
+    this.rejectCallback = reject
+  }
+
+  _write(value, encoding, callback) {
+    this.responseItems.push(JSON.parse(value.toString()))
+    callback()
+  }
+
+  _destroy(error, callback) {
+    if (error) { this.rejectCallback(error) }
+    else { this.resolveCallback(this.responseItems) }
+    callback()
+  }
+}
+
+describe('POST /chat/:id/complete - complete messages', () => {
+  test('201 - creates new message', async () => {
+    const [bearer, user] = await loginTestUser()
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3 })
+    await chat.postMessage({ role: 'user', content: 'hello' })
+
+    const expected = [
+      {
+        id: expect.stringMatching(/.*/),
+        status: 'pending',
+      },
+      {
+        delta: 'potato',
+        status: 'completing',
+      },
+      {
+        delta: 'potato',
+        status: 'completing',
+      },
+      {
+        delta: 'potato',
+        status: 'completing',
+      },
+      {
+        status: 'done',
+      }
+    ]
+
+    const result = await new Promise((resolve, reject) => {
+      const writable = new CompletionStreamWritable(resolve, reject)
+      api.post(`${ENDPOINT}/${idToBase64(chat.id)}/complete`)
+        .set('Authorization', bearer)
+        .expect(201)
+        .expect('Content-Type', /application\/octet-stream/)
+        .pipe(writable)
+    })
+
+    expect(result).toMatchObject(expected)
+
+    const receivedMessage = expected
+      .filter(part => part.status === 'completing')
+      .map(({ delta }) => delta)
+      .join('')
+
+    expect(receivedMessage).toBe('potatopotatopotato')
+
+    const dbMessage = await Message.findByPk(result[0].id, { raw: true })
+    expect(dbMessage).toMatchObject({
+      id: result[0].id,
+      status: 'done',
+      role: 'assistant',
+      content: 'potatopotatopotato',
+    })
+  })
+})
+
+describe('POST /chat/:id/complete - complete messages', () => {
+  test('404 - chat does not exist', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.destroy()
+
+    const response = await api
+      .post(`${ENDPOINT}/${idToBase64(chat.id)}/complete`)
+      .set('Authorization', bearer)
+      .expect(404)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'invalid chat id' })
+  })
+
+  test('401 - cannot post to other users chats', async () => {
+    const users  = await Promise.all([ loginTestUser(), loginTestUser() ])
+    const [aliceBearer, alice] = users[0]
+    const [eveBearer] = users[1]
+
+    const aliceChat = await ChatDriver.create(alice.id, 'potato')
+    await aliceChat.postMessage({ role: 'user', content: 'hello' })
+
+    const response = await api
+      .post(`${ENDPOINT}/${idToBase64(aliceChat.id)}/complete`)
+      .set('Authorization', eveBearer)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'unauthorized' })
+  })
+
+  test('409 - cannot complete when no messages', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const response = await api
+      .post(`${ENDPOINT}/${idToBase64(chat.id)}/complete`)
+      .set('Authorization', bearer)
+      .expect(409)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'cannot complete chat with no messages' })
+  })
+
+
+  test('409 - cannot post while ai agent is replying', async () => {
+    const [bearer, user] = await loginTestUser()
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    await chat.postMessage({ role: 'user', content: 'hello' })
+    const [message, stream] = await chat.completeCurrentThread()
+
+    const response = await api
+      .post(`${ENDPOINT}/${idToBase64(chat.id)}/complete`)
+      .set('Authorization', bearer)
+      .expect(409)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'cannot complete chat while another completion is running' })
+
+    await streamToArray(stream)
+  })
+
+  test('409 - cannot post when last message has error', async () => {
+    const [bearer, user] = await loginTestUser()
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
+    await chat.postMessage({ role: 'user', content: 'hello' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(streamToArray(stream)).rejects.toMatch(/.*/)
+
+    const response = await api
+      .post(`${ENDPOINT}/${idToBase64(chat.id)}/complete`)
+      .set('Authorization', bearer)
+      .expect(409)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'cannot complete chat when last message has error' })
   })
 })

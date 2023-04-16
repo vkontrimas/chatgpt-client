@@ -420,7 +420,7 @@ describe('ChatDriver completeCurrentThread', () => {
     })
 
     const chat = await ChatDriver.create(user.id, 'potato')
-    await expect(chat.completeCurrentThread()).rejects.toMatch('no chat messages to complete')
+    await expect(chat.completeCurrentThread()).rejects.toMatch('cannot complete chat with no messages')
   })
 
   test('returns delta stream if successful', async () => {
@@ -515,7 +515,7 @@ describe('ChatDriver completeCurrentThread', () => {
     await chat.postMessage({ role: 'user', content: 'hello!' })
     const [message, stream] = await chat.completeCurrentThread()
     await expect(chat.completeCurrentThread())
-      .rejects.toMatch('cannot complete chat message while another completion is running')
+      .rejects.toMatch('cannot complete chat while another completion is running')
     await streamToArray(stream)
   })
 
@@ -558,7 +558,7 @@ describe('ChatDriver completeCurrentThread', () => {
     await expect(openChat.postMessage({ role: 'user', content: 'bar' }))
       .rejects.toMatch('cannot post chat message while completion is running')
     await expect(openChat.completeCurrentThread())
-      .rejects.toMatch('cannot complete chat message while another completion is running')
+      .rejects.toMatch('cannot complete chat while another completion is running')
     await streamToArray(stream)
   })
 
@@ -605,7 +605,7 @@ describe('ChatDriver completeCurrentThread', () => {
     const [message, stream] = await chat.completeCurrentThread()
     await expect(streamToArray(stream)).rejects.toMatch('throw potato')
     await expect(chat.completeCurrentThread())
-      .rejects.toMatch('cannot complete after a message with an error')
+      .rejects.toMatch('cannot complete chat when last message has error')
   })
 
 

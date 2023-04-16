@@ -19,7 +19,7 @@ class PotatoDeltaStream extends Readable {
         if (mustThrow) {
           this.destroy('throw potato')
         }
-        this.push({ delta: 'potato' })
+        this.push({ status: 'completing', delta: 'potato' })
       }, this.config.delayMs)
       ++this.potatoSent
     } else {
