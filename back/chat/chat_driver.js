@@ -1,5 +1,6 @@
 const uuid = require('uuid')
 const { User, Chat, Message } = require('db')
+const { Transform } = require('stream')
 
 const { selectChatModel } = require('../llm')
 
@@ -10,13 +11,10 @@ class ChatDriver {
     this.id = id
     this.ai = ai
     this.messages = []
-    this.currentResponseStream = null
+    this.currentCompletionStream = null
     this.destroyed = false
   }
 
-  /*
-   * Opens an existing chat
-   */
   static async open(userId, id) {
     if (!userId) { throw 'missing user id' }
     if (!id) { throw 'missing chat id' }
@@ -33,9 +31,6 @@ class ChatDriver {
     return driver
   }
 
-  /*
-   * Creates a new chat
-   */
   static async create(userId, modelName, modelConfig) {
     if (!userId) { throw 'missing user id' }
     if (!modelName) { throw 'missing chat model name' }
@@ -56,14 +51,23 @@ class ChatDriver {
     return new ChatDriver(ai, db.id, [])
   }
 
-  /*
-   * Adds a message to the current thread
-   */
+  lastMessageHasError() {
+    return this.messages.length !== 0 
+           && this.messages[this.messages.length - 1].status === 'error'
+  }
+
+  lastMessageCompleting() {
+    return this.messages.length !== 0 
+           && this.messages[this.messages.length - 1].status === 'completing'
+  }
+
   async postMessage(messageData) {
     if (this.destroyed) { throw 'chat destroyed' }
     if (!messageData) { throw 'missing message' }
     if (!messageData.role) { throw 'missing role' }
     if (!messageData.content) { throw 'missing content' }
+    if (this.lastMessageCompleting()) { throw 'cannot post chat message while completion is running' }
+    if (this.lastMessageHasError()) { throw 'cannot post message after a message with an error' }
 
     const chat = await Chat.findByPk(this.id)
     if (!chat) { throw 'chat no longer exists' }
@@ -86,19 +90,81 @@ class ChatDriver {
     return message
   }
 
-  /*
-   * Completes existing thread with new AI response!
-   * Returns completion stream.
-   */
   async completeCurrentThread() {
     if (this.destroyed) { throw 'chat destroyed' }
     if (!this.messages || this.messages.length === 0) { throw 'no chat messages to complete' }
-    return await this.ai.getCompletionStream(this.messages)
+    if (this.lastMessageCompleting()) { throw 'cannot complete chat message while another completion is running' }
+    if (this.lastMessageHasError()) { throw 'cannot complete after a message with an error' }
+
+    const chat = await Chat.findByPk(this.id)
+    if (!chat) { throw 'chat no longer exists' }
+
+    const message = await Message.create({
+      id: uuid.v4(),
+      ChatId: chat.id,
+      role: 'assistant',
+      content: '',
+      status: 'completing',
+    })
+
+    this.messages.push({
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      status: message.status,
+    })
+
+    const stream = await this.ai.getCompletionStream(this.messages)
+
+    // Capture some state for processor function
+    const chatDriver = this
+    const messageIndex = this.messages.length - 1
+    const processor = async function * () {
+      try {
+        // Assemble message while yielding deltas
+        let currentContent = ''
+        for await (const delta of stream) {
+          currentContent = currentContent + delta.delta
+          yield delta
+        }
+
+        // Once done, update messages state
+        chatDriver.messages[messageIndex].status = 'done'
+        chatDriver.messages[messageIndex].content = currentContent
+
+        // Also in DB
+        await Message.update({
+          status: 'done',
+          content: currentContent,
+        }, {
+          where: {
+            id: message.id,
+          }
+        })
+
+        // remove stream
+        chatDriver.currentCompletionStream = null
+      } catch (error) {
+        // If we had an error, update message state
+        chatDriver.messages[messageIndex].status = 'error'
+        await Message.update({ status: 'error' }, {
+          where: {
+            id: message.id,
+          }
+        })
+
+        // remove stream
+        chatDriver.currentCompletionStream = null
+
+        // Also rethrow
+        throw error
+      }
+    }
+
+    this.currentCompletionStream = processor()
+    return [message, this.currentCompletionStream]
   }
 
-  /*
-   * Returns current messages
-   */
   async fetchMessages() {
     if (this.destroyed) { throw 'chat destroyed' }
 
@@ -117,9 +183,6 @@ class ChatDriver {
     }))
   }
 
-  /*
-   * Destroys the chat
-   */
   async destroy() {
     const chat = await Chat.findByPk(this.id)
     if (chat) {

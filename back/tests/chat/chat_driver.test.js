@@ -1,3 +1,4 @@
+const uuid = require('uuid')
 const { Chat, Message } = require('db')
 const { ChatDriver } = require('../../chat')
 const { createUser } = require('../../users')
@@ -431,8 +432,205 @@ describe('ChatDriver completeCurrentThread', () => {
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
-    const stream = await chat.completeCurrentThread()
+    const [message, stream] = await chat.completeCurrentThread()
     const result = await streamToArray(stream)
     expect(result).toMatchObject(new Array(4).fill({ delta: 'potato' }))
+  })
+
+  test('adds in progress message during completion', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+
+    const expected = {
+      id: expect.stringMatching(/.*/),
+      role: 'assistant',
+      content: '',
+      status: 'completing',
+    }
+    expect(message).toMatchObject(expected)
+    expect(chat.messages[chat.messages.length - 1]).toMatchObject(expected)
+    expect(await Message.findByPk(message.id, { raw: true })).toMatchObject({
+      ...expected,
+      ChatId: chat.id,
+    })
+
+    await streamToArray(stream)
+  })
+
+  test('adds in done message after completion', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await streamToArray(stream)
+
+    const expected = {
+      id: expect.stringMatching(/.*/),
+      role: 'assistant',
+      content: new Array(4).fill('potato').join(''),
+      status: 'done',
+    }
+    expect(chat.messages[chat.messages.length - 1]).toMatchObject(expected)
+    expect(await Message.findByPk(message.id, { raw: true })).toMatchObject({
+      ...expected,
+      ChatId: chat.id,
+    })
+  })
+
+  test('cannot post message while completion is running', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(chat.postMessage({ role: 'user', content: 'are you completin\'?' }))
+      .rejects.toMatch('cannot post chat message while completion is running')
+    await streamToArray(stream)
+  })
+
+  test('cannot complete while completion is already running', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(chat.completeCurrentThread())
+      .rejects.toMatch('cannot complete chat message while another completion is running')
+    await streamToArray(stream)
+  })
+
+  test('can retrieve stream while completion is running', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    expect(chat.currentCompletionStream).toBeNull()
+    const [message, stream] = await chat.completeCurrentThread()
+    expect(chat.currentCompletionStream).toBeDefined()
+    expect(chat.currentCompletionStream).not.toBeNull()
+    await streamToArray(stream)
+    expect(chat.currentCompletionStream).toBeNull()
+  })
+
+  test('opened chat knows a message is being completed', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+
+    const [message, stream] = await chat.completeCurrentThread()
+
+    const openChat = await ChatDriver.open(user.id, chat.id)
+    expect(openChat.messages[openChat.messages.length - 1]).toMatchObject({
+      id: expect.stringMatching(/.*/),
+      role: 'assistant',
+      content: '',
+      status: 'completing',
+    })
+    await expect(openChat.postMessage({ role: 'user', content: 'bar' }))
+      .rejects.toMatch('cannot post chat message while completion is running')
+    await expect(openChat.completeCurrentThread())
+      .rejects.toMatch('cannot complete chat message while another completion is running')
+    await streamToArray(stream)
+  })
+
+  test('if fails during completion, sets last message status to error', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(streamToArray(stream)).rejects.toMatch('throw potato')
+    expect(chat.messages[chat.messages.length - 1].status).toBe('error')
+    const dbMessage = await Message.findByPk(message.id)
+    expect(dbMessage.status).toBe('error')
+  })
+
+  test('cannot post message after message with error status', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(streamToArray(stream)).rejects.toMatch('throw potato')
+    await expect(chat.postMessage({ role: 'user', content: 'henlo' }))
+      .rejects.toMatch('cannot post message after a message with an error')
+  })
+
+  test('cannot complete after message with error status', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(streamToArray(stream)).rejects.toMatch('throw potato')
+    await expect(chat.completeCurrentThread())
+      .rejects.toMatch('cannot complete after a message with an error')
+  })
+
+
+  test('re-throws if ai model immediately throws', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, throwImmediately: true })
+    await chat.postMessage({ role: 'user', content: 'hello' })
+    await expect(chat.completeCurrentThread()).rejects.toMatch('throw immediately')
+  })
+
+  test('re-throws if ai model immediately throws', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const { id } = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, throwImmediately: true })
+    const chat = await ChatDriver.open(user.id, id)
+    await chat.postMessage({ role: 'user', content: 'hello' })
+    await expect(chat.completeCurrentThread()).rejects.toMatch('throw immediately')
   })
 })
