@@ -34,9 +34,7 @@ const router = createBrowserRouter([
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ReduxProvider store={store}>
     <SessionExpiryProvider>
-      <div className='Page'>
-        <RouterProvider router={router} />
-      </div>
+      <RouterProvider router={router} />
     </SessionExpiryProvider>
   </ReduxProvider>,
 )
