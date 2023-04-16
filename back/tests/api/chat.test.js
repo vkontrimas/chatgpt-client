@@ -7,6 +7,7 @@ const streamToArray = require('../../stream_to_array')
 const { Chat, Message } = require('db')
 const { ChatDriver } = require('../../chat')
 const { loginTestUser } = require('../helper')
+const { idToBase64 } = require('../../base64_id')
 
 
 const ENDPOINT = '/api/chat'
@@ -449,5 +450,64 @@ describe('POST /chat/:id/complete - complete messages', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response.body).toMatchObject({ error: 'cannot complete chat when last message has error' })
+  })
+})
+
+describe('DELETE /api/chat/:id/all - delete all messages', () => {
+  test('404 - chat does not exist', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.destroy()
+
+    const response = await api
+      .delete(`${ENDPOINT}/${idToBase64(chat.id)}/all`)
+      .set('Authorization', bearer)
+      .expect(404)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'invalid chat id' })
+  })
+
+  test('401 - cannot delete other users chats', async () => {
+    const users  = await Promise.all([ loginTestUser(), loginTestUser() ])
+    const [aliceBearer, alice] = users[0]
+    const [eveBearer] = users[1]
+
+    const aliceChat = await ChatDriver.create(alice.id, 'potato')
+
+    const response = await api
+      .delete(`${ENDPOINT}/${idToBase64(aliceChat.id)}/all`)
+      .set('Authorization', eveBearer)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'unauthorized' })
+  })
+
+  test('409 - cannot delete during completion', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 300 })
+    await chat.postMessage({ role: 'user', content: 'hello' })
+    const [message, stream] = await chat.completeCurrentThread()
+
+    const response = await api
+      .delete(`${ENDPOINT}/${idToBase64(chat.id)}/all`)
+      .set('Authorization', bearer)
+      .expect(409)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'cannot delete messages during chat completion' })
+
+    await streamToArray(stream)
+  })
+
+  test('204 - delete all messages', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const response = await api
+      .delete(`${ENDPOINT}/${idToBase64(chat.id)}/all`)
+      .set('Authorization', bearer)
+      .expect(204)
   })
 })

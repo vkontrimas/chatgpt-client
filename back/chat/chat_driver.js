@@ -191,6 +191,15 @@ class ChatDriver {
 
     this.destroyed = true
   }
+
+  async clear() {
+    if (this.lastMessageCompleting()) { throw 'cannot delete messages during chat completion' }
+    await Message.destroy({
+      where: {
+        ChatId: this.id,
+      }
+    })
+  }
 }
 
 module.exports = ChatDriver

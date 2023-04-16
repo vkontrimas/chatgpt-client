@@ -5,6 +5,7 @@ const { createUser } = require('../../users')
 const { initializeDB } = require('../db_helper')
 const { PotatoChatModel } = require('../../llm')
 const streamToArray = require('../../stream_to_array')
+const { loginTestUser } = require('../helper')
 
 beforeEach(async () => {
   await initializeDB()
@@ -632,5 +633,54 @@ describe('ChatDriver completeCurrentThread', () => {
     const chat = await ChatDriver.open(user.id, id)
     await chat.postMessage({ role: 'user', content: 'hello' })
     await expect(chat.completeCurrentThread()).rejects.toMatch('throw immediately')
+  })
+})
+
+describe('ChatDriver clear', () => {
+  test('deletes all messages', async () => {
+    const [_, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const messages = [
+      { role: "user", content: "hello!" },
+      { role: "assistant", content: "hello!" },
+      { role: "user", content: "hello!" },
+      { role: "assistant", content: "hello!" },
+      { role: "user", content: "hello!" },
+    ]
+    for (const message of messages) {
+      await chat.postMessage(message)
+    } 
+
+    const messageCountBefore = await Message.count({ where: { ChatId: chat.id } })
+    expect(messageCountBefore).toBe(5)
+
+    await chat.clear()
+
+    const messageCountAfter = await Message.count({ where: { ChatId: chat.id } })
+    expect(messageCountAfter).toBe(0)
+  })
+
+  test('succeeds if no messages to delete', async () => {
+    const [_, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+
+    const messageCountBefore = await Message.count({ where: { ChatId: chat.id } })
+    expect(messageCountBefore).toBe(0)
+
+    await chat.clear()
+
+    const messageCountAfter = await Message.count({ where: { ChatId: chat.id } })
+    expect(messageCountAfter).toBe(0)
+  })
+
+  test('throws if in the middle of completion', async () => {
+    const [_, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 300 })
+    await chat.postMessage({ role: 'user', content: 'hello' })
+    const [message, stream] = await chat.completeCurrentThread()
+    await expect(chat.clear()).rejects.toMatch('cannot delete messages during chat completion')
+    await streamToArray(stream)
   })
 })

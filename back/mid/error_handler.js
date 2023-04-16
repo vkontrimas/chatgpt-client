@@ -9,6 +9,7 @@ const errorHandler = (error, request, response, next) => {
       case 'cannot complete chat with no messages':
       case 'cannot complete chat while another completion is running':
       case 'cannot complete chat when last message has error':
+      case 'cannot delete messages during chat completion':
         return response.status(409).json({ error })
       case 'invalid chat id':
         return response.status(404).json({ error })

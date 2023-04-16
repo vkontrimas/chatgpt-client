@@ -69,4 +69,12 @@ chatRouter.post('/:base64Id/complete', async (request, response) => {
   response.end()
 })
 
+chatRouter.delete('/:base64Id/all', async (request, response) => {
+  const user = await request.verifyUserSession()
+  const chatId = idFromBase64(request.params.base64Id)
+  const chat = await ChatDriver.open(user.id, chatId)
+  await chat.clear()
+  response.status(204).end()
+})
+
 module.exports = chatRouter
