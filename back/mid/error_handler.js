@@ -4,14 +4,17 @@ const errorHandler = (error, request, response, next) => {
   }
   if (typeof error === 'string') {
     switch (error) {
+    case 'missing bearer token':
+      return response.status(400).json({ error })
     case 'no name':
-      return response.status(400).json({ error: 'no name' })
+      return response.status(400).json({ error })
     case 'no email':
-      return response.status(400).json({ error: 'no email' })
+      return response.status(400).json({ error })
     case 'email collision':
       return response.status(400).json({ error: 'email in use' })
     case 'no password':
-      return response.status(400).json({ error: 'no password' })
+      return response.status(400).json({ error })
+    case 'session token invalid':
     case 'user not found':
     case 'wrong password': 
       return response.status(401).json({ error: 'unauthorized' })
