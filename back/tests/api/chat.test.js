@@ -2,34 +2,14 @@ const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
 const { Writable } = require('stream')
-
-const uuid = require('uuid')
-const { idToBase64 } = require('../../base64_id')
-
-const { Chat, Message } = require('db')
-
-const { createUser, createSessionToken } = require('../../users') 
-const { ChatDriver } = require('../../chat')
-
 const streamToArray = require('../../stream_to_array')
 
+const { Chat, Message } = require('db')
+const { ChatDriver } = require('../../chat')
+const { loginTestUser } = require('../helper')
+
+
 const ENDPOINT = '/api/chat'
-
-const uniqueUser = () => {
-  const name = `testUser_${idToBase64(uuid.v4())}`
-  return {
-    name,
-    email: `${name}@example.com`,
-    password: name,
-  }
-} 
-
-const loginTestUser = async () => {
-  const user = uniqueUser()
-  await createUser(user)
-  const [token, model] = await createSessionToken(user)
-  return [ `Bearer ${token}`, model ]
-}
 
 describe('POST /chat - create chat', () => {
   test('201 - valid user creates chat', async () => {
