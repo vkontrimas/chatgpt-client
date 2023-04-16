@@ -36,20 +36,21 @@ class ChatDriver {
   /*
    * Creates a new chat
    */
-  static async create(userId, modelName) {
+  static async create(userId, modelName, modelConfig) {
     if (!userId) { throw 'missing user id' }
     if (!modelName) { throw 'missing chat model name' }
 
     const user = await User.findByPk(userId)
     if (!user) { throw 'invalid user id' }
 
-    const ai = selectChatModel(modelName)
+    const ai = selectChatModel(modelName, modelConfig)
 
     const db = await Chat.create({
       id: uuid.v4(),
       title: null,
       UserId: user.id,
       aiModelName: modelName,
+      aiModelConfig: JSON.stringify(ai.config),
     })
 
     return new ChatDriver(ai, db.id, [])
@@ -91,6 +92,8 @@ class ChatDriver {
    */
   async completeCurrentThread() {
     if (this.destroyed) { throw 'chat destroyed' }
+    if (!this.messages || this.messages.length === 0) { throw 'no chat messages to complete' }
+    return await this.ai.getCompletionStream(this.messages)
   }
 
   /*

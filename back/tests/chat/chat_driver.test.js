@@ -3,6 +3,7 @@ const { ChatDriver } = require('../../chat')
 const { createUser } = require('../../users')
 const { initializeDB } = require('../db_helper')
 const { PotatoChatModel } = require('../../llm')
+const streamToArray = require('../../stream_to_array')
 
 beforeEach(async () => {
   await initializeDB()
@@ -80,6 +81,21 @@ describe('ChatDriver create', () => {
     const chat = await Chat.findByPk(chatDriver.id)
     expect(chat).toBeDefined()
     expect(chat).not.toBeNull()
+  })
+
+  test('configures model', async () => {
+    const user = await createUser({
+      name: 'Robbo',
+      email: 'robbo@example.com',
+      password: 'to',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
+    expect(chat.ai.config).toMatchObject({ deltaCount: 4 })
+    
+    const chatModel = await Chat.findByPk(chat.id)
+    expect(chatModel.aiModelConfig).not.toBeNull()
+    expect(JSON.parse(chatModel.aiModelConfig)).toMatchObject({ deltaCount: 4 })
   })
 })
 
@@ -371,13 +387,52 @@ describe('ChatDriver state', () => {
       password: 'pass',
     })
 
-    const chat = await ChatDriver.create(user.id, 'potato')
-    const modelConfig = chat.ai.config
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
 
     const openedChat = await ChatDriver.open(user.id, chat.id)
 
     expect(openedChat.ai instanceof PotatoChatModel).toBe(true)
-    expect(openedChat.ai.config).toMatchObject(modelConfig)
+    expect(openedChat.ai.config).toMatchObject({ deltaCount: 4 })
   })
 })
 
+
+describe('ChatDriver completeCurrentThread', () => {
+  test('throws if chat destroyed', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.postMessage({ role: 'user', content: 'Hello!' })
+    await chat.destroy()
+    await expect(chat.completeCurrentThread()).rejects.toMatch('chat destroyed')
+  })
+
+  test('throws if no messages', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await expect(chat.completeCurrentThread()).rejects.toMatch('no chat messages to complete')
+  })
+
+  test('returns delta stream if successful', async () => {
+    const user = await createUser({
+      name: 'Dave',
+      email: 'dave@example.com',
+      password: 'pass',
+    })
+
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
+    await chat.postMessage({ role: 'user', content: 'hello!' })
+    const stream = await chat.completeCurrentThread()
+    const result = await streamToArray(stream)
+    expect(result).toMatchObject(new Array(4).fill({ delta: 'potato' }))
+  })
+})

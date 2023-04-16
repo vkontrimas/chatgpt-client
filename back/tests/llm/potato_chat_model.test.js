@@ -24,4 +24,9 @@ describe('Potato chat completion model 🥔', () => {
     const output = await streamToArray(stream)
     expect(output).toMatchObject(new Array(3).fill({ delta: 'potato' }))
   })
+
+  test('can access config', () => {
+    const model = new PotatoChatModel({ deltaCount: 3 })
+    expect(model.config).toMatchObject({ deltaCount: 3 })
+  })
 })
