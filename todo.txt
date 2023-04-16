@@ -15,3 +15,4 @@
 [] log unauthorized access attempts
 [] sort chats by last used (last time user interacted with it)
 [] change verifyUserSession to verifyUserBearerToken since we rarely use User and so the DB fetch is waste
+[] check token expiry / login status local storage on focus
