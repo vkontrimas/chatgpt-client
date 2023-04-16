@@ -20,3 +20,8 @@
 .sidebar-chats {
   width: 18em;
 }
+
+.home-content {
+  flex: 1;
+  height: 100%;
+}

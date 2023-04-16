@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import ReactMarkdown from 'react-markdown'
 
 import ChatMessage from './ChatMessage'
@@ -10,10 +11,11 @@ import './Chat.css'
 import User from './User'
 
 const Chat = () => {
+  const { chatId } = useParams()
 
   return (
     <div>
-      todo
+      my id: {chatId}
     </div>
   )
 }

@@ -1,7 +1,8 @@
+import { Outlet } from 'react-router-dom'
 import Chat from '../components/Chat'
 import User from '../components/User'
 
-import './Home.css'
+import './Main.css'
 
 const MainPage = () => {
   return (
@@ -11,7 +12,9 @@ const MainPage = () => {
         </div>
         <User />
       </div>
-      <Chat />
+      <div className="home-content">
+        <Outlet />
+      </div>
     </div>
   )
 }

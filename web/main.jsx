@@ -7,7 +7,8 @@ import {
 } from 'react-router-dom'
 
 import { store } from './redux/store'
-import HomePage from './pages/Home'
+import Chat from './components/Chat'
+import MainPage from './pages/Main'
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
 import Authorized from './components/Authorized'
@@ -17,7 +18,13 @@ import './index.css'
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Authorized> <HomePage /> </Authorized>,
+    element: <Authorized> <MainPage /> </Authorized>,
+    children: [
+      {
+        path: 'chat/:chatId',
+        element: <Chat />,
+      }
+    ]
   },
   {
     path: '/login',
