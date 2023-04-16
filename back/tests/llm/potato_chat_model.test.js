@@ -26,7 +26,7 @@ describe('Potato chat completion model 🥔', () => {
   })
 
   test('can access config', () => {
-    const model = new PotatoChatModel({ deltaCount: 3 })
-    expect(model.config).toMatchObject({ deltaCount: 3 })
+    const model = new PotatoChatModel({ deltaCount: 3, delayMs: 121 })
+    expect(model.config).toMatchObject({ deltaCount: 3, delayMs: 121 })
   })
 })
