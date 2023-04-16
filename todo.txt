@@ -13,3 +13,4 @@
 [] upgrade to typescript
   [] define schema for chat completion chunks
 [] log unauthorized access attempts
+[] sort chats by last used (last time user interacted with it)
