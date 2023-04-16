@@ -1,0 +1,25 @@
+.Main {
+  height: 100%;
+
+  display: grid;
+  grid-template-columns: 30em 1fr;
+  grid-template-rows: 3em 1fr;
+  grid-template-areas:
+    "top-bar top-bar"
+    "sidebar content";
+}
+
+.TopBar {
+  grid-area: top-bar;
+  border: 2px orange solid;
+}
+
+.Sidebar {
+  grid-area: sidebar;
+  border: 2px green solid;
+}
+
+.Content {
+  grid-area: content;
+  border: 2px pink solid;
+}

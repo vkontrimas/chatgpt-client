@@ -29,7 +29,7 @@ body {
 
 @media screen and (max-width: 760px) {
   .Page {
-    padding: 1.5em;
+    padding: 0;
     margin: 0;
     width: 100vw;
   }
