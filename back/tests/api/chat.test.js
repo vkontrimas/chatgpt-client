@@ -511,3 +511,44 @@ describe('DELETE /api/chat/:id/all - delete all messages', () => {
       .expect(204)
   })
 })
+
+describe('GET /api/chat - list all chats', () => {
+  test('400 - if no bearer', async () => {
+    const response = await api
+      .get(`${ENDPOINT}`)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+    expect(response.body).toMatchObject({ error: 'missing bearer token' })
+  })
+
+  test('200 - empty list if user has no chats', async () => {
+    const [bearer, user] = await loginTestUser()
+
+    const response = await api
+      .get(`${ENDPOINT}`)
+      .set('Authorization', bearer)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject([])
+  })
+
+  test('200 - list user chats', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chats = await Promise.all([
+      ChatDriver.create(user.id, 'potato'),
+      ChatDriver.create(user.id, 'potato'),
+      ChatDriver.create(user.id, 'potato'),
+      ChatDriver.create(user.id, 'potato'),
+    ])
+
+    const response = await api
+      .get(`${ENDPOINT}`)
+      .set('Authorization', bearer)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const expectedIds = chats.map(chat => ({ id: chat.id }))
+    expect(response.body.sort()).toMatchObject(expectedIds.sort())
+  })
+})

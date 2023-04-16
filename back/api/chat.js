@@ -1,7 +1,7 @@
 const fetch = require('node-fetch')
 const chatRouter = require('express').Router()
 
-const { ChatDriver } = require('../chat')
+const { ChatDriver, listChats } = require('../chat')
 const { idFromBase64 } = require('../base64_id')
 
 chatRouter.post('/', async (request, response) => {
@@ -15,6 +15,12 @@ chatRouter.post('/', async (request, response) => {
     id: chat.id,
     messages: chat.messages,
   })
+})
+
+chatRouter.get('/', async (request, response) => {
+  const user = await request.verifyUserSession()
+  const list = await listChats(user.id)
+  response.status(200).json(list)
 })
 
 chatRouter.get('/:base64Id', async (request, response) => {
