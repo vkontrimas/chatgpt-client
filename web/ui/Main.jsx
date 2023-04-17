@@ -7,6 +7,7 @@ import '../css/Main.css'
 import UserPanel from './UserPanel'
 import ChatTitleBar from './ChatTitleBar'
 import ChatList from './ChatList'
+import ChatInput from './ChatInput'
 
 import { fetchChats } from '../redux/chat_slice'
 
