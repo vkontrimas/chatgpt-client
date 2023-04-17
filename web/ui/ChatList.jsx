@@ -28,6 +28,7 @@ const ChatList = (props) => {
         <button
           className='button-clear good chat-list-add-button'
           onClick={() => {}}
+          aria-label='create chat'
         >
           <i className='fa fa-plus-square fa-2x'/>
         </button>

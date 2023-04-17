@@ -13,6 +13,7 @@ const UserPanel = () => {
       <button
         className="button-clear user-panel-logout"
         onClick={() => dispatch(logout())}
+        aria-label="log out"
       >
         <i className="fa fa-sign-out fa-2x" />
       </button>

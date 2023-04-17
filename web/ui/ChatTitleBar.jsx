@@ -7,7 +7,7 @@ const ChatTitleBar = ({ title }) => {
       <button
         className='button-clear chat-title-bar-button'
         onClick={() => {}}
-        ariaLabel='Clear chat'
+        aria-label='Clear chat'
       >
         <i className='fa fa-trash-o fa-2x'></i>
       </button>
