@@ -2,8 +2,9 @@ import '../css/ChatInput.css'
 
 import { useCallback, useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { isMobile } from 'react-device-detect'
 
-const ChatInput = ({ enabled }) => {
+const ChatInput = () => {
   const [message, setMessage] = useState('')
   const textAreaRef = useRef(null)
 
@@ -22,12 +23,12 @@ const ChatInput = ({ enabled }) => {
   }
 
   // On desktop use enter to send and shift+enter to enter a new line
-  const handleKeyDown = (event) => {
+  const handleKeyDown = !isMobile ? (event) => {
     if (message && event.keyCode === 13 && !event.shiftKey) {
       event.preventDefault()
       textAreaRef.current.form.requestSubmit()
     }
-  }
+  } : null
 
   return (
     <form className='chat-input-form' onSubmit={handleSubmit}>
@@ -39,7 +40,10 @@ const ChatInput = ({ enabled }) => {
         ref={textAreaRef}
         autoFocus
       />
-      <button className='button-clear good chat-send-button' action="submit" disabled={!enabled}>
+      <button
+        className='button-clear good chat-send-button'
+        type="submit"
+      >
         <i className='fa fa-arrow-right fa-lg' />
       </button>
     </form>
