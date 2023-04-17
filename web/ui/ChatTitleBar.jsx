@@ -9,7 +9,7 @@ const ChatTitleBar = (params) => {
   return (
     <div className={`chat-title-bar ${selected ? 'selected' : ''}`}>
       <h3 className='chat-title-bar-title'>
-        <i className='fa fa-square' style={selected ? null : { display: 'none' }}/> {title}
+        {title}
       </h3>
       <button
         className='button-clear chat-title-bar-button'
