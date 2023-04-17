@@ -12,6 +12,9 @@
     "messages"
     "input";
 
-  gap: 0.5em;
+  gap: 1em;
 }
 
+.chat > .chat-message-scroll-view {
+  grid-area: messages;
+}

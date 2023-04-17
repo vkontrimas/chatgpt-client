@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 import ChatInput from './ChatInput'
 import ChatMessageScrollView from './ChatMessageScrollView'
-import { setChats } from '../redux/chat_slice'
+import { setChats, addMessage } from '../redux/chat_slice'
 
 const Landing = () => {
   const bearer = useSelector(state => state.user.token?.bearer)
@@ -31,7 +31,7 @@ const Landing = () => {
      *  dispatch appropriate actions
      */
 
-    const response = await axios.post(
+    const chatResponse = await axios.post(
       '/api/chat',
       {
         model: 'openai',
@@ -42,12 +42,25 @@ const Landing = () => {
         }
       }
     )
-    const chat = response.data
-    
-    // TODO: also request completion!
-
+    const chat = chatResponse.data
     dispatch(setChats([chat]))
+
+    const addMessageResponse = await axios.post(
+      `/api/chat/${chat.id}/add`,
+      {
+        role: 'user',
+        content: message,
+      },
+      {
+        headers: {
+          Authorization: bearer,
+        }
+      }
+    )
+    dispatch(addMessage({ chatId: chat.id, message: addMessageResponse.data }))
     navigate(`/chat/${chat.id}`, { replace: true })
+
+    // TODO: also begin completion!
   }, [setMessages, messages, dispatch, navigate])
 
   return (
