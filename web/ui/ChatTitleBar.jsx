@@ -28,7 +28,14 @@ const ChatTitleBar = (props) => {
 
   return (
     <div className={`chat-title-bar ${selected ? 'selected' : ''}`}>
-      <h3 className='chat-title-bar-title'>
+      <h3
+        className='chat-title-bar-title'
+        onClick={() => {
+          if (params.chatId !== props.id) {
+            navigate(`/chat/${props.id}`)
+          }
+        }}
+      >
         {title}
       </h3>
       <button

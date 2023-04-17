@@ -9,6 +9,7 @@
 .chat-title-bar-title {
   white-space: nowrap;
   overflow: hide;
+  cursor: pointer;
 }
 
 .chat-list .chat-title-bar-title {
