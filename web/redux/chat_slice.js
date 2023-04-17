@@ -23,13 +23,13 @@ const newChat = () => ({
       id: 'kljgdfljiow124124',
       role: 'user',
       content: 'help me',
-      status: 'done',
+      status: 'error',
     },
     {
       id: 'asgasdgassdfhg8124981jdg',
       role: 'assistant',
       content: 'help how?',
-      status: 'done',
+      status: 'error',
     },
   ],
 })
