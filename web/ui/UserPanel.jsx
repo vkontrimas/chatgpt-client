@@ -11,10 +11,10 @@ const UserPanel = () => {
     <div className="user-panel">
       <h2 className="user-panel-name">{name}</h2>
       <button
-        className="button2 user-panel-logout"
+        className="button-clear user-panel-logout"
         onClick={() => dispatch(logout())}
       >
-        Log out
+        <i className="fa fa-sign-out fa-2x" />
       </button>
     </div>
   )

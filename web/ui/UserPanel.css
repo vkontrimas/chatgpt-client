@@ -1,12 +1,13 @@
 .user-panel {
   display: grid;
-  grid-template-columns: 0.3em 1fr 6em;
+  grid-template-columns: 0.3em 1fr 2.8em;
   grid-template-rows: 1;
   grid-template-areas: ". user-name logout";
   align-items: center;
 }
 
 .user-panel-logout {
+  height: 2.8em;
   grid-area: logout;
 }
 
