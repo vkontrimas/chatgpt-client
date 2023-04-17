@@ -22,3 +22,37 @@
   background: #808080;
   color: black;
 }
+
+.button-clear {
+  margin: 0.2em;
+
+  outline: none;
+  border: none;
+
+  color: #808080;
+  background: none;
+
+  cursor: pointer;
+}
+
+.button-clear:hover {
+  color: #505050;
+}
+
+.button-clear:active {
+  color: firebrick;
+}
+
+/*
+ * Touch screens
+ */
+@media (hover: none) and (pointer: coarse) {
+  .button2:hover {
+    color: #808080;
+    background: #303030;
+  }
+
+  .button-clear:hover {
+    color: #808080;
+  }
+}

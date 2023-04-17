@@ -5,10 +5,11 @@ const TopBar = () => {
     <div className='top-bar'>
       <h3 className='top-bar-title'>Untitled chat</h3>
       <button
-        className='button2 top-bar-button'
+        className='button-clear top-bar-button'
         onClick={() => {}}
+        ariaLabel='Clear chat'
       >
-        Clear
+        <i className='fa fa-trash-o fa-2x'></i>
       </button>
     </div>
   )
