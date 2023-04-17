@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom'
 import '../css/ChatList.css'
 
 import ChatTitleBar from './ChatTitleBar'
+import Loading from './Loading'
 
 const ChatList = (props) => {
   const { items, isLoading } = {
@@ -26,20 +27,21 @@ const ChatList = (props) => {
 
   return (
     <>
-      <div className='chat-list-loading' style={showWhenLoading}>
-        <i className='fa fa-pulse fa-spinner fa-3x' />
-      </div>
-      <div className='chat-list' style={hideWhenLoading}>
-        {listItems}
-        <button
-          className='button-clear good chat-list-add-button'
-          style={params.chatId === 'new' ? { display: 'none' } : null}
-          onClick={() => {}}
-          aria-label='create chat'
-        >
-          <i className='fa fa-plus-square fa-2x'/>
-        </button>
-      </div>
+      { isLoading && <Loading /> }
+      {
+        !isLoading &&
+        <div className='chat-list'>
+          {listItems}
+          <button
+            className='button-clear good chat-list-add-button'
+            style={params.chatId === 'new' ? { display: 'none' } : null}
+            onClick={() => {}}
+            aria-label='create chat'
+          >
+            <i className='fa fa-plus-square fa-2x'/>
+          </button>
+        </div>
+      }
     </>
   )
 }

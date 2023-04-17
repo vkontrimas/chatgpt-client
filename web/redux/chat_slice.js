@@ -2,17 +2,8 @@ import axios from 'axios'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
 export const NEW_CHAT_ID = 'new'
-
-const newChat = () => ({
-  id: NEW_CHAT_ID,
-  title: 'Untitled Chat',
-  messages: [],
-})
-
 const initialState = {
-  list: {
-    new: newChat(),
-  },
+  list: {},
   loading: false,
 }
 
