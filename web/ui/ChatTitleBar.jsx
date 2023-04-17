@@ -1,4 +1,4 @@
-import '../css/TopBar.css'
+import '../css/ChatTitleBar.css'
 
 const TopBar = () => {
   return (
