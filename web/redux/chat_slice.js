@@ -1,8 +1,18 @@
 import axios from 'axios'
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+export const NEW_CHAT_ID = 'new'
+
+const newChat = () => ({
+  id: NEW_CHAT_ID,
+  title: 'Untitled Chat',
+  messages: [],
+})
+
 const initialState = {
-  list: [],
+  list: {
+    new: newChat(),
+  },
   loading: false,
 }
 
@@ -28,11 +38,15 @@ export const chatSlice = createSlice({
         state.loading = true
       }) 
       .addCase(fetchChats.fulfilled, (state, { payload }) => {
-        state.list = payload
+        for (const chat of payload) {
+          state[chat.id] = chat
+        }
         state.loading = false
       })
       .addCase(fetchChats.rejected, (state) => {
-        state.list = []
+        state.list = {
+          placeholder: newChat(),
+        }
         state.loading = false
       })
   },

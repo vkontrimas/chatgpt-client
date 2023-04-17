@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { useParams } from 'react-router-dom'
 
 import '../css/ChatList.css'
 
@@ -10,11 +11,16 @@ const ChatList = (props) => {
     ...props,
   }
 
+  const params = useParams()
+
   const hideWhenLoading = useMemo(() => isLoading ? { display: 'none' } : null, [isLoading])
   const showWhenLoading = useMemo(() => isLoading ? null : { display: 'none' }, [isLoading])
 
   const listItems = useMemo(
-    () => items.map(({ id, title }) => <ChatTitleBar key={id} title={title} />),
+    () => { 
+      return items
+        .map(({ id, title }) => (<ChatTitleBar selected={id === params.chatId} key={id} title={title}/>))
+    },
     [items]
   )
 
@@ -27,6 +33,7 @@ const ChatList = (props) => {
         {listItems}
         <button
           className='button-clear good chat-list-add-button'
+          style={params.chatId === 'new' ? { display: 'none' } : null}
           onClick={() => {}}
           aria-label='create chat'
         >

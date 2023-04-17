@@ -12,8 +12,19 @@
 }
 
 .chat-list .chat-title-bar-title {
+  margin-top: 0.22em;
   font-weight: 400;
   font-size: 1.2em;
+}
+
+.chat-list .chat-title-bar.selected .chat-title-bar-title {
+  color: #909090;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.chat-list .chat-title-bar.selected .chat-title-bar-title > i {
+  scale: 0.6
 }
 
 .chat-list .chat-title-bar-button {
