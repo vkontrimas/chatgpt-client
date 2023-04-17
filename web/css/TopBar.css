@@ -1,0 +1,15 @@
+.top-bar {
+  display: grid;
+  grid-template-rows: 1;
+  grid-template-columns: 0.3em 1fr 6em;
+  grid-template-areas: ". title clear";
+  align-items: center;
+}
+
+.top-bar-button {
+  grid-area: clear;
+}
+
+.top-bar-title {
+  grid-area: title;
+}
