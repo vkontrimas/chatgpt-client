@@ -1,10 +1,9 @@
 import axios from 'axios'
 import { createSlice } from '@reduxjs/toolkit'
 
-export const NEW_CHAT_ID = 'new'
 const initialState = {
   map: {},
-  loading: false,
+  loading: true,
 }
 
 export const chatSlice = createSlice({

@@ -31,16 +31,10 @@ const Landing = () => {
      *  dispatch appropriate actions
      */
 
-    return
-
     const response = await axios.post(
       '/api/chat',
       {
         model: 'openai',
-        messages: [{
-          role: 'user',
-          content: message,
-        }],
       },
       {
         headers: {

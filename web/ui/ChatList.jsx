@@ -1,42 +1,53 @@
-import { useMemo } from 'react'
-import { useParams } from 'react-router-dom'
-
 import '../css/ChatList.css'
+
+import axios from 'axios'
+import { useEffect, useMemo } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { useParams } from 'react-router-dom'
 
 import ChatTitleBar from './ChatTitleBar'
 import Loading from './Loading'
+import { addChats, setLoading } from '../redux/chat_slice'
 
 const ChatList = (props) => {
-  const isLoading = true
-  const items = []
-
+  const { map, loading } = useSelector(state => state.chat)
+  const bearer = useSelector(state => state.user.token?.bearer)
+  const dispatch = useDispatch()
   const params = useParams()
 
+  useEffect(() => {
+    const loadChats = async () => {
+      dispatch(setLoading(true))
+      const response = await axios.get('/api/chat', { headers: { Authorization: bearer } })
+      console.log(response.data)
+      dispatch(addChats(response.data))
+      dispatch(setLoading(false))
+    }
+    loadChats()
+  }, [])
 
-  const listItems = useMemo(
-    () => { 
-      return items
-        .map(({ id, title }) => (<ChatTitleBar selected={id === params.chatId} key={id} title={title}/>))
-    },
-    [items]
-  )
+  const listItems = useMemo(() => { 
+    return Object
+      .values(map)
+      .map(({ id, title }) => (<ChatTitleBar selected={id === params.chatId} key={id} title={title}/>))
+  }, [map, params])
 
   return (
     <>
-      { isLoading && <Loading /> }
+      { loading && <Loading /> }
       {
-        !isLoading &&
-        <div className='chat-list'>
-          {listItems}
-          <button
-            className='button-clear good chat-list-add-button'
-            style={params.chatId === 'new' ? { display: 'none' } : null}
-            onClick={() => {}}
-            aria-label='create chat'
-          >
-            <i className='fa fa-plus-square fa-2x'/>
-          </button>
-        </div>
+        !loading &&
+          <div className='chat-list'>
+            {listItems}
+            <button
+              className='button-clear good chat-list-add-button'
+              style={params.chatId && { display: 'none' }}
+              onClick={() => {}}
+              aria-label='create chat'
+            >
+              <i className='fa fa-plus-square fa-2x'/>
+            </button>
+          </div>
       }
     </>
   )
