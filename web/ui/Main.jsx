@@ -8,7 +8,6 @@ import ChatList from './ChatList'
 
 const Main = () => {
   const chat = useSelector(state => state.chat)
-  console.log(chat)
 
   return (
     <div className='main'>
@@ -16,7 +15,7 @@ const Main = () => {
         <ChatTitleBar title={'Untitled Chat'}/>
       </div>
       <div className='main-sidebar'>
-        <ChatList items={chat.list} />
+        <ChatList items={chat.list} isLoading={chat.loading} />
       </div>
       <div className='main-sidebar-tab'></div>
       <div className='main-content'></div>
