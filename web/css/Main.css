@@ -27,7 +27,6 @@
 
 .main-sidebar {
   grid-area: sidebar;
-  border-right: 1px solid black;
 }
 
 .main-content {
@@ -36,7 +35,6 @@
 
 .main-user {
   grid-area: user;
-  border-right: 1px solid black;
 }
 
 @media screen and (max-width: 1600px) {
