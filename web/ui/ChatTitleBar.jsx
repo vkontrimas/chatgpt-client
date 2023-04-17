@@ -2,25 +2,28 @@ import '../css/ChatTitleBar.css'
 
 import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { destroyChat } from '../redux/chat_slice'
 
-const ChatTitleBar = (params) => {
+const ChatTitleBar = (props) => {
   const bearer = useSelector(state => state.user.token?.bearer)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const params = useParams()
 
   const { title, selected, id } = {
-    selected: params.selected || false,
-    title: params.title,
-    id: params.id,
+    selected: props.selected || false,
+    title: props.title,
+    id: props.id,
   }
 
   const handleDestroy = () => {
     dispatch(destroyChat(id))
     axios.delete(`/api/chat/${id}`, { headers: { Authorization: bearer }})
-    navigate('/', { replace: true })
+    if (id === params.chatId) {
+      navigate('/', { replace: true })
+    }
   }
 
   return (
