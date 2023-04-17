@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../redux/user'
 
-import './UserPanel.css'
+import '../css/UserPanel.css'
 
 const UserPanel = () => {
   const { name } = useSelector(state => state.user)
