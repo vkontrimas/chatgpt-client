@@ -7,5 +7,6 @@
 
 .chat-list-add-button {
   display: block;
+  scale: 0.75;
 }
 
