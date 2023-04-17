@@ -20,7 +20,10 @@ chatRouter.post('/', async (request, response) => {
 chatRouter.get('/', async (request, response) => {
   const user = await request.verifyUserSession()
   const list = await listChats(user.id)
-  response.status(200).json(list)
+  response.status(200).json(list.map(chat => ({
+    ...chat,
+    id: idToBase64(chat.id),
+  })))
 })
 
 chatRouter.get('/:base64Id', async (request, response) => {
@@ -30,7 +33,7 @@ chatRouter.get('/:base64Id', async (request, response) => {
 
   response.status(200).json({
     messages: chat.messages.map(message => ({
-      id: message.id,
+      id: idToBase64(message.id),
       role: message.role,
       content: message.content,
       status: message.status
