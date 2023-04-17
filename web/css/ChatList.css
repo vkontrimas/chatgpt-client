@@ -1,0 +1,19 @@
+.chat-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.chat-list-add-button {
+  display: block;
+}
+
+.chat-list-item {
+  display: grid;
+  grid-template-columns: 1fr 2.8em;
+  grid-template-rows: 1fr;
+  grid-template-areas: "title delete";
+
+  height: 3.5em;
+  border: 1px solid pink;
+}
