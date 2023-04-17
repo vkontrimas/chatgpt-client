@@ -56,20 +56,30 @@
 /*
  * Overlaid button. e.g. used for send button in chat
  */
-.button-input-overlaid {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-
+.button-input-extend {
   outline: none;
   border: none;
 
-  color: #808080;
-  background: none;
+  color: floralwhite;
+  background: #303030;
+
+  border-radius: 0 0.5em 0.5em 0;
 
   cursor: pointer;
 }
+
+.text-input:hover + .button-input-extend,
+.text-input:active + .button-input-extend {
+  background: #505050;
+  color: black;
+}
+
+.text-input:focus + .button-input-extend {
+  background: #808080;
+  color: black;
+}
+
+/*
 
 .button-input-overlaid:hover {
   color: #505050;
@@ -79,15 +89,12 @@
   color: #007F5F;
 }
 
-textarea:focus + .button-input-overlaid,
-input:focus + .button-input-overlaid {
-  color: #505050;
-}
 
 textarea:focus + .button-input-overlaid:hover,
 input:focus + .button-input-overlaid:hover {
   color: #303030;
 }
+*/
 
 /*
  * Touch screens

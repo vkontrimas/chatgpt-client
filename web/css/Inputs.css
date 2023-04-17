@@ -1,7 +1,8 @@
 .text-input {
+  margin: 0;
   border: none;
-  border-radius: 5px;
-  padding: 6px 6px 8px 6px;
+  border-radius: 0.5em;
+  padding: 0.5em;
   outline: none;
   resize: none;
 

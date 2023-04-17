@@ -48,8 +48,8 @@ const ChatInput = ({ enabled }) => {
       <textarea
         className='text-input chat-input'
       />
-      <button className='button-input-overlaid chat-send-button' action="submit" disabled={!enabled}>
-        <i className='fa fa-arrow-circle-right fa-2x' />
+      <button className='button-clear good chat-send-button' action="submit" disabled={!enabled}>
+        <i className='fa fa-arrow-right fa-lg' />
       </button>
     </form>
   )
