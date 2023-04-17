@@ -1,0 +1,20 @@
+.landing {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr min-content min-content;
+  grid-template-areas:
+    "."
+    "content"
+    "input";
+
+  gap: 1em;
+}
+
+.landing-input {
+  grid-area: input;
+}
+
+.landing-content {
+  grid-area: content;
+}

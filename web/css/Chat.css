@@ -15,9 +15,3 @@
   gap: 0.5em;
 }
 
-.chat-scroll-area {
-  height: 100%;
-  grid-area: messages;
-  overflow: auto;
-}
-

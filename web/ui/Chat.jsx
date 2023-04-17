@@ -2,7 +2,7 @@ import '../css/Chat.css'
 
 import ChatTitleBar from './ChatTitleBar'
 import ChatInput from './ChatInput'
-import ChatMessageView from './ChatMessageView'
+import ChatMessageScrollView from './ChatMessageScrollView'
 import Loading from './Loading'
 
 import { useSelector } from 'react-redux'
@@ -19,9 +19,7 @@ const Chat = () => {
   return (
     <div className='chat'>
       <ChatTitleBar title={chat.title} />
-      <div className='chat-scroll-area'>
-        <ChatMessageView chatId={chat.id} />
-      </div>
+      <ChatMessageScrollView messages={[]} />
       <ChatInput />
     </div>
   )

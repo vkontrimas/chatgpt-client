@@ -7,10 +7,8 @@ import ChatTitleBar from './ChatTitleBar'
 import Loading from './Loading'
 
 const ChatList = (props) => {
-  const { items, isLoading } = {
-    isLoading: false,
-    ...props,
-  }
+  const isLoading = true
+  const items = []
 
   const params = useParams()
 
