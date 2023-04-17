@@ -1,3 +1,6 @@
+/*
+ * Normal button
+ */
 .button2 {
   min-width: 6em;
   height: 2.8em;
@@ -23,6 +26,9 @@
   color: black;
 }
 
+/* 
+ * Clear button used for buttons with icons
+ */
 .button-clear {
   margin: 0.2em;
 
@@ -47,6 +53,9 @@
   color: #007F5F;
 }
 
+/*
+ * Overlaid button. e.g. used for send button in chat
+ */
 .button-input-overlaid {
   position: absolute;
   top: 0;
@@ -70,8 +79,14 @@
   color: #007F5F;
 }
 
-input + .button-input-overlaid {
-  color: red;
+textarea:focus + .button-input-overlaid,
+input:focus + .button-input-overlaid {
+  color: #505050;
+}
+
+textarea:focus + .button-input-overlaid:hover,
+input:focus + .button-input-overlaid:hover {
+  color: #303030;
 }
 
 /*
@@ -84,6 +99,10 @@ input + .button-input-overlaid {
   }
 
   .button-clear:hover {
+    color: #808080;
+  }
+
+  .button-input-overlaid:hover {
     color: #808080;
   }
 }

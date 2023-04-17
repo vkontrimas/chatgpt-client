@@ -1,6 +1,6 @@
+import './css/index.css'
 import './css/Inputs.css'
 import './css/Buttons.css'
-import './css/index.css'
 
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'

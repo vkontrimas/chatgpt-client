@@ -11,6 +11,12 @@ body {
 
   background: #252525;
   color: floralwhite;
+
+  /*
+   * Removes ugly blue rectangle on tap in chrome 
+   * TODO: evaluate accessibility
+   */
+  -webkit-tap-highlight-color: transparent;
 }
 
 #root {
