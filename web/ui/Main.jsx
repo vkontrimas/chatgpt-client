@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { useParams, Outlet } from 'react-router-dom'
 
 import '../css/Main.css'
 
@@ -10,6 +11,7 @@ import ChatList from './ChatList'
 import { fetchChats } from '../redux/chat_slice'
 
 const Main = () => {
+  const params = useParams()
   const dispatch = useDispatch()
   const chat = useSelector(state => state.chat)
 
@@ -24,7 +26,9 @@ const Main = () => {
         <ChatList items={chat.list} isLoading={chat.loading} />
       </div>
       <div className='main-sidebar-tab'></div>
-      <div className='main-content'></div>
+      <div className='main-content'>
+        <Outlet />
+      </div>
       <div className='main-user'><UserPanel /></div>
     </div>
   )

@@ -21,6 +21,12 @@ const router = createBrowserRouter([
   {
     path: '/',
     element: <Authorized> <Main /> </Authorized>,
+    children: [
+      {
+        path: '/chat/:chatId',
+        element: <div>I'm a chat! 😊</div>,
+      }
+    ],
   },
   {
     path: '/login',
