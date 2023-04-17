@@ -35,10 +35,11 @@
 
 @media screen and (max-width: 1600px) {
   .main {
-    grid-template-rows: 4em 1fr;
+    grid-template-rows: 4em 1fr 1em;
     grid-template-areas:
       "user    content"
-      "sidebar content";
+      "sidebar content"
+      ". .";
   }
 }
 
@@ -46,6 +47,7 @@
   .main {
     width: 180vw;
     grid-template-columns: 80vw 1fr;
+    grid-template-rows: 4em 1fr 0.5em;
   }
 
   .main-sidebar-tab {
