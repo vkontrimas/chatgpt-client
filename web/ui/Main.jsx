@@ -15,8 +15,6 @@ const Main = () => {
   const dispatch = useDispatch()
   const chat = useSelector(state => state.chat)
 
-  useEffect(() => { dispatch(fetchChats()) }, [])
-
   useEffect(() => {
     // TODO: determine best (latest) chat to open in the future 
     if (!params.chatId) {

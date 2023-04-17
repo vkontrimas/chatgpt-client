@@ -1,63 +1,32 @@
 import axios from 'axios'
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 
 export const NEW_CHAT_ID = 'new'
 const initialState = {
-  list: {},
+  map: {},
   loading: false,
 }
-
-export const fetchChats = createAsyncThunk('chat/fetch', async (_, thunkApi) => {
-  const bearer = thunkApi.getState().user?.token.bearer
-  if (!bearer) { throw 'user not logged in' }
-
-  const response = await axios.get('/api/chat', {
-    headers: {
-      Authorization: bearer,
-    },
-  })
-
-  console.log(response.data)
-
-  return response.data
-}) 
 
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    addChat: (state, { payload }) => {
-      state.list[payload.id] = {
-        title: 'Untitled Chat',
-        ...payload,
+    addChats: (state, { payload }) => {
+      for (const chat of payload) {
+        state.map[chat.id] = {
+          title: 'Untitled Chat',
+          ...chat,
+        }
       }
     },
+    setLoading: (state, { payload }) => {
+      state.loading = payload
+    },
   },
-  extraReducers: (builder) => {
-    builder
-      .addCase(fetchChats.pending, (state) => {
-        state.loading = true
-      }) 
-      .addCase(fetchChats.fulfilled, (state, { payload }) => {
-        for (const chat of payload) {
-          state.list[chat.id] = {
-            title: 'Untitled chat',
-            messages: [],
-            ...chat
-          }
-        }
-        state.loading = false
-      })
-      .addCase(fetchChats.rejected, (state) => {
-        state.list = {
-          placeholder: newChat(),
-        }
-        state.loading = false
-      })
-  },
+  extraReducers: (builder) => { },
 })
 
-export const { addChat } = chatSlice.actions
+export const { addChats, setLoading } = chatSlice.actions
 
 export default chatSlice.reducer
 
