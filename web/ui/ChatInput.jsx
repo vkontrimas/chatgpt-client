@@ -4,8 +4,8 @@ import { useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 const ChatInput = ({ enabled }) => {
-  /*const dispatch = useDispatch()
   const [message, setMessage] = useState('')
+  /*const dispatch = useDispatch()
   const inputRef = useRef(null)
 
   const handleSubmit = async (event) => {
@@ -18,11 +18,6 @@ const ChatInput = ({ enabled }) => {
     }
   }
 
-  const autoSize = (target) => {
-    target.style.height = '0px'
-    target.style.height = `${target.scrollHeight}px`
-  }
-
   useEffect(() => autoSize(inputRef.current), [])
 
   const handleKeyDown = async (event) => {
@@ -33,11 +28,18 @@ const ChatInput = ({ enabled }) => {
     autoSize(event.target)
   }
 
+  */
+
+
+  const autoSize = (target) => {
+    target.style.height = '0px'
+    target.style.height = `${target.scrollHeight}px`
+  }
+
   const handleChange = (event) => {
     setMessage(event.target.value) 
     autoSize(event.target)
   }
-  */
 
   const handleSubmit = (event) => {
     event.preventDefault()
@@ -47,6 +49,8 @@ const ChatInput = ({ enabled }) => {
     <form className='chat-input-form' onSubmit={handleSubmit}>
       <textarea
         className='text-input chat-input'
+        onChange={handleChange}
+        autoFocus
       />
       <button className='button-clear good chat-send-button' action="submit" disabled={!enabled}>
         <i className='fa fa-arrow-right fa-lg' />

@@ -9,7 +9,7 @@
   font-family: 'Fira Sans', sans-serif;
   font-size: 14px;
 
-  color: floralwhite;
+  color: #808080;
   background: #303030;
 
   overflow: hidden;
@@ -18,12 +18,12 @@
 .text-input:hover,
 .text-input:active {
   background: #505050;
-  color: black;
+  color: #252525;
 }
 
 .text-input:focus {
   background: #808080;
-  color: black;
+  color: #252525;
 }
 
 .text-input:disabled {
