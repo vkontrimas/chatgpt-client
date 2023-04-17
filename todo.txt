@@ -16,3 +16,11 @@
 [] sort chats by last used (last time user interacted with it)
 [] change verifyUserSession to verifyUserBearerToken since we rarely use User and so the DB fetch is waste
 [] check token expiry / login status local storage on focus
+[] unit test frontend
+[] frontend integration test
+[] e2e test with click simulation!
+[] e2e api test in backend with real api!
+[] fix: potato model allows crashing the server when we can send configs!
+[] test wrapper to verify we're not sending passwords or hashes across network
+[] same for uuids
+

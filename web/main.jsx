@@ -18,12 +18,17 @@ import RegisterPage from './pages/Register'
 import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 import Chat from './ui/Chat'
+import NewChat from './ui/NewChat'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Authorized> <Main /> </Authorized>,
     children: [
+      { 
+        path: '/chat/new',
+        element: <NewChat />
+      },
       {
         path: '/chat/:chatId',
         element: <Chat />,

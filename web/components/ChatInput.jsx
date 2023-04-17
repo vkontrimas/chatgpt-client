@@ -1,7 +1,9 @@
+import './ChatInput.css'
+
 import { useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+
 import { create } from '../redux/message'
-import './ChatInput.css'
 
 const ChatInput = ({ enabled }) => {
   const dispatch = useDispatch()

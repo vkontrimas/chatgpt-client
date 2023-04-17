@@ -1,10 +1,12 @@
 import '../css/ChatInput.css'
 
-import { useCallback, useState, useRef, useEffect, } from 'react'
+import { useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isMobile } from 'react-device-detect'
 
-const ChatInput = () => {
+
+const ChatInput = ({ chatId }) => {
+  const dispatch = useDispatch()
   const [message, setMessage] = useState('')
   const textAreaRef = useRef(null)
 

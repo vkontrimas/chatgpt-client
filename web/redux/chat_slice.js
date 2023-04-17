@@ -6,32 +6,7 @@ export const NEW_CHAT_ID = 'new'
 const newChat = () => ({
   id: NEW_CHAT_ID,
   title: 'Untitled Chat',
-  messages: [
-    {
-      id: 'asgasdgasdgasdgasdgasdg',
-      role: 'user',
-      content: 'henlo!',
-      status: 'done',
-    },
-    {
-      id: 'hgklsadjkl',
-      role: 'assistant',
-      content: 'hello, how can I help!',
-      status: 'done',
-    },
-    {
-      id: 'kljgdfljiow124124',
-      role: 'user',
-      content: 'help me',
-      status: 'error',
-    },
-    {
-      id: 'asgasdgassdfhg8124981jdg',
-      role: 'assistant',
-      content: 'help how?',
-      status: 'error',
-    },
-  ],
+  messages: [],
 })
 
 const initialState = {
@@ -50,13 +25,23 @@ export const fetchChats = createAsyncThunk('chat/fetch', async (_, thunkApi) => 
       Authorization: bearer,
     },
   })
+
+  console.log(response.data)
+
   return response.data
 }) 
 
 export const chatSlice = createSlice({
   name: 'chat',
   initialState,
-  reducers: {},
+  reducers: {
+    addChat: (state, { payload }) => {
+      state.list[payload.id] = {
+        title: 'Untitled Chat',
+        ...payload,
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchChats.pending, (state) => {
@@ -64,7 +49,11 @@ export const chatSlice = createSlice({
       }) 
       .addCase(fetchChats.fulfilled, (state, { payload }) => {
         for (const chat of payload) {
-          state[chat.id] = chat
+          state.list[chat.id] = {
+            title: 'Untitled chat',
+            messages: [],
+            ...chat
+          }
         }
         state.loading = false
       })
@@ -76,6 +65,8 @@ export const chatSlice = createSlice({
       })
   },
 })
+
+export const { addChat } = chatSlice.actions
 
 export default chatSlice.reducer
 
