@@ -9,12 +9,3 @@
   display: block;
   scale: 0.75;
 }
-
-.chat-list-loading {
-  color: #606060;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
