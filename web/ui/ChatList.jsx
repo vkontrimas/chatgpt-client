@@ -3,7 +3,7 @@ import '../css/ChatList.css'
 import axios from 'axios'
 import { useEffect, useMemo } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 
 import ChatTitleBar from './ChatTitleBar'
 import Loading from './Loading'
@@ -14,6 +14,7 @@ const ChatList = (props) => {
   const bearer = useSelector(state => state.user.token?.bearer)
   const dispatch = useDispatch()
   const params = useParams()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const loadChats = async () => {
@@ -41,8 +42,8 @@ const ChatList = (props) => {
             {listItems}
             <button
               className='button-clear good chat-list-add-button'
-              style={params.chatId && { display: 'none' }}
-              onClick={() => {}}
+              style={params.chatId ? null : { display: 'none' }}
+              onClick={() => { navigate('/') }}
               aria-label='create chat'
             >
               <i className='fa fa-plus-square fa-2x'/>
