@@ -1,3 +1,7 @@
+import './css/Inputs.css'
+import './css/Buttons.css'
+import './css/index.css'
+
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider as ReduxProvider } from 'react-redux'
@@ -14,10 +18,6 @@ import RegisterPage from './pages/Register'
 import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 import Chat from './ui/Chat'
-
-import './css/Inputs.css'
-import './css/Buttons.css'
-import './css/index.css'
 
 const router = createBrowserRouter([
   {
