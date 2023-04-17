@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isMobile } from 'react-device-detect'
 
 
-const ChatInput = ({ chatId }) => {
+const ChatInput = ({ chatId, submitMessage }) => {
   const dispatch = useDispatch()
   const [message, setMessage] = useState('')
   const textAreaRef = useRef(null)
@@ -21,6 +21,7 @@ const ChatInput = ({ chatId }) => {
 
   const handleSubmit = (event) => {
     if (event) { event.preventDefault() }
+    submitMessage(message)
     setMessage('')
   }
 
