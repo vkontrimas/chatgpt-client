@@ -7,7 +7,7 @@ import ChatList from './ChatList'
 const Main = () => {
   return (
     <div className='main'>
-      <div className='main-topbar'><ChatTitleBar /></div>
+      <div className='main-topbar'><ChatTitleBar title={'Untitled Chat'}/></div>
       <div className='main-sidebar'><ChatList /></div>
       <div className='main-sidebar-tab'></div>
       <div className='main-content'></div>

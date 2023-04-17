@@ -1,12 +1,6 @@
 import '../css/ChatList.css'
 
-const ChatItem = ({ title }) => {
-  return (
-    <div className='chat-list-item'>
-      {title}
-    </div>
-  )
-}
+import ChatTitleBar from './ChatTitleBar'
 
 const ChatList = () => {
   const items = [
@@ -17,7 +11,7 @@ const ChatList = () => {
 
   return (
     <div className='chat-list'>
-      {items.map(title => <ChatItem key={title} title={title} />)}
+      {items.map(title => <ChatTitleBar key={title} title={title} />)}
       <button
         className='button-clear chat-list-add-button'
         onClick={() => {}}

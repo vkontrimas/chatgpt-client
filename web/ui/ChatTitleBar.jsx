@@ -1,11 +1,11 @@
 import '../css/ChatTitleBar.css'
 
-const TopBar = () => {
+const ChatTitleBar = ({ title }) => {
   return (
-    <div className='top-bar'>
-      <h3 className='top-bar-title'>Untitled chat</h3>
+    <div className='chat-title-bar'>
+      <h3 className='chat-title-bar-title'>{title}</h3>
       <button
-        className='button-clear top-bar-button'
+        className='button-clear chat-title-bar-button'
         onClick={() => {}}
         ariaLabel='Clear chat'
       >
@@ -15,5 +15,5 @@ const TopBar = () => {
   )
 }
 
-export default TopBar
+export default ChatTitleBar
 
