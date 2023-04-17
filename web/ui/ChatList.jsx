@@ -30,7 +30,7 @@ const ChatList = (props) => {
   const listItems = useMemo(() => { 
     return Object
       .values(map)
-      .map(({ id, title }) => (<ChatTitleBar selected={id === params.chatId} key={id} title={title}/>))
+      .map(({ id, title }) => (<ChatTitleBar selected={id === params.chatId} key={id} id={id} title={title}/>))
   }, [map, params])
 
   return (

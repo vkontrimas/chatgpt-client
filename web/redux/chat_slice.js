@@ -30,6 +30,10 @@ export const chatSlice = createSlice({
       const { chatId, messages } = payload
       state.map[chatId].messages = messages
     },
+    destroyChat: (state, { payload }) => {
+      const id = payload
+      delete state.map[id]
+    }
   },
   extraReducers: (builder) => { },
 })
@@ -38,7 +42,8 @@ export const {
   setChats,
   setLoading,
   addMessage,
-  setMessages
+  setMessages,
+  destroyChat,
 } = chatSlice.actions
 
 export default chatSlice.reducer

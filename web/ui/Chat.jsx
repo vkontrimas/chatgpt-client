@@ -42,7 +42,7 @@ const Chat = () => {
 
   return (
     <div className='chat'>
-      <ChatTitleBar title={chat.title} />
+      <ChatTitleBar id={chat.id} title={chat.title} />
       <ChatMessageScrollView messages={chat.messages} />
       <ChatInput />
     </div>

@@ -86,4 +86,12 @@ chatRouter.delete('/:base64Id/all', async (request, response) => {
   response.status(204).end()
 })
 
+chatRouter.delete('/:base64Id', async (request, response) => {
+  const user = await request.verifyUserSession()
+  const chatId = idFromBase64(request.params.base64Id)
+  const chat = await ChatDriver.open(user.id, chatId)
+  await chat.destroy()
+  response.status(204).end()
+})
+
 module.exports = chatRouter
