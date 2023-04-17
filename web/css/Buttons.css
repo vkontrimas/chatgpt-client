@@ -47,6 +47,33 @@
   color: #007F5F;
 }
 
+.button-input-overlaid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+
+  outline: none;
+  border: none;
+
+  color: #808080;
+  background: none;
+
+  cursor: pointer;
+}
+
+.button-input-overlaid:hover {
+  color: #505050;
+}
+
+.button-input-overlaid:active {
+  color: #007F5F;
+}
+
+input + .button-input-overlaid {
+  color: red;
+}
+
 /*
  * Touch screens
  */

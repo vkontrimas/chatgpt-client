@@ -5,9 +5,7 @@ import { useParams, useNavigate, Outlet } from 'react-router-dom'
 import '../css/Main.css'
 
 import UserPanel from './UserPanel'
-import ChatTitleBar from './ChatTitleBar'
 import ChatList from './ChatList'
-import ChatInput from './ChatInput'
 
 import { fetchChats } from '../redux/chat_slice'
 
@@ -28,9 +26,6 @@ const Main = () => {
 
   return (
     <div className='main'>
-      <div className='main-topbar'>
-        <ChatTitleBar title={'Untitled Chat'}/>
-      </div>
       <div className='main-sidebar'>
         <ChatList items={Object.values(chat.list)} isLoading={chat.loading} />
       </div>

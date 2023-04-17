@@ -1,0 +1,32 @@
+.text-input {
+  border: none;
+  border-radius: 5px;
+  padding: 6px 6px 8px 6px;
+  outline: none;
+  resize: none;
+
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 14px;
+
+  color: floralwhite;
+  background: #303030;
+
+  overflow: hidden;
+}
+
+.text-input:hover,
+.text-input:active {
+  background: #505050;
+  color: black;
+}
+
+.text-input:focus {
+  background: #808080;
+  color: black;
+}
+
+.text-input:disabled {
+  border: 2px solid #303030;
+  background: #252525;
+}
+

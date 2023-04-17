@@ -1,0 +1,23 @@
+.chat {
+  overflow: hidden;
+
+  height: 100%;
+  display: grid;
+
+  grid-template-columns: 1;
+  grid-template-rows: 4em 1fr 10em;
+  grid-template-areas: 
+    "titlebar"
+    "messages"
+    "input";
+
+  gap: 0.5em;
+}
+
+.chat-scroll-area {
+  height: 100%;
+  border: solid red 1px;
+  grid-area: messages;
+  overflow: auto;
+}
+

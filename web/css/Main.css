@@ -8,7 +8,7 @@
   grid-template-rows: 2em 4em 1fr 2em;
   grid-template-areas:
     ".        ."
-    "user    topbar "
+    "user    content"
     "sidebar content"
     ".         .";
 }
@@ -19,10 +19,6 @@
 
 .main-sidebar-tab {
   display: none;
-}
-
-.main-topbar {
-  grid-area: topbar;
 }
 
 .main-sidebar {
@@ -41,7 +37,7 @@
   .main {
     grid-template-rows: 4em 1fr;
     grid-template-areas:
-      "user    topbar"
+      "user    content"
       "sidebar content";
   }
 }
