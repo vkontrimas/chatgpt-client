@@ -2,7 +2,7 @@ const fetch = require('node-fetch')
 const chatRouter = require('express').Router()
 
 const { ChatDriver, listChats } = require('../chat')
-const { idFromBase64 } = require('../base64_id')
+const { idFromBase64, idToBase64 } = require('../base64_id')
 
 chatRouter.post('/', async (request, response) => {
   const user = await request.verifyUserSession()
@@ -12,7 +12,7 @@ chatRouter.post('/', async (request, response) => {
 
   const chat = await ChatDriver.create(user.id, request.body.model)
   response.status(201).json({
-    id: chat.id,
+    id: idToBase64(chat.id),
     messages: chat.messages,
   })
 })
@@ -44,7 +44,7 @@ chatRouter.post('/:base64Id/add', async (request, response) => {
   const chat = await ChatDriver.open(user.id, chatId)
   const message = await chat.postMessage(request.body)
   response.status(201).json({
-    id: message.id,
+    id: idToBase64(message.id),
     role: message.role,
     content: message.content,
     status: message.status,
@@ -60,7 +60,7 @@ chatRouter.post('/:base64Id/complete', async (request, response) => {
   response.status(201)
   response.set('Content-Type', '/application/octet-stream')
   response.write(JSON.stringify({
-    id: message.id,
+    id: idToBase64(message.id),
     status: 'pending',
   }))
 

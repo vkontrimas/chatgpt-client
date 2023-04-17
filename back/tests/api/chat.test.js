@@ -7,7 +7,7 @@ const streamToArray = require('../../stream_to_array')
 const { Chat, Message } = require('db')
 const { ChatDriver } = require('../../chat')
 const { loginTestUser } = require('../helper')
-const { idToBase64 } = require('../../base64_id')
+const { idToBase64, idFromBase64 } = require('../../base64_id')
 
 
 const ENDPOINT = '/api/chat'
@@ -41,7 +41,8 @@ describe('POST /chat - create chat', () => {
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const chat = await Chat.findByPk(response.body.id, { raw: true })
+    const uuid = idFromBase64(response.body.id)
+    const chat = await Chat.findByPk(uuid, { raw: true })
     expect(chat).not.toBeNull()
     expect(chat.UserId).toBe(user.id)
     expect(chat.aiModelName).toBe(body.model)
@@ -283,7 +284,8 @@ describe('POST /chat/:id/add - add message', () => {
       status: 'done',
     })
 
-    const dbMessage = await Message.findByPk(response.body.id, { raw: true })
+    const uuid = idFromBase64(response.body.id)
+    const dbMessage = await Message.findByPk(uuid, { raw: true })
     expect(dbMessage).toMatchObject({
       id: expect.stringMatching(/.+/),
       ChatId: chat.id,
@@ -361,9 +363,10 @@ describe('POST /chat/:id/complete - complete messages', () => {
 
     expect(receivedMessage).toBe('potatopotatopotato')
 
-    const dbMessage = await Message.findByPk(result[0].id, { raw: true })
+    const uuid = idFromBase64(result[0].id)
+    const dbMessage = await Message.findByPk(uuid, { raw: true })
     expect(dbMessage).toMatchObject({
-      id: result[0].id,
+      id: uuid,
       status: 'done',
       role: 'assistant',
       content: 'potatopotatopotato',
