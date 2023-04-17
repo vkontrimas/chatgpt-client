@@ -14,28 +14,30 @@
     ".         .";
 }
 
+.main > div {
+  padding: 0.5em;
+}
+
 .main-sidebar-tab {
   display: none;
 }
 
 .main-topbar {
   grid-area: topbar;
-  border: 2px orange solid;
 }
 
 .main-sidebar {
   grid-area: sidebar;
-  border: 2px green solid;
+  border-right: 1px solid black;
 }
 
 .main-content {
   grid-area: content;
-  border: 2px pink solid;
 }
 
 .main-user {
   grid-area: user;
-  border: 2px aqua solid;
+  border-right: 1px solid black;
 }
 
 @media screen and (max-width: 1600px) {

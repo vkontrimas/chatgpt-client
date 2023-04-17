@@ -1,0 +1,14 @@
+.user-panel {
+  display: grid;
+  grid-template-columns: 0.3em 1fr 6em;
+  grid-template-rows: 1;
+  grid-template-areas: ". user-name logout";
+}
+
+.user-panel-logout {
+  grid-area: logout;
+}
+
+.user-panel-name {
+  grid-area: user-name;
+}

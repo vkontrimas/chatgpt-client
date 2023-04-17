@@ -14,7 +14,8 @@ import RegisterPage from './pages/Register'
 import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 
-import './index.css'
+import './css/Buttons.css'
+import './css/index.css'
 
 const router = createBrowserRouter([
   {

@@ -1,0 +1,19 @@
+.button2 {
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  color: #808080;
+  background: #303030;
+  cursor: pointer;
+  margin: 0.2em;
+}
+
+.button2:hover {
+  background: #505050;
+  color: black;
+}
+
+.button2:active {
+  background: #808080;
+  color: black;
+}
