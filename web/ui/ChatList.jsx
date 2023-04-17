@@ -14,8 +14,6 @@ const ChatList = (props) => {
 
   const params = useParams()
 
-  const hideWhenLoading = useMemo(() => isLoading ? { display: 'none' } : null, [isLoading])
-  const showWhenLoading = useMemo(() => isLoading ? null : { display: 'none' }, [isLoading])
 
   const listItems = useMemo(
     () => { 

@@ -19,12 +19,21 @@ import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 import Chat from './ui/Chat'
 import NewChat from './ui/NewChat'
+import Initialization from './ui/Initialization'
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Authorized> <Main /> </Authorized>,
+    element: (
+      <Authorized>
+        <Main />
+      </Authorized>
+    ),
     children: [
+      {
+        path: '/',
+        element: <div> test </div>
+      },
       { 
         path: '/chat/new',
         element: <NewChat />
