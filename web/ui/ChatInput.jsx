@@ -1,55 +1,42 @@
 import '../css/ChatInput.css'
 
-import { useState, useRef, useEffect, } from 'react'
+import { useCallback, useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 const ChatInput = ({ enabled }) => {
   const [message, setMessage] = useState('')
-  /*const dispatch = useDispatch()
-  const inputRef = useRef(null)
+  const textAreaRef = useRef(null)
 
-  const handleSubmit = async (event) => {
-    event?.preventDefault()
-    if (message) {
-      // TODO: Find out if the markdownified message significantly affects
-      //       GPT replies. (Also definitely should add tokens? Maybe not?)
-      dispatch(create({ type: 'user', content: message.replace(/\n/g, '  \n') }))
-      setMessage('')
+  // Automatically resize the text area to fit content
+  useEffect(() => {
+    const area = textAreaRef.current
+    if (area) {
+      area.style.height = '0px'
+      area.style.height = `${area.scrollHeight}px`
     }
-  }
-
-  useEffect(() => autoSize(inputRef.current), [])
-
-  const handleKeyDown = async (event) => {
-    if (message && event.keyCode === 13 && !event.shiftKey) {
-      event.preventDefault()
-      await handleSubmit(null)
-    }
-    autoSize(event.target)
-  }
-
-  */
-
-
-  const autoSize = (target) => {
-    target.style.height = '0px'
-    target.style.height = `${target.scrollHeight}px`
-  }
-
-  const handleChange = (event) => {
-    setMessage(event.target.value) 
-    autoSize(event.target)
-  }
+  }, [message, textAreaRef.current])
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    if (event) { event.preventDefault() }
+    setMessage('')
+  }
+
+  // On desktop use enter to send and shift+enter to enter a new line
+  const handleKeyDown = (event) => {
+    if (message && event.keyCode === 13 && !event.shiftKey) {
+      event.preventDefault()
+      textAreaRef.current.form.requestSubmit()
+    }
   }
 
   return (
     <form className='chat-input-form' onSubmit={handleSubmit}>
       <textarea
         className='text-input chat-input'
-        onChange={handleChange}
+        onChange={event => setMessage(event.target.value)}
+        onKeyDown={handleKeyDown}
+        value={message}
+        ref={textAreaRef}
         autoFocus
       />
       <button className='button-clear good chat-send-button' action="submit" disabled={!enabled}>
