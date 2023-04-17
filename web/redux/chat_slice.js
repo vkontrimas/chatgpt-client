@@ -6,7 +6,32 @@ export const NEW_CHAT_ID = 'new'
 const newChat = () => ({
   id: NEW_CHAT_ID,
   title: 'Untitled Chat',
-  messages: [],
+  messages: [
+    {
+      id: 'asgasdgasdgasdgasdgasdg',
+      role: 'user',
+      content: 'henlo!',
+      status: 'done',
+    },
+    {
+      id: 'hgklsadjkl',
+      role: 'assistant',
+      content: 'hello, how can I help!',
+      status: 'done',
+    },
+    {
+      id: 'kljgdfljiow124124',
+      role: 'user',
+      content: 'help me',
+      status: 'done',
+    },
+    {
+      id: 'asgasdgassdfhg8124981jdg',
+      role: 'assistant',
+      content: 'help how?',
+      status: 'done',
+    },
+  ],
 })
 
 const initialState = {
