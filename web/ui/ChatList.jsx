@@ -7,7 +7,7 @@ import { useParams } from 'react-router-dom'
 
 import ChatTitleBar from './ChatTitleBar'
 import Loading from './Loading'
-import { addChats, setLoading } from '../redux/chat_slice'
+import { setChats, setLoading } from '../redux/chat_slice'
 
 const ChatList = (props) => {
   const { map, loading } = useSelector(state => state.chat)
@@ -20,7 +20,7 @@ const ChatList = (props) => {
       dispatch(setLoading(true))
       const response = await axios.get('/api/chat', { headers: { Authorization: bearer } })
       console.log(response.data)
-      dispatch(addChats(response.data))
+      dispatch(setChats(response.data))
       dispatch(setLoading(false))
     }
     loadChats()

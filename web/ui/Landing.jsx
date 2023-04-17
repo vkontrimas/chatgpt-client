@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 import ChatInput from './ChatInput'
 import ChatMessageScrollView from './ChatMessageScrollView'
-import { addChats } from '../redux/chat_slice'
+import { setChats } from '../redux/chat_slice'
 
 const Landing = () => {
   const bearer = useSelector(state => state.user.token?.bearer)
@@ -46,7 +46,7 @@ const Landing = () => {
     
     // TODO: also request completion!
 
-    dispatch(addChats([chat]))
+    dispatch(setChats([chat]))
     navigate(`/chat/${chat.id}`, { replace: true })
   }, [setMessages, messages, dispatch, navigate])
 

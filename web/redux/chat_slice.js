@@ -10,7 +10,7 @@ export const chatSlice = createSlice({
   name: 'chat',
   initialState,
   reducers: {
-    addChats: (state, { payload }) => {
+    setChats: (state, { payload }) => {
       for (const chat of payload) {
         state.map[chat.id] = {
           title: 'Untitled Chat',
@@ -25,7 +25,7 @@ export const chatSlice = createSlice({
   extraReducers: (builder) => { },
 })
 
-export const { addChats, setLoading } = chatSlice.actions
+export const { setChats, setLoading } = chatSlice.actions
 
 export default chatSlice.reducer
 
