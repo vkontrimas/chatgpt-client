@@ -13,7 +13,7 @@ const ChatList = () => {
     <div className='chat-list'>
       {items.map(title => <ChatTitleBar key={title} title={title} />)}
       <button
-        className='button-clear chat-list-add-button'
+        className='button-clear good chat-list-add-button'
         onClick={() => {}}
       >
         <i className='fa fa-plus-square fa-2x'/>

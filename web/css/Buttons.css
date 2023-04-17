@@ -43,6 +43,10 @@
   color: firebrick;
 }
 
+.button-clear.good:active {
+  color: #007F5F;
+}
+
 /*
  * Touch screens
  */
