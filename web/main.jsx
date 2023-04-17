@@ -13,6 +13,7 @@ import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
 import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
+import ChatView from './ui/ChatView'
 
 import './css/Buttons.css'
 import './css/index.css'
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/chat/:chatId',
-        element: <div>I'm a chat! 😊</div>,
+        element: <ChatView />,
       }
     ],
   },
