@@ -122,10 +122,8 @@ class ChatDriver {
     let currentContent = ''
     stream.on('data', (chunk) => {
       currentContent = currentContent + chunk.delta
-      console.log('content: ', currentContent)
     })
     stream.on('end', () => {
-      console.log('submit: ', currentContent)
       // Once done, update messages state
       chatDriver.messages[messageIndex].status = 'done'
       chatDriver.messages[messageIndex].content = currentContent
