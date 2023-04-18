@@ -1,6 +1,5 @@
 .chat-message-scroll-view {
   /* TODO: add padding here */
-  height: 100%;
   overflow: auto;
 }
 
