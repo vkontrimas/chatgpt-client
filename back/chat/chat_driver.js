@@ -116,53 +116,36 @@ class ChatDriver {
 
     const stream = await this.ai.getCompletionStream(this.messages)
 
-    // Capture some state for processor function
+    // Capture some state
     const chatDriver = this
     const messageIndex = this.messages.length - 1
-    const processor = async function * () {
-      try {
-        // Assemble message while yielding deltas
-        let currentContent = ''
-        for await (const delta of stream) {
-          currentContent = currentContent + delta.delta
-          yield delta
+    let currentContent = ''
+    stream.on('data', (chunk) => {
+      currentContent = currentContent + chunk.delta
+      console.log('content: ', currentContent)
+    })
+    stream.on('end', () => {
+      console.log('submit: ', currentContent)
+      // Once done, update messages state
+      chatDriver.messages[messageIndex].status = 'done'
+      chatDriver.messages[messageIndex].content = currentContent
+
+      // Also in DB
+      Message.update({
+        status: 'done',
+        content: currentContent,
+      }, {
+        where: {
+          id: message.id,
         }
+      })
 
-        // Once done, update messages state
-        chatDriver.messages[messageIndex].status = 'done'
-        chatDriver.messages[messageIndex].content = currentContent
+      // remove stream
+      chatDriver.currentCompletionStream = null
+    })
 
-        // Also in DB
-        await Message.update({
-          status: 'done',
-          content: currentContent,
-        }, {
-          where: {
-            id: message.id,
-          }
-        })
-
-        // remove stream
-        chatDriver.currentCompletionStream = null
-      } catch (error) {
-        // If we had an error, update message state
-        chatDriver.messages[messageIndex].status = 'error'
-        await Message.update({ status: 'error' }, {
-          where: {
-            id: message.id,
-          }
-        })
-
-        // remove stream
-        chatDriver.currentCompletionStream = null
-
-        // Also rethrow
-        throw error
-      }
-    }
-
-    this.currentCompletionStream = processor()
-    return [message, this.currentCompletionStream]
+    this.currentCompletionStream = stream
+    return [message, stream]
   }
 
   async fetchMessages() {

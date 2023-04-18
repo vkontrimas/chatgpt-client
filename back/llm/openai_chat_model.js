@@ -1,7 +1,36 @@
+const { Transform } = require('stream')
 const fetch = require('node-fetch')
 
 const ChatCompletionModel = require('./chat_completion_model')
 const { OPENAI_API_KEY } = require('../config')
+
+const parseJSONDeltas = new Transform({
+  transform(chunk, encoding, callback) {
+    const messages = chunk.toString().split('\n\n')
+    for (const message of messages) {
+      const prefix = 'data: '
+      if (message.startsWith(prefix)) {
+        const withoutPrefix = message.substring(prefix.length)
+        if (withoutPrefix !== '[DONE]') {
+          const obj = JSON.parse(withoutPrefix)
+          this.push(obj)
+        }
+      }
+    }
+    callback()
+  },
+  objectMode: true
+})
+
+const convertToNativeJSON = new Transform({
+  transform(chunk, encoding, callback) {
+    if (chunk?.choices && chunk.choices[0]?.delta?.content) {
+      this.push({ status: 'completing', delta: chunk.choices[0].delta.content })
+    }
+    callback()
+  },
+  objectMode: true
+})
 
 class OpenAIChatModel extends ChatCompletionModel {
   constructor(config) {
@@ -31,6 +60,8 @@ class OpenAIChatModel extends ChatCompletionModel {
     })
 
     return response.body
+      .pipe(parseJSONDeltas)
+      .pipe(convertToNativeJSON)
   }
 }
 

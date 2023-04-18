@@ -67,15 +67,16 @@ chatRouter.post('/:base64Id/complete', async (request, response) => {
     status: 'pending',
   }))
 
-  for await (const delta of stream) {
+  stream.on('data', (delta) => {
+    console.log('write: ', JSON.stringify(delta))
     response.write(JSON.stringify(delta))
-  }
-
-  response.write(JSON.stringify({
-    status: 'done',
-  }))
-
-  response.end()
+  })
+  stream.on('end', () => {
+    response.write(JSON.stringify({
+      status: 'done',
+    }))
+    response.end()
+  })
 })
 
 chatRouter.delete('/:base64Id/all', async (request, response) => {
