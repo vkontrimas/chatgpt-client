@@ -40,7 +40,7 @@ const completeMessage = async (bearer, chatId, addMessage, updateMessage) => {
     }
   }
 
-  const delayMs = 30
+  const delayMs = 15
   let content = ''
   const typeMessage = {
     start() { },
