@@ -15,6 +15,7 @@ export const chatSlice = createSlice({
         state.map[chat.id] = {
           title: 'Untitled Chat',
           messages: [],
+          messageMap: {},
           ...chat,
         }
       }
@@ -24,7 +25,21 @@ export const chatSlice = createSlice({
     },
     addMessage: (state, { payload }) => {
       const { chatId, message } = payload 
+
+      // TODO: just store messages in map and do a memoized sort on render
+      const index = state.map[chatId].messages.length
       state.map[chatId].messages.push(message)
+      state.map[chatId].messageMap[message.id] = index
+    },
+    updateMessage: (state, { payload }) => {
+      const { chatId, message } = payload
+
+      const index = state.map[chatId].messageMap[message.id]
+      const messageState = state.map[chatId].messages[index]
+      state.map[chatId].messages[index] = {
+        ...messageState,
+        ...message,
+      }
     },
     setMessages: (state, { payload }) => {
       const { chatId, messages } = payload
@@ -44,6 +59,7 @@ export const {
   addMessage,
   setMessages,
   destroyChat,
+  updateMessage,
 } = chatSlice.actions
 
 export default chatSlice.reducer

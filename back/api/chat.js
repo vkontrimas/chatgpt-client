@@ -58,10 +58,38 @@ chatRouter.post('/:base64Id/complete', async (request, response) => {
   const user = await request.verifyUserSession()
   const chatId = idFromBase64(request.params.base64Id)
   const chat = await ChatDriver.open(user.id, chatId)
+  const message = await chat.postMessage({ role: 'assistant', content: 'How do you do?' })
+  response.write(JSON.stringify({
+    id: idToBase64(message.id),
+    status: 'pending',
+  }))
+  response.write(JSON.stringify({
+    status: 'completing',
+    delta: 'How ',
+  }))
+  response.write(JSON.stringify({
+    status: 'completing',
+    delta: 'do ',
+  }))
+  response.write(JSON.stringify({
+    status: 'completing',
+    delta: 'you ',
+  }))
+  response.write(JSON.stringify({
+    status: 'completing',
+    delta: 'do',
+  }))
+  response.write(JSON.stringify({
+    status: 'completing',
+    delta: '?',
+  }))
+  response.write(JSON.stringify({
+    status: 'done',
+  }))
+  response.end()
 
+/*
   const [message, stream] = await chat.completeCurrentThread()
-  response.status(201)
-  response.set('Content-Type', '/application/octet-stream')
   response.write(JSON.stringify({
     id: idToBase64(message.id),
     status: 'pending',
@@ -77,6 +105,7 @@ chatRouter.post('/:base64Id/complete', async (request, response) => {
     }))
     response.end()
   })
+  */
 })
 
 chatRouter.delete('/:base64Id/all', async (request, response) => {

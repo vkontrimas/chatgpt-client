@@ -7,7 +7,8 @@ import { useNavigate } from 'react-router-dom'
 
 import ChatInput from './ChatInput'
 import ChatMessageScrollView from './ChatMessageScrollView'
-import { setChats, addMessage } from '../redux/chat_slice'
+import { setChats, addMessage, updateMessage } from '../redux/chat_slice'
+import completeThread from '../completion'
 
 const Landing = () => {
   const bearer = useSelector(state => state.user.token?.bearer)
@@ -24,13 +25,9 @@ const Landing = () => {
     }))
 
     /*
-     * TODO: 
-     *  - POST new chat - maybe clear the state?
-     *  - navigate to it
-     *
-     *  dispatch appropriate actions
+     * Sadly at the moment we create the chat in a separate step from fetching
+     * it
      */
-
     const chatResponse = await axios.post(
       '/api/chat',
       {
@@ -60,7 +57,13 @@ const Landing = () => {
     dispatch(addMessage({ chatId: chat.id, message: addMessageResponse.data }))
     navigate(`/chat/${chat.id}`, { replace: true })
 
-    // TODO: also begin completion!
+    // begin completion in the background
+    completeThread(
+      bearer,
+      chat.id,
+      (message) => dispatch(addMessage({ chatId: chat.id, message })),
+      (message) => dispatch(updateMessage({ chatId: chat.id, message })),
+    )
   }, [setMessages, messages, dispatch, navigate])
 
   return (
