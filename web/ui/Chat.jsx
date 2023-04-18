@@ -9,7 +9,9 @@ import ChatTitleBar from './ChatTitleBar'
 import ChatInput from './ChatInput'
 import ChatMessageScrollView from './ChatMessageScrollView'
 import Loading from './Loading'
-import { setChats, setMessages } from '../redux/chat_slice'
+import { setChats, setMessages, addMessage, updateMessage } from '../redux/chat_slice'
+
+import completeThread from '../completion'
 
 
 const Chat = () => {
@@ -40,11 +42,35 @@ const Chat = () => {
     return <Loading />
   }
 
+  const handleSubmitMessage = async (message) => {
+    const response = await axios.post(
+      `/api/chat/${chatId}/add`,
+      {
+        role: 'user',
+        content: message,
+      },
+      {
+        headers: {
+          Authorization: bearer,
+        }
+      }
+    )
+    dispatch(addMessage({ chatId, message: response.data }))
+
+    // begin completion in the background
+    completeThread(
+      bearer,
+      chatId,
+      (message) => dispatch(addMessage({ chatId, message })),
+      (message) => dispatch(updateMessage({ chatId, message })),
+    )
+  }
+
   return (
     <div className='chat'>
       <ChatTitleBar id={chat.id} title={chat.title} />
       <ChatMessageScrollView messages={chat.messages} />
-      <ChatInput />
+      <ChatInput submitMessage={handleSubmitMessage} />
     </div>
   )
 }
