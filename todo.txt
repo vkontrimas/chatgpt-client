@@ -23,4 +23,6 @@
 [] fix: potato model allows crashing the server when we can send configs!
 [] test wrapper to verify we're not sending passwords or hashes across network
 [] same for uuids
-
+[] use paranoid deletions
+[] encrypt user chats
+[] log token usage
