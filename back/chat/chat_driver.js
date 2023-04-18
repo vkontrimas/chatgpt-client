@@ -129,7 +129,6 @@ class ChatDriver {
       chatDriver.messages[messageIndex].content = currentContent
 
       // Also in DB
-      /*
       Message.update({
         status: 'done',
         content: currentContent,
@@ -138,8 +137,6 @@ class ChatDriver {
           id: message.id,
         }
       })
-
-*/
 
       // remove stream
       chatDriver.currentCompletionStream = null

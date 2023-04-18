@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Message.init({
-    content: DataTypes.STRING,
+    content: DataTypes.TEXT,
     role: DataTypes.STRING,
     status: DataTypes.STRING,
   }, {
