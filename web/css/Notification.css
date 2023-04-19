@@ -1,0 +1,17 @@
+.notification {
+  padding: 1em;
+  border-radius: 0.4em;
+
+  color: #808080;
+  background: #303030;
+}
+
+.notification.good {
+  color: floralwhite;
+  background: #007F5F;
+}
+
+.notification.bad {
+  background: #601c1c;
+  color: #909090;
+}
