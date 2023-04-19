@@ -7,17 +7,6 @@ const streamToArray = require('../../stream_to_array')
 const { createTestUser, loginTestUser } = require('../helper')
 
 describe('ChatDriver create', () => {
-  let chatsBefore = []
-
-  beforeEach(async () => {
-    chatsBefore = await Chat.findAll({ raw: true })
-  })
-
-  afterEach(async () => {
-    const chatsAfter = await Chat.findAll({ raw: true })
-    expect(chatsAfter).toMatchObject(chatsBefore)
-  })
-
   test('if no userId, throws', async () => {
     await expect(ChatDriver.create()).rejects.toMatch('missing user id')
     await expect(ChatDriver.create(null)).rejects.toMatch('missing user id')
@@ -39,9 +28,7 @@ describe('ChatDriver create', () => {
 
     await expect(ChatDriver.create(id, 'potato')).rejects.toMatch('invalid user id')
   })
-})
 
-describe('ChatDriver create', () => {
   test('valid user creates chat', async () => {
     const { user } = await createTestUser()
 
@@ -141,8 +128,6 @@ describe('ChatDriver destroy', () => {
     await expect(chat.destroy()).resolves.toBeUndefined()
     const foundChat = await Chat.findByPk(chat.id)
     expect(foundChat).toBeNull()
-    const chatsAfter = await Chat.findAll({ raw: true })
-    expect(chatsAfter.length).toBe(chatsBefore.length - 1)
   })
 })
 

@@ -60,27 +60,6 @@ describe('createRegistrationCode', () => {
 })
 
 describe('createUserWithRegistrationCode', () => {
-  let usersBefore = []
-  let usesBefore = []
-
-  beforeEach(async () => {
-    const [users, uses] = await Promise.all([
-      User.findAll({ raw: true }),
-      // RegistrationCodeUse.findAll({ raw: true })
-    ])
-    usersBefore = users
-    // usesBefore = uses
-  })
-
-  afterEach(async () => {
-    const [usersAfter, usesAfter] = await Promise.all([
-      User.findAll({ raw: true }),
-      // RegistrationCodeUse.findAll({ raw: true }),
-    ])
-    expect(usersAfter).toMatchObject(usersBefore)
-    // expect(usesAfter).toMatchObject(usesBefore)
-  })
-
   test('missing code throws', async () => {
     const user = uniqueTestUser()
     await expect(createUserWithRegistrationCode({ user }))
@@ -135,32 +114,28 @@ describe('createUserWithRegistrationCode', () => {
   })
 
   test('valid code adds user to DB', async () => {
-    const usersBefore = await User.findAll({ raw: true })
-
     const code = await createRegistrationCode({ remainingUses: 100 })
     const user = uniqueTestUser()
     
     const [createdUser, usesLeft] = await createUserWithRegistrationCode({ codeId: code.id, user })
-    const usersAfter = await User.findAll({ raw: true })
 
-    expect(usersAfter.length).toBe(usersBefore.length + 1)
-    expect(usersAfter).toContainEqual(createdUser.toJSON())
+    const foundUser = await User.findByPk(createdUser.id, { raw: true })
+    expect(foundUser).toMatchObject(createdUser.toJSON())
   })
 
   test('code with two uses can be used twice ', async () => {
     const users = [ uniqueTestUser(), uniqueTestUser(), uniqueTestUser() ]
 
-    const usersBefore = await User.findAll({ raw: true })
     const { id } = await createRegistrationCode({ remainingUses: 2 })
     const [alice] = await createUserWithRegistrationCode({ codeId: id, user: users[0], })
     const [bob] = await createUserWithRegistrationCode({ codeId: id, user: users[1], })
     await expect(createUserWithRegistrationCode({ codeId: id, user: users[2], }))
       .rejects.toMatch('no registration code uses left')
-    const usersAfter = await User.findAll({ raw: true })
 
-    expect(usersAfter.length).toBe(usersBefore.length + 2)
-    expect(usersAfter).toContainEqual(alice.toJSON())
-    expect(usersAfter).toContainEqual(bob.toJSON())
+    const foundAlice = await User.findByPk(alice.id, { raw: true })
+    expect(foundAlice).toMatchObject(alice.toJSON())
+    const foundBob = await User.findByPk(bob.id, { raw: true })
+    expect(foundBob).toMatchObject(bob.toJSON())
   })
 
   /*

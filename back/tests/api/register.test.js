@@ -145,8 +145,6 @@ describe(`API ${ENDPOINT}`, () => {
 
   test('POST - valid - 201 created', async () => {
     const code = await createRegistrationCode({ remainingUses: 1 })
-    const usersBefore = await User.findAll({ raw: true })
-
     const request = uniqueTestUser()
 
     const response = await api
@@ -161,8 +159,7 @@ describe(`API ${ENDPOINT}`, () => {
     expect(user.passwordHash).not.toBeDefined()
     expect(user.id).toBeDefined()
 
-    const usersAfter = await User.findAll({ raw: true })
-    expect(usersAfter.length).toBe(usersBefore.length + 1)
-    expect(usersAfter.map(user => user.email)).toContain(request.email)
+    const foundUser = await User.findByPk(user.id, { raw: true })
+    expect(foundUser).toMatchObject(user)
   })
 })

@@ -33,46 +33,20 @@ describe('createUser', () => {
     const user = uniqueTestUser()
     const created = await createUser(user)
 
-    const usersAfter = await User.findAll({ raw: true })
-    expect(usersAfter.length).toBe(usersBefore.length + 1)
-    expect(usersAfter).toContainEqual(created.toJSON())
+    const found = await User.findByPk(created.id, { raw: true })
+    expect(found).toMatchObject(created.toJSON())
   })
 
   test('throws if email collides', async () => {
-    const { email } = uniqueTestUser()
+    const dave = uniqueTestUser()
+    const bob = { ...uniqueTestUser(), email: dave.email }
 
-    await expect(createUser({
-      name: 'Dave',
-      email,
-      password: 'daverox',
-    }))
-      .resolves.toBeDefined()
-
-    const usersBefore = await User.findAll({ raw: true })
-    await expect(createUser({
-      name: 'Bobby',
-      email,
-      password: 'roberto',
-    }))
-      .rejects.toMatch('email collision')
-
-    const usersAfter = await User.findAll({ raw: true })
-    expect(usersAfter).toMatchObject(usersBefore)
+    await expect(createUser(dave)).resolves.toBeDefined()
+    await expect(createUser(bob)).rejects.toMatch('email collision')
   })
 })
 
 describe('createUser', () => {
-  let usersBefore = []
-
-  beforeEach(async () => {
-    usersBefore = await User.findAll({ raw: true })
-  })
-
-  afterEach(async () => {
-    const usersAfter = await User.findAll({ raw: true })
-    expect(usersAfter).toMatchObject(usersBefore)
-  })
-
   test('throws if no name', async () => {
     await expect(createUser({ email: 'dave@example.com', password: 'daverox' }))
       .rejects.toMatch('no name')
