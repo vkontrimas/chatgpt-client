@@ -354,7 +354,6 @@ describe('POST /chat/:id/complete - complete messages', () => {
         .pipe(writable)
     })
 
-    console.log(result)
     expect(result).toMatchObject(expected)
 
     const receivedMessage = expected
