@@ -11,14 +11,19 @@ const uniqueUser = () => {
   }
 } 
 
-const loginTestUser = async () => {
+const createTestUser = async () => {
   const user = uniqueUser()
-  await createUser(user)
+  return await createUser(user)
+}
+
+const loginTestUser = async () => {
+  await createTestUser()
   const [token, model] = await createSessionToken(user)
   return [ `Bearer ${token}`, model ]
 }
 
 module.exports = {
   uniqueUser,
+  createTestUser,
   loginTestUser,
 }
