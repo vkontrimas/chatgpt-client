@@ -16,39 +16,24 @@ const mockRequest = (authorization) => ({
   }
 })
 
-const { initializeDB } = require('../db_helper')
+const { createTestUser, loginTestUser } = require('../helper')
 
-beforeEach(async () => {
-  await initializeDB()
-})
 
 describe('userSession middleware', () => {
   test('bearer with token creates lazy loader, calls next', async () => {
-    const user = {
-      name: 'Roger',
-      email: 'roj@example.com',
-      password: 'whatsyourvectorvictor',
-    }
-    const model = await createUser(user)
-    const [token] = await createSessionToken(user)
+    const [bearer, model] = await loginTestUser()
 
     const next = jest.fn()
-    const req = mockRequest(`Bearer ${token}`)
+    const req = mockRequest(bearer)
     userSession(req, {}, next)
     expect(typeof req.verifyUserSession).toBe('function')
     expect(next).toHaveBeenCalled()
   })
 
   test('lazy loader loads correct user', async () => {
-    const user = {
-      name: 'Roger',
-      email: 'roj@example.com',
-      password: 'whatsyourvectorvictor',
-    }
-    const model = await createUser(user)
-    const [token] = await createSessionToken(user)
+    const [bearer, model] = await loginTestUser()
 
-    const req = mockRequest(`Bearer ${token}`)
+    const req = mockRequest(bearer)
     userSession(req, {}, () => {})
 
     const result = await req.verifyUserSession()
@@ -56,13 +41,8 @@ describe('userSession middleware', () => {
   })
 
   test('lazy loader throws for expired token', async () => {
-    const user = {
-      name: 'Roger',
-      email: 'roj@example.com',
-      password: 'whatsyourvectorvictor',
-    }
-    const model = await createUser(user)
-    const token = jwt.sign({ id: model.id, email: model.email }, SESSION_TOKEN_SECRET, { expiresIn: '2s' })
+    const { user } = await createTestUser()
+    const token = jwt.sign({ id: user.id, email: user.email }, SESSION_TOKEN_SECRET, { expiresIn: '2s' })
     await new Promise(res => setTimeout(res, 3000))
 
     const req = mockRequest(`Bearer ${token}`)
@@ -72,14 +52,9 @@ describe('userSession middleware', () => {
   })
 
   test('lazy loader throws invalid id token', async () => {
-    const user = {
-      name: 'Roger',
-      email: 'roj@example.com',
-      password: 'whatsyourvectorvictor',
-    }
-    const model = await createUser(user)
-    const [token] = await createSessionToken(user)
-    model.destroy()
+    const { email, password, user } = await createTestUser()
+    const [token] = await createSessionToken({ email, password })
+    user.destroy()
 
     const req = mockRequest(`Bearer ${token}`)
     userSession(req, {}, () => {})
@@ -88,13 +63,8 @@ describe('userSession middleware', () => {
   })
 
   test('lazy loader throws for missigned token', async () => {
-    const user = {
-      name: 'Roger',
-      email: 'roj@example.com',
-      password: 'whatsyourvectorvictor',
-    }
-    const model = await createUser(user)
-    const token = jwt.sign({ id: model.id, email: model.email }, 'wrong sekret')
+    const { user } = await createTestUser()
+    const token = jwt.sign({ id: user.id, email: user.email }, 'wrong sekret')
 
     const req = mockRequest(`Bearer ${token}`)
     userSession(req, {}, () => {})
