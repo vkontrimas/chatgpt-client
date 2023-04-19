@@ -31,3 +31,40 @@
   background: #252525;
 }
 
+
+.text-input.angry {
+  animation: text-input-shake 0.20s, text-input-red-flash 1.3s;
+  animation-iteration-count: 3, 1;
+  animation-timing-function: easeInOutQuart, easeOutCirc;
+
+}
+
+@keyframes text-input-red-flash {
+  0% {
+    background: #601c1c;
+  }
+  15% {
+    background: #630d0d;
+  }
+  30% {
+    background: #601c1c;
+  }
+  100% {
+    background: #303030;
+  }
+}
+
+@keyframes text-input-shake {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: rotate(-0.3deg) translate(-3px, 0);
+  }
+  75% {
+    transform: rotate(0.3deg) translate(3px, 0);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}

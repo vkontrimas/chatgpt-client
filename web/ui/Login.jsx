@@ -35,12 +35,13 @@ const Auth = () => {
 
       setEmail('')
       setPassword('')
-
-      await localForage.setItem('user', userState)
     } catch (error) {
-      console.error('error logging in:', error)
+      const message = error.response?.data?.error
+      if (message) {
+        console.error('error logging in:', message)
+      }
+
       // TODO: handle specific login errors
-      await localForage.removeItem('user')
     }
   }
 
@@ -48,7 +49,7 @@ const Auth = () => {
     <div className='login'>
       <form className='login-form' onSubmit={handleSubmit}>
         <input
-          className='text-input login-form-email'
+          className='text-input login-form-email angry'
           placeholder="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
