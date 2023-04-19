@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 
 import { login } from '../redux/user'
+import { useTimed } from './effects'
 
 import '../css/Login.css'
 
@@ -15,11 +16,25 @@ const getTokenExpiry = (token) => {
 
 const Auth = () => {
   const [email, setEmail] = useState('')
+  const [emailAngryClass, emailAngry] = useTimed('', 'angry')
   const [password, setPassword] = useState('')
+  const [passwordAngryClass, passwordAngry] = useTimed('', 'angry')
   const dispatch = useDispatch()
 
   const handleSubmit = async (event) => {
     event.preventDefault()
+
+    const angryDurationSec = 1.2
+    let passwordAngryDelaySec = 0
+    if (!email) {
+      emailAngry(angryDurationSec, 0)
+      passwordAngryDelaySec = 0.14
+    }
+    if (!password) {
+      passwordAngry(angryDurationSec, passwordAngryDelaySec)
+    }
+
+    if (!email || !password) { return }
 
     try {
       const { data } = await axios.post('/api/login', { email, password })
@@ -37,11 +52,13 @@ const Auth = () => {
       setPassword('')
     } catch (error) {
       const message = error.response?.data?.error
-      if (message) {
-        console.error('error logging in:', message)
+      if (message === 'unauthorized') {
+        emailAngry(angryDurationSec, 0)
+        passwordAngry(angryDurationSec, 0.14)
       }
-
-      // TODO: handle specific login errors
+      else {
+        throw error
+      }
     }
   }
 
@@ -49,13 +66,13 @@ const Auth = () => {
     <div className='login'>
       <form className='login-form' onSubmit={handleSubmit}>
         <input
-          className='text-input login-form-email angry'
+          className={`text-input login-form-email ${emailAngryClass}`}
           placeholder="email"
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
         <input
-          className='text-input login-form-password'
+          className={`text-input login-form-password ${passwordAngryClass}`}
           placeholder="password"
           type="password"
           onChange={e => setPassword(e.target.value)}
