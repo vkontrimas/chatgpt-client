@@ -12,7 +12,7 @@ import {
 import { store } from './redux/store'
 
 import Main from './ui/Main'
-import LoginPage from './pages/Login'
+import Login from './ui/Login'
 import RegisterPage from './pages/Register'
 import Chat from './ui/Chat'
 import Landing from './ui/Landing'
@@ -43,7 +43,7 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <LoggedOut >
-        <LoginPage />
+        <Login />
       </LoggedOut>
     ),
   },

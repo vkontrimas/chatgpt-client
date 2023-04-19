@@ -3,8 +3,6 @@
  */
 .button2 {
   min-width: 6em;
-  height: 2.8em;
-  margin: 0.2em;
 
   outline: none;
   border: none;
@@ -25,6 +23,22 @@
   background: #808080;
   color: black;
 }
+
+.button2.good {
+  color: floralwhite;
+  background: #007F5F;
+}
+
+.button2.good:hover {
+  background: #039e77;
+  color: black;
+}
+
+.button2.good:active {
+  background: #02cc99;
+  color: black;
+}
+
 
 /* 
  * Clear button used for buttons with icons

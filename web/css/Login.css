@@ -1,0 +1,32 @@
+.login {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.login-form {
+  display: grid;
+  width: 20em;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 2.2em 2.2em 2.2em;
+  grid-template-areas:
+    "email email"
+    "password password"
+    "login login";
+  gap: 0.7em;
+
+}
+
+.login-form-email {
+  grid-area: email;
+}
+
+.login-form-password {
+  grid-area: password;
+}
+
+.login-form-login {
+  grid-area: login;
+}
