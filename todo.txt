@@ -37,10 +37,11 @@ Back alley v1 release:
 [] - in progress AI message should be aligned left
 [x] - add version tag to page
 [] - scroll to bottom when new message is entered or a message is updated!
+[] - encrypt user chats
 
 Back alley v2 release:
 [] - need to be able to share conversations!
 [] - Rework message loading so we only load a portion of the chat
 [] - push notifications
-[] - encrypt user chats
 [] - log token usage
+[] - store encryption keys in KMS
