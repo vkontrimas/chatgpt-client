@@ -1,0 +1,42 @@
+.register {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.register-form {
+  display: grid;
+  width: 20em;
+  grid-template-columns: 1fr;
+  grid-template-rows: 2.2em 2.2em 2.2em 2.2em 2.2em;
+  grid-template-areas:
+    "first-name"
+    "last-name"
+    "email"
+    "password"
+    "register";
+  gap: 0.7em;
+}
+
+.register-form-first-name {
+  grid-area: first-name;
+}
+
+.register-form-last-name {
+  grid-area: last-name;
+}
+
+.register-form-email {
+  grid-area: email;
+}
+
+.register-form-password {
+  grid-area: password;
+}
+
+.register-form-register {
+  grid-area: register;
+}
+
