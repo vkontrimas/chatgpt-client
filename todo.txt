@@ -1,19 +1,16 @@
 [] Handle request errors in frontend!
 [] Handle OpenAI API errors!!!
-[] Move pending and failed assistant message logic to backend
-[] Rework message loading so we only load a portion of the chat
+[x] Move pending and failed assistant message logic to backend
 [] Set up some kind of superproject to test both the frontend and backend simultaneously
 [x] Handle token expiration!
 [] Fix message fetching happening before we check for token expiry...
 [] Refetch user info from DB in case it changed!
 [] Handle login expiry when sleeping
 [] Parallelise tests 
-[] add RegistrationCodeUse records whenever someone signs up
 [] make code blocks expand to 100% message width as soon as started!
 [] upgrade to typescript
   [] define schema for chat completion chunks
 [] log unauthorized access attempts
-[] sort chats by last used (last time user interacted with it)
 [] change verifyUserSession to verifyUserBearerToken since we rarely use User and so the DB fetch is waste
 [] check token expiry / login status local storage on focus
 [] unit test frontend
@@ -24,5 +21,23 @@
 [] test wrapper to verify we're not sending passwords or hashes across network
 [] same for uuids
 [] use paranoid deletions
-[] encrypt user chats
-[] log token usage
+[] - sort chats by last used (last time user interacted with it)
+
+Back alley v1 release:
+[] - register and login pages should redirect to landing if user is logged in
+[] - fix RegistrationCodeUses not working
+[] - finish sliding UI for mobile
+[] - open last used convo on launch
+[] - on launch send a request to check if token still valid 
+[] - handle all the errors we defined in the back end from the frontend!
+[] - fix chat loading
+[] - add analytics
+[] - 404 and error pages
+[] - log all errors
+
+Back alley v2 release:
+[] - need to be able to share conversations!
+[] - Rework message loading so we only load a portion of the chat
+[] - push notifications
+[] - encrypt user chats
+[] - log token usage
