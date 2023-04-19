@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'
 
-const WhenLoggedOut = ({ children }) => {
+const LoggedOut = ({ children }) => {
   const user = useSelector(state => state.user)
 
   if (user) {
@@ -11,4 +11,4 @@ const WhenLoggedOut = ({ children }) => {
   }
 }
 
-export default WhenLoggedOut
+export default LoggedOut

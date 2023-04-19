@@ -16,7 +16,7 @@ import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
 import Chat from './ui/Chat'
 import Landing from './ui/Landing'
-import WhenLoggedOut from './ui/WhenLoggedOut'
+import LoggedOut from './ui/LoggedOut'
 import LoggedIn from './ui/LoggedIn'
 import SessionManager from './ui/SessionManager'
 
@@ -42,17 +42,17 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: (
-      <WhenLoggedOut >
+      <LoggedOut >
         <LoginPage />
-      </WhenLoggedOut>
+      </LoggedOut>
     ),
   },
   {
     path: '/register/:code',
     element: (
-      <WhenLoggedOut>
+      <LoggedOut>
         <RegisterPage />
-      </WhenLoggedOut>
+      </LoggedOut>
     ),
   },
 ])
