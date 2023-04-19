@@ -2,14 +2,9 @@ const uuid = require('uuid')
 const { Chat, Message } = require('db')
 const { ChatDriver } = require('../../chat')
 const { createUser } = require('../../users')
-const { initializeDB } = require('../db_helper')
 const { PotatoChatModel } = require('../../llm')
 const streamToArray = require('../../stream_to_array')
-const { loginTestUser } = require('../helper')
-
-beforeEach(async () => {
-  await initializeDB()
-})
+const { createTestUser, loginTestUser } = require('../helper')
 
 describe('ChatDriver create', () => {
   let chatsBefore = []
@@ -30,11 +25,7 @@ describe('ChatDriver create', () => {
   })
 
   test('if no modelName, throws', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     await expect(ChatDriver.create(user.id)).rejects.toMatch('missing chat model name')
     await expect(ChatDriver.create(user.id, null)).rejects.toMatch('missing chat model name')
@@ -42,11 +33,7 @@ describe('ChatDriver create', () => {
   })
 
   test('non existing userId throws', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const id = user.id
     await user.destroy()
 
@@ -56,11 +43,7 @@ describe('ChatDriver create', () => {
 
 describe('ChatDriver create', () => {
   test('valid user creates chat', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chatDriver = await ChatDriver.create(user.id, 'potato')
     expect(chatDriver).toBeDefined()
@@ -68,11 +51,7 @@ describe('ChatDriver create', () => {
   })
 
   test('created chat added to database', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chatsBefore = await Chat.findAll({ raw: true })
     const chatDriver = await ChatDriver.create(user.id, 'potato')
@@ -86,11 +65,7 @@ describe('ChatDriver create', () => {
   })
 
   test('configures model', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
     expect(chat.ai.config).toMatchObject({ deltaCount: 4 })
@@ -103,24 +78,16 @@ describe('ChatDriver create', () => {
 
 describe('ChatDriver open', () => {
   test('if no chat id, throws', async () => {
-    const rob = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
-    await expect(ChatDriver.open(rob)).rejects.toMatch('missing chat id')
-    await expect(ChatDriver.open(rob, null)).rejects.toMatch('missing chat id')
-    await expect(ChatDriver.open(rob, '')).rejects.toMatch('missing chat id')
+    await expect(ChatDriver.open(user.id)).rejects.toMatch('missing chat id')
+    await expect(ChatDriver.open(user.id, null)).rejects.toMatch('missing chat id')
+    await expect(ChatDriver.open(user.id, '')).rejects.toMatch('missing chat id')
   })
 
   test('if no user id, throws', async () => {
-    const rob = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
-    const chat = await ChatDriver.create(rob.id, 'potato')
+    const { user } = await createTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
 
     await expect(ChatDriver.open(undefined, chat.id)).rejects.toMatch('missing user id')
     await expect(ChatDriver.open(null, chat.id)).rejects.toMatch('missing user id')
@@ -128,11 +95,7 @@ describe('ChatDriver open', () => {
   })
 
   test('if id doesnt exist, throws', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
     const id = chat.id
@@ -142,29 +105,15 @@ describe('ChatDriver open', () => {
   })
 
   test('if chat doesnt belong to user, throws', async () => {
-    const rob = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const alice = await createTestUser()
+    const eve = await createTestUser()
 
-    const eve = await createUser({
-      name: 'Evelynn',
-      email: 'eveeee@example.com',
-      password: 'shhhhh'
-    })
-
-    const robsChat = await ChatDriver.create(rob.id, 'potato')
-
-    await expect(ChatDriver.open(eve.id, robsChat.id)).rejects.toMatch('unauthorized')
+    const aliceChat = await ChatDriver.create(alice.user.id, 'potato')
+    await expect(ChatDriver.open(eve.user.id, aliceChat.id)).rejects.toMatch('unauthorized')
   })
 
   test('if both ids exist and chat belongs to user, opens chat', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const createdChat = await ChatDriver.create(user.id, 'potato')
     const openChat = await ChatDriver.open(user.id, createdChat.id)
@@ -176,11 +125,7 @@ describe('ChatDriver open', () => {
 
 describe('ChatDriver destroy', () => {
   test('if chat no longer exists, succeeds', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
     await chat.destroy()
@@ -189,11 +134,7 @@ describe('ChatDriver destroy', () => {
   })
 
   test('if chat exists and belongs to user, removes chat from db', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
     
     const chatsBefore = await Chat.findAll({ raw: true })
@@ -207,11 +148,7 @@ describe('ChatDriver destroy', () => {
 
 describe('ChatDriver postMessage', () => {
   test('if message missing, throw', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
 
     await expect(chat.postMessage()).rejects.toMatch('missing message')
@@ -219,11 +156,7 @@ describe('ChatDriver postMessage', () => {
   })
 
   test('message validation', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
 
     await expect(chat.postMessage({ role: 'user', })).rejects.toMatch('missing content')
@@ -231,11 +164,7 @@ describe('ChatDriver postMessage', () => {
   })
 
   test('posts message', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
 
     const message = await chat.postMessage({
@@ -264,11 +193,7 @@ describe('ChatDriver postMessage', () => {
   })
 
   test('fails if chat destroyed', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
     await chat.destroy()
     await expect(chat.postMessage('foo')).rejects.toMatch('chat destroyed')
@@ -277,22 +202,14 @@ describe('ChatDriver postMessage', () => {
 
 describe('ChatDriver fetchMessages', () => {
   test('fails if chat destroyed', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
     await chat.destroy()
     await expect(chat.fetchMessages()).rejects.toMatch('chat destroyed')
   })
 
   test('retrieves messages', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
 
     const expected = [
@@ -330,11 +247,7 @@ describe('ChatDriver fetchMessages', () => {
 
 describe('ChatDriver state', () => {
   test('no messages when chat created', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
     expect(chat.messages.length).toBe(0)
@@ -344,11 +257,7 @@ describe('ChatDriver state', () => {
   })
 
   test('no messages when empty chat opened', async () => {
-    const user = await createUser({
-      name: 'Robbo',
-      email: 'robbo@example.com',
-      password: 'to',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
     const openChat = await ChatDriver.open(user.id, chat.id)
@@ -356,11 +265,7 @@ describe('ChatDriver state', () => {
   })
 
   test('remembers posted messages when chat opened', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
 
@@ -383,11 +288,7 @@ describe('ChatDriver state', () => {
   })
 
   test('remembers ai model when opened', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
 
@@ -401,11 +302,7 @@ describe('ChatDriver state', () => {
 
 describe('ChatDriver completeCurrentThread', () => {
   test('throws if chat destroyed', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
     await chat.postMessage({ role: 'user', content: 'Hello!' })
@@ -414,22 +311,14 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('throws if no messages', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato')
     await expect(chat.completeCurrentThread()).rejects.toMatch('cannot complete chat with no messages')
   })
 
   test('returns delta stream if successful', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -439,11 +328,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('adds in progress message during completion', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -466,11 +351,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('adds in done message after completion', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -496,11 +377,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('cannot post message while completion is running', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -511,11 +388,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('cannot complete while completion is already running', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -526,11 +399,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('can retrieve stream while completion is running', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -543,11 +412,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('opened chat knows a message is being completed', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -569,11 +434,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('if fails during completion, sets last message status to error', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -587,11 +448,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('cannot post message after message with error status', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -602,11 +459,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('cannot complete after message with error status', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, throwOn: 2 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
@@ -618,11 +471,7 @@ describe('ChatDriver completeCurrentThread', () => {
 
 
   test('re-throws if ai model immediately throws', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, throwImmediately: true })
     await chat.postMessage({ role: 'user', content: 'hello' })
@@ -630,11 +479,7 @@ describe('ChatDriver completeCurrentThread', () => {
   })
 
   test('re-throws if ai model immediately throws', async () => {
-    const user = await createUser({
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'pass',
-    })
+    const { user } = await createTestUser()
 
     const { id } = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, throwImmediately: true })
     const chat = await ChatDriver.open(user.id, id)
