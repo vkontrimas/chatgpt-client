@@ -45,3 +45,4 @@ Back alley v2 release:
 [] - push notifications
 [] - log token usage
 [] - store encryption keys in KMS
+[] - respond with expired token when token is expired

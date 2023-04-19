@@ -22,7 +22,7 @@ if (ENVIRONMENT === 'development' || ENVIRONMENT === 'test') {
 app.use(express.static('public'))
 app.use(express.json())
 app.use('/api/chat', userSession, chatRouter)
-app.use('/api/users', usersRouter)
+app.use('/api/users', userSession, usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/register', registerRouter)
 app.get('*', (request, response) => response.sendFile(path.resolve('public', 'index.html')))

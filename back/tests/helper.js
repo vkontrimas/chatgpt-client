@@ -17,7 +17,8 @@ const createTestUser = async () => {
 }
 
 const loginTestUser = async () => {
-  await createTestUser()
+  const user = uniqueUser()
+  await createUser(user)
   const [token, model] = await createSessionToken(user)
   return [ `Bearer ${token}`, model ]
 }
