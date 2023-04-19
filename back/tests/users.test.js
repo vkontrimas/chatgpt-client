@@ -17,13 +17,14 @@ describe('createUser', () => {
     const result = await createUser(user)
     const expected = {
       id: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       passwordHash: expect.stringMatching(/.+/),
     }
 
     expect(result.toJSON()).toMatchObject(expected)
-    expect(JSON.stringify(result)).not.toMatch(new RegExp(`${user.password}`, 'g'))
+    expect(JSON.stringify(result)).not.toContain(user.password)
   })
 
 
@@ -47,25 +48,32 @@ describe('createUser', () => {
 })
 
 describe('createUser', () => {
-  test('throws if no name', async () => {
-    await expect(createUser({ email: 'dave@example.com', password: 'daverox' }))
-      .rejects.toMatch('no name')
-    await expect(createUser({ name: '', email: 'dave@example.com', password: 'daverox' }))
-      .rejects.toMatch('no name')
+  test('throws if no first name', async () => {
+    const user = uniqueTestUser()
+    delete user.firstName
+    await expect(createUser(user)).rejects.toMatch('no first name')
+    await expect(createUser({ ...user, firstName: '' })).rejects.toMatch('no first name')
+  })
+
+  test('throws if no last name', async () => {
+    const user = uniqueTestUser()
+    delete user.lastName
+    await expect(createUser(user)).rejects.toMatch('no last name')
+    await expect(createUser({ ...user, lastName: '' })).rejects.toMatch('no last name')
   })
 
   test('throws if no email', async () => {
-    await expect(createUser({ name: 'Dave', password: 'daverox' }))
-      .rejects.toMatch('no email')
-    await expect(createUser({ name: 'Dave', email: '', password: 'daverox' }))
-      .rejects.toMatch('no email')
+    const user = uniqueTestUser()
+    delete user.email
+    await expect(createUser(user)).rejects.toMatch('no email')
+    await expect(createUser({ ...user, email: '' })).rejects.toMatch('no email')
   })
 
   test('throws if no password', async () => {
-    await expect(createUser({ name: 'Dave', email: 'dave@example.com' }))
-      .rejects.toMatch('no password')
-    await expect(createUser({ name: 'Dave', email: 'dave@example.com', password: '' }))
-      .rejects.toMatch('no password')
+    const user = uniqueTestUser()
+    delete user.password
+    await expect(createUser(user)).rejects.toMatch('no password')
+    await expect(createUser({ ...user, password: '' })).rejects.toMatch('no password')
   })
 })
 

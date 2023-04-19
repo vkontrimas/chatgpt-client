@@ -27,7 +27,9 @@ usersRouter.get('/:base64Id', async (request, response) => {
 
   const result = {
     id: idToBase64(user.id),
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
   }
   response.status(200).json(result)
 })

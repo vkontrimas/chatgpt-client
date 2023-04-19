@@ -34,7 +34,8 @@ registerRouter.post('/:base64Id', async (request, response) => {
     })
     response.status(201).json({
       id: user.id,
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
     })
   } catch (error) {

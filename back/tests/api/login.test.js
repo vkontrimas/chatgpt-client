@@ -72,7 +72,9 @@ describe(`POST /api/login`, () => {
 
     expect(response.body).toMatchObject({
       id: idToBase64(user.id),
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
       token: expect.stringMatching('.*')
     })
   })

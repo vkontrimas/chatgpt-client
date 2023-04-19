@@ -68,7 +68,9 @@ describe(`GET /api/users/:userId`, () => {
 
     expect(response.body).toMatchObject({
       id: idToBase64(user.id),
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
     })
   })
 })

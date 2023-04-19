@@ -9,16 +9,18 @@ const createUser = async (user, sequelizeOptions) => {
   if (!user) { throw 'missing user' } 
   if (!user.email) { throw 'no email' }
   if (!user.password) { throw 'no password' }
-  if (!user.name) { throw 'no name' }
+  if (!user.firstName) { throw 'no first name' }
+  if (!user.lastName) { throw 'no last name' }
 
-  const { email, password, name } = user
+  const { email, password, firstName, lastName } = user
   const passwordHash = await bcrypt.hash(password, PASSWORD_SALT_ROUNDS)
 
   try {
     const id = uuid.v4()
     return await User.create({
       id,
-      name,
+      firstName,
+      lastName,
       email,
       passwordHash,
     }, sequelizeOptions)

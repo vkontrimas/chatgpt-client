@@ -105,7 +105,8 @@ describe('createUserWithRegistrationCode', () => {
     const [createdUser, usesLeft] = await createUserWithRegistrationCode({ codeId: code.id, user })
     expect(createdUser.toJSON()).toMatchObject({
       id: expect.stringMatching(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/),
-      name: user.name,
+      firstName: user.firstName,
+      lastName: user.lastName,
       email: user.email,
       passwordHash: expect.stringMatching(/.+/),
     })

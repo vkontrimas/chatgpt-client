@@ -5,7 +5,8 @@ const { createUser, createSessionToken } = require('../users')
 const uniqueTestUser = () => {
   const name = `testUser_${idToBase64(uuid.v4())}`
   return {
-    name,
+    firstName: name,
+    lastName: 'Beer',
     email: `${name}@example.com`,
     password: `${name}_password!`,
   }

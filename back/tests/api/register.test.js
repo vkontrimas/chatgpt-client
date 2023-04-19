@@ -90,16 +90,33 @@ describe(`API ${ENDPOINT}`, () => {
     expect(errorResponse.body.error).toContain('expired')
   })
 
-  test('POST - valid code, no name - 400 error', async () => {
+  test('POST - valid code, no first name - 400 error', async () => {
+    const user = uniqueTestUser()
+    delete user.firstName
+
     const code = await createRegistrationCode({ remainingUses: 1 })
 
     const response = await api
       .post(endpoint(idToBase64(code.id)))
-      .send({ email: 'foo@example.com', password: 'bar' })
+      .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
-    expect(response.body.error).toMatch(/no name/)
+    expect(response.body.error).toMatch(/no first name/)
+  })
+
+  test('POST - valid code, no last name - 400 error', async () => {
+    const user = uniqueTestUser()
+    delete user.lastName
+    const code = await createRegistrationCode({ remainingUses: 1 })
+
+    const response = await api
+      .post(endpoint(idToBase64(code.id)))
+      .send(user)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body.error).toMatch(/no last name/)
   })
 
   test('POST - no email - 400 error', async () => {
@@ -154,12 +171,17 @@ describe(`API ${ENDPOINT}`, () => {
       .expect('Content-Type', /application\/json/)
 
     const user = response.body
-    expect(user.name).toBe(request.name)
-    expect(user.email).toBe(request.email)
-    expect(user.passwordHash).not.toBeDefined()
-    expect(user.id).toBeDefined()
+    expect(user).toMatchObject({
+      id: expect.stringMatching(/.*/),
+      firstName: request.firstName,
+      lastName: request.lastName,
+      email: request.email,
+    })
 
     const foundUser = await User.findByPk(user.id, { raw: true })
     expect(foundUser).toMatchObject(user)
+
+    expect(JSON.stringify(user)).not.toContain(foundUser.passwordHash)
+    expect(JSON.stringify(user)).not.toContain(request.password)
   })
 })
