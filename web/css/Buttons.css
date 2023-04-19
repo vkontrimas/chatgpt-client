@@ -39,6 +39,26 @@
   color: black;
 }
 
+.button2:disabled {
+  border: 2px solid #303030;
+  color: #808080;
+  background: #252525;
+  cursor: default;
+}
+
+.button2:disabled:hover {
+  border: 2px solid #303030;
+  color: #808080;
+  background: #252525;
+  cursor: default;
+}
+
+.button2:disabled:active {
+  border: 2px solid #303030;
+  color: #808080;
+  background: #252525;
+  cursor: default;
+}
 
 /* 
  * Clear button used for buttons with icons
