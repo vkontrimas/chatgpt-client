@@ -315,7 +315,7 @@ describe('ChatDriver completeCurrentThread', () => {
   test('adds in progress message during completion', async () => {
     const { user } = await createTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
     const [message, stream] = await chat.completeCurrentThread()
 
@@ -338,7 +338,7 @@ describe('ChatDriver completeCurrentThread', () => {
   test('adds in done message after completion', async () => {
     const { user } = await createTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
     const [message, stream] = await chat.completeCurrentThread()
     await streamToArray(stream)
@@ -364,7 +364,7 @@ describe('ChatDriver completeCurrentThread', () => {
   test('cannot post message while completion is running', async () => {
     const { user } = await createTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
     const [message, stream] = await chat.completeCurrentThread()
     await expect(chat.postMessage({ role: 'user', content: 'are you completin\'?' }))
@@ -375,7 +375,7 @@ describe('ChatDriver completeCurrentThread', () => {
   test('cannot complete while completion is already running', async () => {
     const { user } = await createTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
     const [message, stream] = await chat.completeCurrentThread()
     await expect(chat.completeCurrentThread())
@@ -386,7 +386,7 @@ describe('ChatDriver completeCurrentThread', () => {
   test('can retrieve stream while completion is running', async () => {
     const { user } = await createTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
     expect(chat.currentCompletionStream).toBeNull()
     const [message, stream] = await chat.completeCurrentThread()
@@ -399,7 +399,7 @@ describe('ChatDriver completeCurrentThread', () => {
   test('opened chat knows a message is being completed', async () => {
     const { user } = await createTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 1000 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello!' })
 
     const [message, stream] = await chat.completeCurrentThread()
@@ -514,7 +514,7 @@ describe('ChatDriver clear', () => {
 
   test('throws if in the middle of completion', async () => {
     const [_, user] = await loginTestUser()
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 300 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello' })
     const [message, stream] = await chat.completeCurrentThread()
     await expect(chat.clear()).rejects.toMatch('cannot delete messages during chat completion')

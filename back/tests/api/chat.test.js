@@ -230,7 +230,7 @@ describe('POST /chat/:id/add - add message', () => {
   test('409 - cannot post while ai agent is replying', async () => {
     const [bearer, user] = await loginTestUser()
     const body = { role: 'user', content: 'hello!' }
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello' })
     const [message, stream] = await chat.completeCurrentThread()
 
@@ -423,7 +423,7 @@ describe('POST /chat/:id/complete - complete messages', () => {
   test('409 - cannot post while ai agent is replying', async () => {
     const [bearer, user] = await loginTestUser()
 
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 500 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 4, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello' })
     const [message, stream] = await chat.completeCurrentThread()
 
@@ -489,7 +489,7 @@ describe('DELETE /api/chat/:id/all - delete all messages', () => {
 
   test('409 - cannot delete during completion', async () => {
     const [bearer, user] = await loginTestUser()
-    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 300 })
+    const chat = await ChatDriver.create(user.id, 'potato', { deltaCount: 3, delayMs: 25 })
     await chat.postMessage({ role: 'user', content: 'hello' })
     const [message, stream] = await chat.completeCurrentThread()
 
