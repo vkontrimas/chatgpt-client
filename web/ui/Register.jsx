@@ -42,10 +42,12 @@ const Auth = () => {
     let cumulativeDelaySec = 0
     if (!firstNameTrimmed) {
       firstNameAngry(angryDurationSec, cumulativeDelaySec)
+      setFirstName('') // in case they're all spaces
       cumulativeDelaySec += 0.14
     }
     if (!lastNameTrimmed) {
       lastNameAngry(angryDurationSec, cumulativeDelaySec)
+      setLastName('') // in case they're all spaces
       cumulativeDelaySec += 0.14
     }
     if (!email) {
@@ -62,7 +64,7 @@ const Auth = () => {
     try {
       const registerResponse = await axios.post(
         `/api/register/${code}`,
-        { firstName: firstNameTrimmed, lastName: lastNameTrimmed, email, password }
+        { firstName: firstNameTrimmed, lastName, email, password }
       )
 
       const user = registerResponse.data
