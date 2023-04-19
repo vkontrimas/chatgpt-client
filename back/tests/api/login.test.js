@@ -6,22 +6,10 @@ const { createTestUser } = require('../helper')
 
 const ENDPOINT = '/api/login'
 
-const { 
-  modelUser,
-  initialUsers,
-  initializeDB,
-  fetchAllUsers,
-} = require('../db_helper')
-
 describe(`POST /api/login`, () => {
-  beforeEach(async () => {
-    await initializeDB()
-  })
-
   test('400 - no email', async () => {
-    const request = {
-      password: 'sekret',
-    }
+    const { email, password, user } = await createTestUser()
+    const request = { password }
     const response = await api
       .post(ENDPOINT)
       .send(request)
@@ -32,9 +20,8 @@ describe(`POST /api/login`, () => {
   })
 
   test('400 - no password', async () => {
-    const request = {
-      email: initialUsers[0].email,
-    }
+    const { email, password, user } = await createTestUser()
+    const request = { email }
     const response = await api
       .post(ENDPOINT)
       .send(request)
@@ -45,9 +32,10 @@ describe(`POST /api/login`, () => {
   })
 
   test('401 - wrong email', async () => {
-    const request = {
-      ...initialUsers[0],
+    const { password, user } = await createTestUser()
+    const request = { 
       email: 'wrong@example.com',
+      password,
     }
     const response = await api
       .post(ENDPOINT)
@@ -59,8 +47,9 @@ describe(`POST /api/login`, () => {
   })
 
   test('401 - wrong password', async () => {
+    const { email, password, user } = await createTestUser()
     const request = {
-      ...initialUsers[0],
+      email,
       password: 'wrongpassword',
     }
     const response = await api
