@@ -60,17 +60,17 @@ chatRouter.post('/:base64Id/complete', async (request, response) => {
   const chat = await ChatDriver.open(user.id, chatId)
 
   const [message, stream] = await chat.completeCurrentThread()
-  response.write(JSON.stringify({ id: message.id, status: 'pending' }))
+  response.write(JSON.stringify({ id: idToBase64(message.id), status: 'pending' }))
   stream.on('data', (delta) => {
     const json = JSON.stringify(delta)
     response.write(json)
   })
   stream.on('end', () => {
-    response.write(JSON.stringify({ id: message.id, status: 'done' }))
+    response.write(JSON.stringify({ id: idToBase64(message.id), status: 'done' }))
     response.end()
   })
   stream.on('error', () => {
-    response.write(JSON.stringify({ id: message.id, status: 'error' }))
+    response.write(JSON.stringify({ id: idToBase64(message.id), status: 'error' }))
     response.end()
   })
 })

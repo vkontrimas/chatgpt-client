@@ -477,13 +477,18 @@ describe('ChatDriver completeCurrentThread', () => {
     const [message, stream] = await chat.completeCurrentThread()
     await streamToArray(stream)
 
+    const result = chat.messages[chat.messages.length - 1]
     const expected = {
       id: expect.stringMatching(/.*/),
       role: 'assistant',
       content: new Array(4).fill('potato').join(''),
       status: 'done',
     }
-    expect(chat.messages[chat.messages.length - 1]).toMatchObject(expected)
+    expect(result).toMatchObject(expected)
+
+    // HACK: we write message async :/
+    await new Promise(res => setTimeout(res, 100))
+
     expect(await Message.findByPk(message.id, { raw: true })).toMatchObject({
       ...expected,
       ChatId: chat.id,
@@ -575,6 +580,8 @@ describe('ChatDriver completeCurrentThread', () => {
     const [message, stream] = await chat.completeCurrentThread()
     await expect(streamToArray(stream)).rejects.toMatch('throw potato')
     expect(chat.messages[chat.messages.length - 1].status).toBe('error')
+    // HACK: we write Message async
+    await new Promise(res => setTimeout(res, 100))
     const dbMessage = await Message.findByPk(message.id)
     expect(dbMessage.status).toBe('error')
   })

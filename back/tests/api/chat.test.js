@@ -354,6 +354,7 @@ describe('POST /chat/:id/complete - complete messages', () => {
         .pipe(writable)
     })
 
+    console.log(result)
     expect(result).toMatchObject(expected)
 
     const receivedMessage = expected
@@ -551,7 +552,7 @@ describe('GET /api/chat - list all chats', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    const expectedIds = chats.map(chat => ({ id: chat.id }))
-    expect(response.body.sort()).toMatchObject(expectedIds.sort())
+    const expectedIds = chats.map(({ id }) => idToBase64(id))
+    expect(response.body.map(({id}) => id).sort()).toMatchObject(expectedIds.sort())
   })
 })

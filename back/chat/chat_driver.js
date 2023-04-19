@@ -141,6 +141,22 @@ class ChatDriver {
       // remove stream
       chatDriver.currentCompletionStream = null
     })
+    stream.on('error', () => {
+      chatDriver.messages[messageIndex].status = 'error'
+
+      //Also in DB
+      Message.update({
+        status: 'error',
+        content: currentContent,
+      }, {
+        where: {
+          id: message.id,
+        }
+      })
+
+      // remove stream
+      chatDriver.currentCompletionStream = null
+    })
 
     this.currentCompletionStream = stream
     return [message, stream]
