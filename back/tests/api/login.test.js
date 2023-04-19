@@ -1,6 +1,9 @@
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
+const { idToBase64 } = require('../../base64_id')
+const { createTestUser } = require('../helper')
+
 const ENDPOINT = '/api/login'
 
 const { 
@@ -10,12 +13,12 @@ const {
   fetchAllUsers,
 } = require('../db_helper')
 
-describe(`API ${ENDPOINT}`, () => {
+describe(`POST /api/login`, () => {
   beforeEach(async () => {
     await initializeDB()
   })
 
-  test('POST - no email - 400 error', async () => {
+  test('400 - no email', async () => {
     const request = {
       password: 'sekret',
     }
@@ -28,7 +31,7 @@ describe(`API ${ENDPOINT}`, () => {
     expect(response.body.error).toMatch(/no email/)
   })
 
-  test('POST - no password - 400 error', async () => {
+  test('400 - no password', async () => {
     const request = {
       email: initialUsers[0].email,
     }
@@ -41,7 +44,7 @@ describe(`API ${ENDPOINT}`, () => {
     expect(response.body.error).toMatch(/no password/)
   })
 
-  test('POST - wrong email - 401 error', async () => {
+  test('401 - wrong email', async () => {
     const request = {
       ...initialUsers[0],
       email: 'wrong@example.com',
@@ -55,7 +58,7 @@ describe(`API ${ENDPOINT}`, () => {
     expect(response.body.error).toMatch(/unauthorized/)
   })
 
-  test('POST - wrong password - 401 error', async () => {
+  test('401 - wrong password', async () => {
     const request = {
       ...initialUsers[0],
       password: 'wrongpassword',
@@ -69,18 +72,19 @@ describe(`API ${ENDPOINT}`, () => {
     expect(response.body.error).toMatch(/unauthorized/)
   })
 
-  test('POST - valid email and password - 200 get token', async () => {
-    const { name, email, password } = initialUsers[0]
-    const request = { email, password }
+  test('200 - creates session token', async () => {
+    const { email, password, user } = await createTestUser()
 
     const response = await api
       .post(ENDPOINT)
-      .send(request)
+      .send({ email, password })
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    expect(typeof response.body.token).toBe('string')
-    expect(response.body.email).toBe(email)
-    expect(response.body.name).toBe(name)
+    expect(response.body).toMatchObject({
+      id: idToBase64(user.id),
+      name: user.name,
+      token: expect.stringMatching('.*')
+    })
   })
 })

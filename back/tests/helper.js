@@ -13,7 +13,8 @@ const uniqueUser = () => {
 
 const createTestUser = async () => {
   const user = uniqueUser()
-  return await createUser(user)
+  const model = await createUser(user)
+  return { email: user.email, password: user.password, user: model }
 }
 
 const loginTestUser = async () => {
