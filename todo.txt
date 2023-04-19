@@ -36,6 +36,7 @@ Back alley v1 release:
 [] - log all errors
 [] - in progress AI message should be aligned left
 [] - add version tag to page
+[] - scroll to bottom when new message is entered or a message is updated!
 
 Back alley v2 release:
 [] - need to be able to share conversations!
