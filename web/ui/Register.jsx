@@ -35,13 +35,16 @@ const Auth = () => {
   const handleSubmit = async (event) => {
     event.preventDefault()
 
+    const firstNameTrimmed = firstName.trim()
+    const lastNameTrimmed = lastName.trim()
+
     const angryDurationSec = 1.4
     let cumulativeDelaySec = 0
-    if (!firstName) {
+    if (!firstNameTrimmed) {
       firstNameAngry(angryDurationSec, cumulativeDelaySec)
       cumulativeDelaySec += 0.14
     }
-    if (!lastName) {
+    if (!lastNameTrimmed) {
       lastNameAngry(angryDurationSec, cumulativeDelaySec)
       cumulativeDelaySec += 0.14
     }
@@ -54,12 +57,12 @@ const Auth = () => {
       cumulativeDelaySec += 0.14
     }
 
-    if (!(firstName && lastName && password && email)) { return }
+    if (!(firstNameTrimmed && lastNameTrimmed && password && email)) { return }
 
     try {
       const registerResponse = await axios.post(
         `/api/register/${code}`,
-        { firstName, lastName, email, password }
+        { firstName: firstNameTrimmed, lastName: lastNameTrimmed, email, password }
       )
 
       const user = registerResponse.data
@@ -98,14 +101,14 @@ const Auth = () => {
           className={`text-input register-form-email ${emailAngryClass}`}
           placeholder="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value.trim())}
         />
         <input
           className={`text-input register-form-password ${passwordAngryClass}`}
           placeholder="password"
           type="password"
           value={password}
-          onChange={e => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value.trim())}
         />
         <button
           className='button2 good register-form-register'

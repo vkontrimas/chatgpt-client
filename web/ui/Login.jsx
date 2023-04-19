@@ -55,13 +55,13 @@ const Auth = () => {
           className={`text-input login-form-email ${emailAngryClass}`}
           placeholder="email"
           value={email}
-          onChange={e => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value.trim())}
         />
         <input
           className={`text-input login-form-password ${passwordAngryClass}`}
           placeholder="password"
           type="password"
-          onChange={e => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value.trim())}
         />
         <button
           className='button2 login-form-login good'
