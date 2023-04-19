@@ -33,7 +33,7 @@ registerRouter.post('/:base64Id', async (request, response) => {
       user: request.body,
     })
     response.status(201).json({
-      id: user.id,
+      id: idToBase64(user.id),
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,

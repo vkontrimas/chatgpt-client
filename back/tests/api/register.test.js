@@ -3,7 +3,7 @@ const api = supertest(require('../../app'))
 
 const { uniqueTestUser } = require('../helper')
 const { User, RegistrationCode } = require('db')
-const { idToBase64 } = require('../../base64_id')
+const { idToBase64, idFromBase64 } = require('../../base64_id')
 
 const { 
   createRegistrationCode,
@@ -178,8 +178,8 @@ describe(`API ${ENDPOINT}`, () => {
       email: request.email,
     })
 
-    const foundUser = await User.findByPk(user.id, { raw: true })
-    expect(foundUser).toMatchObject(user)
+    const foundUser = await User.findByPk(idFromBase64(user.id), { raw: true })
+    expect(foundUser).toMatchObject({ ...user, id: idFromBase64(user.id) })
 
     expect(JSON.stringify(user)).not.toContain(foundUser.passwordHash)
     expect(JSON.stringify(user)).not.toContain(request.password)
