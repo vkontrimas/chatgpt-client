@@ -19,7 +19,6 @@ const SessionManager = ({ children }) => {
    * Otherwise, remove token from local storage
    */
   useEffect(() => {
-    console.log('render session manager', user, loading)
     if (user) {
       setLoading(false)
       return
@@ -27,10 +26,14 @@ const SessionManager = ({ children }) => {
 
     const loadUser = async () => {
       const localUser = await localForage.getItem('user')
-      console.log(localUser)
       if (!localUser) { 
         setLoading(false)
         return
+      }
+
+      if (localUser.expiry * 1000 <= Date.now()) {
+        setLoading(false)
+        dispatch(logout)
       }
 
       try {
@@ -49,6 +52,18 @@ const SessionManager = ({ children }) => {
 
     loadUser()
   }, [])
+
+  /*
+   * If user logs in, set a timer to log them out once token expires
+   */
+  useEffect(() => {
+    if (!user) { return }
+    const timeUntilExpiryMs = user.expiry * 1000 - Date.now()
+    const timerId = setTimeout(() => dispatch(logout()), timeUntilExpiryMs)
+    return () => {
+      clearTimeout(timerId)
+    }
+  }, [user])
 
   if (loading) {
     return <Loading />

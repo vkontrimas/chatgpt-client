@@ -12,7 +12,7 @@
   [] define schema for chat completion chunks
 [] log unauthorized access attempts
 [] change verifyUserSession to verifyUserBearerToken since we rarely use User and so the DB fetch is waste
-[] check token expiry / login status local storage on focus
+[x] check token expiry / login status local storage on focus
 [] unit test frontend
 [] frontend integration test
 [] e2e test with click simulation!
@@ -30,7 +30,7 @@ Back alley v1 release:
 [] - fix RegistrationCodeUses not working
 [] - finish sliding UI for mobile
 [] - open last used convo on launch
-[] - on launch send a request to check if token still valid 
+[x] - on launch send a request to check if token still valid 
 [] - handle all the errors we defined in the back end from the frontend!
 [] - fix chat loading
 [] - add analytics
@@ -47,4 +47,4 @@ Back alley v2 release:
 [] - push notifications
 [] - log token usage
 [] - store encryption keys in KMS
-[] - respond with expired token when token is expired
+[] - respond with 'expired token' when token is expired
