@@ -1,7 +1,7 @@
 const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
-const { initializeDB } = require('../db_helper')
+const { uniqueTestUser } = require('../helper')
 const { User, RegistrationCode } = require('db')
 const { idToBase64 } = require('../../base64_id')
 
@@ -14,10 +14,6 @@ const ENDPOINT = '/api/register'
 const endpoint = (id) => `${ENDPOINT}/${id}`
 
 describe(`API ${ENDPOINT}`, () => {
-  beforeEach(async () => {
-    await initializeDB()
-  })
-
   test('GET - with incorrect code - 404 - returns \'invalid registration url\'', async () => {
     const code = await createRegistrationCode({ remainingUses: 1 })
     const id = code.id
@@ -49,9 +45,7 @@ describe(`API ${ENDPOINT}`, () => {
   test('GET - with expired code - 200 - returns \'used\'', async () => {
     const code = await createRegistrationCode({ remainingUses: 1 })
     await createUserWithRegistrationCode({
-      user: {
-        name: 'Bart', email: 'bart@example.com', password: 'eatmyshorts'
-      },
+      user: uniqueTestUser(),
       codeId: code.id,
     })
 
@@ -89,10 +83,10 @@ describe(`API ${ENDPOINT}`, () => {
         .expect('Content-Type', /application\/json/)
     }
 
-    await useCode(201, { name: 'A', email: 'a@b.com', password: 'foo' })
-    await useCode(201, { name: 'B', email: 'b@b.com', password: 'foo' })
-    await useCode(201, { name: 'C', email: 'c@b.com', password: 'foo' })
-    const errorResponse = await useCode(403, { name: 'D', email: 'd@b.com', password: 'foo' })
+    await useCode(201, uniqueTestUser())
+    await useCode(201, uniqueTestUser())
+    await useCode(201, uniqueTestUser())
+    const errorResponse = await useCode(403, uniqueTestUser())
     expect(errorResponse.body.error).toContain('expired')
   })
 
@@ -134,11 +128,15 @@ describe(`API ${ENDPOINT}`, () => {
 
   test('POST - email exists - 400 error', async () => {
     const code = await createRegistrationCode({ remainingUses: 1 })
-    const user = await User.findOne()
+    const existingUser = await User.findOne({ raw: true })
+    const user = {
+      ...uniqueTestUser(),
+      email: existingUser.email,
+    }
 
     const response = await api
       .post(endpoint(idToBase64(code.id)))
-      .send({ name: 'barb', email: user.email, password: 'foo' })
+      .send(user)
       .expect(400)
       .expect('Content-Type', /application\/json/)
 
@@ -149,11 +147,7 @@ describe(`API ${ENDPOINT}`, () => {
     const code = await createRegistrationCode({ remainingUses: 1 })
     const usersBefore = await User.findAll({ raw: true })
 
-    const request = {
-      name: 'work',
-      email: 'work@example.com',
-      password: 'please',
-    }
+    const request = uniqueTestUser()
 
     const response = await api
       .post(endpoint(idToBase64(code.id)))
