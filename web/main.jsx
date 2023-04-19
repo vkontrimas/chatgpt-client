@@ -18,6 +18,7 @@ import Authorized from './components/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 import Chat from './ui/Chat'
 import Landing from './ui/Landing'
+import WhenLoggedOut from './ui/WhenLoggedOut'
 
 const router = createBrowserRouter([
   {
@@ -40,11 +41,19 @@ const router = createBrowserRouter([
   },
   {
     path: '/login',
-    element: <LoginPage />,
+    element: (
+      <WhenLoggedOut >
+        <LoginPage />
+      </WhenLoggedOut>
+    ),
   },
   {
     path: '/register/:code',
-    element: <RegisterPage />,
+    element: (
+      <WhenLoggedOut>
+        <RegisterPage />
+      </WhenLoggedOut>
+    ),
   },
 ])
 

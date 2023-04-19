@@ -24,7 +24,7 @@
 [] - sort chats by last used (last time user interacted with it)
 
 Back alley v1 release:
-[] - register and login pages should redirect to landing if user is logged in
+[x] - register and login pages should redirect to landing if user is logged in
 [] - fix RegistrationCodeUses not working
 [] - finish sliding UI for mobile
 [] - open last used convo on launch
