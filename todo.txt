@@ -34,6 +34,8 @@ Back alley v1 release:
 [] - add analytics
 [] - 404 and error pages
 [] - log all errors
+[] - in progress AI message should be aligned left
+[] - add version tag to page
 
 Back alley v2 release:
 [] - need to be able to share conversations!

@@ -1,4 +1,3 @@
-import './css/index.css'
 import './css/Inputs.css'
 import './css/Buttons.css'
 

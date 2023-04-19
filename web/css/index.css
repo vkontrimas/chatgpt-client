@@ -25,6 +25,14 @@ body {
   height: 100svh;
 }
 
+#root-version-tag {
+  position: absolute;
+  color: #353535;
+  font-size: 1em;
+  bottom: 0.2em;
+  left: 0.2em;
+}
+
 h2 {
   font-weight: 600;
   margin: 0;
