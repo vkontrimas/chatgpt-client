@@ -14,11 +14,11 @@ import { store } from './redux/store'
 import Main from './ui/Main'
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
-import SessionExpiryProvider from './components/SessionExpiryProvider'
 import Chat from './ui/Chat'
 import Landing from './ui/Landing'
 import WhenLoggedOut from './ui/WhenLoggedOut'
 import LoggedIn from './ui/LoggedIn'
+import SessionManager from './ui/SessionManager'
 
 const router = createBrowserRouter([
   {
@@ -59,8 +59,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <ReduxProvider store={store}>
-    <SessionExpiryProvider>
+    <SessionManager>
       <RouterProvider router={router} />
-    </SessionExpiryProvider>
+    </SessionManager>
   </ReduxProvider>,
 )

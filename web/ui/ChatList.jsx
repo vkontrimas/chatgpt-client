@@ -11,7 +11,7 @@ import { setChats, setLoading } from '../redux/chat_slice'
 
 const ChatList = (props) => {
   const { map, loading } = useSelector(state => state.chat)
-  const bearer = useSelector(state => state.user.token?.bearer)
+  const bearer = useSelector(state => state.user?.bearer)
   const dispatch = useDispatch()
   const params = useParams()
   const navigate = useNavigate()

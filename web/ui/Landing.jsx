@@ -11,7 +11,7 @@ import { setChats, addMessage, updateMessage } from '../redux/chat_slice'
 import completeThread from '../completion'
 
 const Landing = () => {
-  const bearer = useSelector(state => state.user.token?.bearer)
+  const bearer = useSelector(state => state.user?.bearer)
   const [messages, setMessages] = useState([])
   const dispatch = useDispatch()
   const navigate = useNavigate()

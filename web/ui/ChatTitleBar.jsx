@@ -7,7 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { destroyChat } from '../redux/chat_slice'
 
 const ChatTitleBar = (props) => {
-  const bearer = useSelector(state => state.user.token?.bearer)
+  const bearer = useSelector(state => state.user?.bearer)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const params = useParams()

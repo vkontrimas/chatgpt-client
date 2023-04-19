@@ -22,6 +22,8 @@
 [] same for uuids
 [] use paranoid deletions
 [] - sort chats by last used (last time user interacted with it)
+[] put base64 user id inside token
+[] clear all chats on logout
 
 Back alley v1 release:
 [x] - register and login pages should redirect to landing if user is logged in

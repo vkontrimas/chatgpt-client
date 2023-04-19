@@ -1,32 +1,47 @@
 import axios from 'axios'
-import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import localForage from 'localforage'
+import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 
 import { login } from '../redux/user'
 
-import { useNavigate, useLocation } from 'react-router'
-
 import './Login.css'
+
+const getTokenExpiry = (token) => {
+  const base64Payload = token.split('.')[1]
+  const { exp } = JSON.parse(atob(base64Payload))
+  return exp
+}
 
 const Auth = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const location = useLocation()
-  const currentToken = useSelector(state => state.user.token)
-
-  useEffect(() => {
-    // If logged in, go to chat
-    if (currentToken) {
-      const destination = location.state?.from?.pathname || '/'
-      navigate(destination, { replace: true })
-    }
-  }, [currentToken])
 
   const handleSubmit = async (event) => {
     event.preventDefault()
-    dispatch(login({ email: email.trim(), password }))
+
+    try {
+      const { data } = await axios.post('/api/login', { email, password })
+
+      const userState = {
+        id: data.id,
+        name: data.name,
+        bearer: `Bearer ${data.token}`,
+        expiry: getTokenExpiry(data.token),
+      }
+
+      dispatch(login(userState))
+
+      setEmail('')
+      setPassword('')
+
+      await localForage.setItem('user', userState)
+    } catch (error) {
+      console.error('error logging in:', error)
+      // TODO: handle specific login errors
+      await localForage.removeItem('user')
+    }
   }
 
   return (

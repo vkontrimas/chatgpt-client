@@ -17,7 +17,7 @@ import completeThread from '../completion'
 const Chat = () => {
   const { chatId } = useParams()
   const dispatch = useDispatch()
-  const bearer = useSelector(state => state.user.token?.bearer)
+  const bearer = useSelector(state => state.user?.bearer)
   const chat = useSelector(state => state.chat.map[chatId])
   const messages = chat?.messages
 
