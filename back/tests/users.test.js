@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const { initializeDB } = require('./db_helper')
+const { uniqueTestUser } = require('./helper')
 const { User } = require('db')
 
 const { 
@@ -7,19 +7,12 @@ const {
   createSessionToken,
   verifySessionToken,
 } = require('../users')
-const { SESSION_TOKEN_SECRET } = require('../config')
 
-beforeEach(async () => {
-  await initializeDB()
-})
+const { SESSION_TOKEN_SECRET } = require('../config')
 
 describe('createUser', () => {
   test('returns created user', async () => {
-    const user = {
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'daverox',
-    }
+    const user = uniqueTestUser()
 
     const result = await createUser(user)
     const expected = {
@@ -37,11 +30,7 @@ describe('createUser', () => {
   test('adds user to DB', async () => {
     const usersBefore = await User.findAll({ raw: true })
 
-    const user = {
-      name: 'Dave',
-      email: 'dave@example.com',
-      password: 'daverox'
-    }
+    const user = uniqueTestUser()
     const created = await createUser(user)
 
     const usersAfter = await User.findAll({ raw: true })
@@ -50,7 +39,7 @@ describe('createUser', () => {
   })
 
   test('throws if email collides', async () => {
-    const email = 'foo@example.com'
+    const { email } = uniqueTestUser()
 
     await expect(createUser({
       name: 'Dave',
@@ -108,52 +97,32 @@ describe('createUser', () => {
 
 describe('createSessionToken', () => {
   test('throws if no password', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     await createUser(user)
     await expect(createSessionToken({ email: user.email, })).rejects.toMatch('no password')
     await expect(createSessionToken({ email: user.email, password: '' })).rejects.toMatch('no password')
   })
 
   test('throws if no email', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     await createUser(user)
     await expect(createSessionToken({ password: user.password })).rejects.toMatch('no email')
     await expect(createSessionToken({ email: '', password: user.password })).rejects.toMatch('no email')
   })
 
   test('throws if user doesnt exist', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     await expect(createSessionToken({ email: user.email, password: user.password })).rejects.toMatch('not found')
   })
 
   test('throws if password incorrect', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     const model = await createUser(user)
     await expect(createSessionToken({ email: user.email, password: 'wrongpassword' })).rejects.toMatch('wrong password')
   })
 
   test('returns a token and user if valid credentials', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
 
     const userModel = await createUser(user)
     const [token, resultModel] = await createSessionToken({ email: user.email, password: user.password })
@@ -170,11 +139,7 @@ describe('verifySessionToken', () => {
   })
 
   test('throws if token expired', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     const model = await createUser(user)
     const expiredToken = jwt.sign({ id: model.id, email: model.email, }, SESSION_TOKEN_SECRET, { expiresIn: '2s' })
     await new Promise((res) => setTimeout(res, 3000))
@@ -182,11 +147,7 @@ describe('verifySessionToken', () => {
   })
 
   test('throws if payload missing id', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     const model = await createUser(user)
     const tokenWithoutId = jwt.sign({ email: model.email, }, SESSION_TOKEN_SECRET, { expiresIn: '7d' })
     await expect(verifySessionToken(tokenWithoutId)).rejects.toMatch('session token invalid')
@@ -195,11 +156,7 @@ describe('verifySessionToken', () => {
   })
 
   test('throws if payload id doesnt exist', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
 
     const model = await createUser(user)
     const id = model.id
@@ -210,11 +167,7 @@ describe('verifySessionToken', () => {
   })
 
   test('returns user if valid', async () => {
-    const user = {
-      name: 'David',
-      email: 'david@example.com',
-      password: 'davidboy28183',
-    }
+    const user = uniqueTestUser()
     const expected = await createUser(user)
     const [token] = await createSessionToken(user)
     const result = await verifySessionToken(token)
