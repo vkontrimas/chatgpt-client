@@ -7,11 +7,8 @@ const {
 
 const { User, RegistrationCode } = require('db')
 
-const { initializeDB } = require('./db_helper')
+const { uniqueTestUser } = require('./helper')
 
-beforeEach(async () => {
-  await initializeDB()
-})
 
 describe('createRegistrationCode', () => {
   test('adds new code to db', async () => {
@@ -85,11 +82,7 @@ describe('createUserWithRegistrationCode', () => {
   })
 
   test('missing code throws', async () => {
-    const user = {
-      name: 'Jim',
-      email: 'jim@example.com',
-      password: 'lol',
-    }
+    const user = uniqueTestUser()
     await expect(createUserWithRegistrationCode({ user }))
       .rejects.toMatch('missing registration code')
     await expect(createUserWithRegistrationCode({ user, codeId: null }))
@@ -107,11 +100,7 @@ describe('createUserWithRegistrationCode', () => {
   })
 
   test('code with no uses left throws', async () => {
-    const user = {
-      name: 'Jim',
-      email: 'jim@example.com',
-      password: 'lol',
-    }
+    const user = uniqueTestUser()
     const model = await RegistrationCode.create({ id: uuid.v4(), remainingUses: 0 })
     await expect(createUserWithRegistrationCode({ user, codeId: model.id }))
       .rejects.toMatch('no registration code uses left')
@@ -122,11 +111,7 @@ describe('createUserWithRegistrationCode', () => {
     const id = model.id
     await model.destroy()
 
-    const user = {
-      name: 'Jim',
-      email: 'jim@example.com',
-      password: 'lol',
-    }
+    const user = uniqueTestUser()
     await expect(createUserWithRegistrationCode({ user, codeId: id }))
       .rejects.toMatch('invalid registration code')
   })
@@ -136,11 +121,7 @@ describe('createUserWithRegistrationCode', () => {
   test('valid code creates correct user', async () => {
     const initialUses = 100
     const code = await createRegistrationCode({ remainingUses: initialUses })
-    const user = {
-      name: 'Jim',
-      email: 'jim@example.com',
-      password: 'lol',
-    }
+    const user = uniqueTestUser()
     
     const [createdUser, usesLeft] = await createUserWithRegistrationCode({ codeId: code.id, user })
     expect(createdUser.toJSON()).toMatchObject({
@@ -157,11 +138,7 @@ describe('createUserWithRegistrationCode', () => {
     const usersBefore = await User.findAll({ raw: true })
 
     const code = await createRegistrationCode({ remainingUses: 100 })
-    const user = {
-      name: 'Jim',
-      email: 'jim@example.com',
-      password: 'lol',
-    }
+    const user = uniqueTestUser()
     
     const [createdUser, usesLeft] = await createUserWithRegistrationCode({ codeId: code.id, user })
     const usersAfter = await User.findAll({ raw: true })
@@ -171,23 +148,7 @@ describe('createUserWithRegistrationCode', () => {
   })
 
   test('code with two uses can be used twice ', async () => {
-    const users = [
-      {
-        name: 'Alice',
-        email: 'alice12512@example.com',
-        password: 'a',
-      },
-      {
-        name: 'Bob',
-        email: 'bob2352345@example.com',
-        password: 'b',
-      },
-      {
-        name: 'Charlie',
-        email: 'charlie523521@example.com',
-        password: 'c',
-      },
-    ]
+    const users = [ uniqueTestUser(), uniqueTestUser(), uniqueTestUser() ]
 
     const usersBefore = await User.findAll({ raw: true })
     const { id } = await createRegistrationCode({ remainingUses: 2 })
