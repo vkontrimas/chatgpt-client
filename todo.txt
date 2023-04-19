@@ -35,7 +35,7 @@ Back alley v1 release:
 [] - 404 and error pages
 [] - log all errors
 [] - in progress AI message should be aligned left
-[] - add version tag to page
+[x] - add version tag to page
 [] - scroll to bottom when new message is entered or a message is updated!
 
 Back alley v2 release:
