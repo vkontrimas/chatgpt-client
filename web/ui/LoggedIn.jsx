@@ -3,7 +3,7 @@ import { Navigate, useLocation } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout } from '../redux/user'
 
-const Authorized = ({ children }) => {
+const LoggedIn = ({ children }) => {
   const location = useLocation()
   const currentToken = useSelector(state => state.user.token)
   const dispatch = useDispatch()
@@ -15,4 +15,4 @@ const Authorized = ({ children }) => {
   return children
 }
 
-export default Authorized
+export default LoggedIn

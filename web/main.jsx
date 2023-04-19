@@ -14,19 +14,19 @@ import { store } from './redux/store'
 import Main from './ui/Main'
 import LoginPage from './pages/Login'
 import RegisterPage from './pages/Register'
-import Authorized from './ui/Authorized'
 import SessionExpiryProvider from './components/SessionExpiryProvider'
 import Chat from './ui/Chat'
 import Landing from './ui/Landing'
 import WhenLoggedOut from './ui/WhenLoggedOut'
+import LoggedIn from './ui/LoggedIn'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <Authorized>
+      <LoggedIn>
         <Main />
-      </Authorized>
+      </LoggedIn>
     ),
     children: [
       {
