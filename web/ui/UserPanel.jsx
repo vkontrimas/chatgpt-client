@@ -4,12 +4,12 @@ import { logout } from '../redux/user'
 import '../css/UserPanel.css'
 
 const UserPanel = () => {
-  const { name } = useSelector(state => state.user)
+  const { firstName } = useSelector(state => state.user)
   const dispatch = useDispatch()
 
   return (
     <div className="user-panel">
-      <h2 className="user-panel-name">{name}</h2>
+      <h2 className="user-panel-name">{firstName}</h2>
       <button
         className="button-clear user-panel-logout"
         onClick={() => dispatch(logout())}

@@ -2,6 +2,12 @@ import localForage from 'localforage'
 
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit'
 
+const getTokenExpiry = (token) => {
+  const base64Payload = token.split('.')[1]
+  const { exp } = JSON.parse(atob(base64Payload))
+  return exp
+}
+
 export const userSlice = createSlice({
   name: 'user',
   initialState: null,
@@ -9,11 +15,20 @@ export const userSlice = createSlice({
     login: (state, { payload }) => {
       if (state !== null) { throw 'user already logged in' }
       if (!payload.id) { throw 'missing user id' } 
-      if (!payload.name) { throw 'missing user name' } 
-      if (!payload.bearer) { throw 'missing user bearer token' } 
-      if (!payload.expiry) { throw 'missing token expiry' } 
-      localForage.setItem('user', payload)
-      return payload
+      if (!payload.firstName) { throw 'missing user first name' } 
+      if (!payload.lastName) { throw 'missing user first name' } 
+      if (!payload.email) { throw 'missing email' } 
+      if (!payload.token) { throw 'missing user token' } 
+
+      const user = {
+        ...payload,
+        bearer: `Bearer ${payload.token}`,
+        expiry: getTokenExpiry(payload.token),
+      }
+      delete user.token
+
+      localForage.setItem('user', user)
+      return user
     },
     updateUser: (state, { payload }) => {
       if (!state) { return }

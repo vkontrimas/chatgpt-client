@@ -57,11 +57,22 @@ const Auth = () => {
     if (!(firstName && lastName && password && email)) { return }
 
     try {
-      const resp = await axios.post(
+      const registerResponse = await axios.post(
         `/api/register/${code}`,
-        { firstName, email, password }
+        { firstName, lastName, email, password }
       )
-      dispatch(login({ email, password }))
+
+      const user = registerResponse.data
+      console.log(user)
+      
+      const loginResponse = await axios.post(
+        '/api/login',
+        { email, password },
+      )
+
+      console.log(loginResponse.data)
+
+      dispatch(login(loginResponse.data))
     }
     catch (e) {
       throw e

@@ -8,12 +8,6 @@ import { useTimed } from './effects'
 
 import '../css/Login.css'
 
-const getTokenExpiry = (token) => {
-  const base64Payload = token.split('.')[1]
-  const { exp } = JSON.parse(atob(base64Payload))
-  return exp
-}
-
 const Auth = () => {
   const [email, setEmail] = useState('')
   const [emailAngryClass, emailAngry] = useTimed('', 'angry')
@@ -38,15 +32,7 @@ const Auth = () => {
 
     try {
       const { data } = await axios.post('/api/login', { email, password })
-
-      const userState = {
-        id: data.id,
-        name: data.name,
-        bearer: `Bearer ${data.token}`,
-        expiry: getTokenExpiry(data.token),
-      }
-
-      dispatch(login(userState))
+      dispatch(login(data))
 
       setEmail('')
       setPassword('')
