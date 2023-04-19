@@ -6,7 +6,7 @@
 [] Fix message fetching happening before we check for token expiry...
 [] Refetch user info from DB in case it changed!
 [] Handle login expiry when sleeping
-[] Parallelise tests 
+[x] Parallelise tests 
 [] make code blocks expand to 100% message width as soon as started!
 [] upgrade to typescript
   [] define schema for chat completion chunks
