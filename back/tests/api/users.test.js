@@ -7,9 +7,6 @@ const { loginTestUser } = require('../helper')
 
 const ENDPOINT = '/api/users'
 
-const { 
-} = require('../db_helper')
-
 describe(`GET /api/users/:userId`, () => {
   test('404 - invalid id', async () => {
     const [bearer, user] = await loginTestUser()
