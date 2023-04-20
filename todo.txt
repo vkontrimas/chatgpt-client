@@ -44,9 +44,9 @@ Back alley v1 release:
 [x] - in progress AI message should be aligned left
 [x] - add version tag to page
 [x] - scroll to bottom when new message is entered or a message is updated!
-[] - encrypt user chats
 
 Back alley v2 release:
+[] - encrypt user chats
 [] - make sliding ui feel nicer
      it should just let you drag it and get sucked towards the closest position
 [] - need to be able to share conversations!
