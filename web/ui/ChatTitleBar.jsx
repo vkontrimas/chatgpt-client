@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { destroyChat } from '../redux/chat_slice'
+import { close } from '../redux/sidebar'
 
 const ChatTitleBar = (props) => {
   const bearer = useSelector(state => state.user?.bearer)
@@ -34,6 +35,7 @@ const ChatTitleBar = (props) => {
           if (params.chatId !== props.id) {
             navigate(`/chat/${props.id}`)
           }
+          dispatch(close())
         }}
       >
         {title}

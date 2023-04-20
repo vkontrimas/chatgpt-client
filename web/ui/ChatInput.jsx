@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { isMobile } from 'react-device-detect'
 
+import { close } from '../redux/sidebar'
 
 const ChatInput = (props) => {
   const { submitMessage, enabled } = {
@@ -51,6 +52,7 @@ const ChatInput = (props) => {
         ref={textAreaRef}
         autoFocus
         disabled={!enabled}
+        onFocus={() => dispatch(close())}
       />
       <button
         className='button-clear good chat-send-button'
