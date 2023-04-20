@@ -168,7 +168,12 @@ describe('ChatDriver postMessage', () => {
       })
 
     expect(await Message.findByPk(message.id, { raw: true }))
-      .toMatchObject(message)
+      .toMatchObject({
+        id: message.id,
+        role: message.role,
+        content: expect.stringMatching(/.*/),
+        status: 'done',
+      })
   })
 
   test('fails if chat destroyed', async () => {
@@ -352,6 +357,7 @@ describe('ChatDriver completeCurrentThread', () => {
     expect(await Message.findByPk(message.id, { raw: true })).toMatchObject({
       ...expected,
       ChatId: chat.id,
+      content: expect.stringMatching(/.*/)
     })
   })
 

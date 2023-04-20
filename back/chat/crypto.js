@@ -15,7 +15,7 @@ class MessageCrypto {
 
   encryptMessage(plaintext) {
     return new Promise((resolve, reject) => {
-      if (!plaintext) { reject('missing plaintext') }
+      if (plaintext === null || plaintext === undefined) { reject('missing plaintext') }
 
       const iv = randomBytes(16)
       const cipher = createCipheriv(algorithm, this.key, iv)
@@ -33,7 +33,7 @@ class MessageCrypto {
 
   decryptMessage(ciphertext, ivBase64) {
     return new Promise((resolve, reject) => {
-      if (!ciphertext) { reject('missing ciphertext') }
+      if (ciphertext === null || ciphertext === undefined) { reject('missing ciphertext') }
       if (!ivBase64) { reject('missing iv') }
 
       const iv = Buffer.from(ivBase64, 'base64url')
