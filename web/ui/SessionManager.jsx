@@ -55,6 +55,7 @@ const SessionManager = ({ children }) => {
 
         dispatch(login({ ...localUser, ...response.data }))
       } catch (error) {
+        console.error(error)
         dispatch(logout())
       }
       setLoading(false)

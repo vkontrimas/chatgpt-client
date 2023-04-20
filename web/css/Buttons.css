@@ -87,6 +87,13 @@
   color: #007F5F;
 }
 
+.button-clear:disabled,
+.button-clear:disabled:hover,
+.button-clear:disabled:active {
+  color: #303030;
+  cursor: default;
+}
+
 /*
  * Overlaid button. e.g. used for send button in chat
  */

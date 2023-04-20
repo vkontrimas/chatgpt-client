@@ -5,7 +5,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { isMobile } from 'react-device-detect'
 
 
-const ChatInput = ({ submitMessage }) => {
+const ChatInput = (props) => {
+  const { submitMessage, enabled } = {
+    enabled: true,
+    ...props,
+  }
   const dispatch = useDispatch()
   const [message, setMessage] = useState('')
   const textAreaRef = useRef(null)
@@ -21,7 +25,11 @@ const ChatInput = ({ submitMessage }) => {
 
   const handleSubmit = (event) => {
     if (event) { event.preventDefault() }
-    submitMessage(message)
+
+    const trimmed = message.trim()
+    if (!trimmed) { return }
+
+    submitMessage(trimmed)
     setMessage('')
   }
 
@@ -42,10 +50,12 @@ const ChatInput = ({ submitMessage }) => {
         value={message}
         ref={textAreaRef}
         autoFocus
+        disabled={!enabled}
       />
       <button
         className='button-clear good chat-send-button'
         type="submit"
+        disabled={!enabled}
       >
         <i className='fa fa-arrow-right fa-lg' />
       </button>

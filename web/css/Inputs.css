@@ -13,6 +13,7 @@
   background: #303030;
 
   overflow: hidden;
+  resize: none;
 }
 
 .text-input:hover,
@@ -29,6 +30,7 @@
 .text-input:disabled {
   border: 2px solid #303030;
   background: #252525;
+  overflow: hidden;
 }
 
 

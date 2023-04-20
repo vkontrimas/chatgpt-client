@@ -27,9 +27,25 @@ export const chatSlice = createSlice({
       const { chatId, message } = payload 
 
       // TODO: just store messages in map and do a memoized sort on render
-      const index = state.map[chatId].messages.length
-      state.map[chatId].messages.push(message)
-      state.map[chatId].messageMap[message.id] = index
+      let index = state.map[chatId].messages.findIndex(el => el.id === message.id)
+      if (index === -1) {
+        index = state.map[chatId].messages.length
+        state.map[chatId].messages.push(message)
+        state.map[chatId].messageMap[message.id] = index
+      } else {
+        // HACK: This is a hack to remove duplicate first message on new chats
+        //
+        //       Duplicate message is caused by:
+        //       1. Chat being created and completion started on server
+        //       2. Chat page loads on client dispatching setMessages which adds the completing message from DB
+        //       3. completion function on client calls addMessage once it starts receiving server data
+        //
+        //       #3 causes a collision!
+        //
+        //       This will be resolved when we simply store all messages in a map and sort!
+        state.map[chatId].messages[index] = message
+        state.map[chatId].messageMap[message.id] = index
+      }
     },
     updateMessage: (state, { payload }) => {
       const { chatId, message } = payload

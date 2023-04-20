@@ -22,8 +22,6 @@ const Chat = () => {
   const messages = chat?.messages
 
   useEffect(() => {
-    if (chat && messages) { return }
-
     const fetchMessages = async () => {
       // TODO: this request should really return the chat info too!
       const response = await axios.get(`/api/chat/${chatId}`, { headers: { Authorization: bearer } })
@@ -36,7 +34,7 @@ const Chat = () => {
     }
 
     fetchMessages()
-  }, [])
+  }, [chatId])
 
   if (!chat || !messages) {
     return <Loading />
@@ -66,11 +64,15 @@ const Chat = () => {
     )
   }
 
+  const inputEnabled = messages.length === 0 
+    || (messages[messages.length - 1].status === 'done' &&
+       messages[messages.length - 1].role === 'assistant')
+
   return (
     <div className='chat'>
       <ChatTitleBar id={chat.id} title={chat.title} />
       <ChatMessageScrollView messages={chat.messages} />
-      <ChatInput submitMessage={handleSubmitMessage} />
+      <ChatInput submitMessage={handleSubmitMessage} enabled={inputEnabled} />
     </div>
   )
 }
