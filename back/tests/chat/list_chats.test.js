@@ -12,9 +12,9 @@ test('listChats', async () => {
     ChatDriver.create(user.id, 'potato'),
     ChatDriver.create(user.id, 'potato'),
   ])
-  const expected = chats.map(chat => ({ id: chat.id }))
+  const expected = chats.map(chat => chat.id)
 
   const results = await listChats(user.id)
 
-  expect(results.sort()).toMatchObject(expected.sort())
+  expect(results.map(chat => chat.id).sort()).toMatchObject(expected.sort())
 })
