@@ -87,7 +87,12 @@ class ChatDriver {
       status: message.status,
     })
 
-    return message
+    return {
+      id: message.id,
+      content: message.content,
+      role: message.role,
+      status: message.status,
+    }
   }
 
   async completeCurrentThread() {
