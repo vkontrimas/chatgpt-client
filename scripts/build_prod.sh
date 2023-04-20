@@ -8,7 +8,7 @@ run_cmd() {
 }
 
 update_index_html_hash() {
-  local hash=$(git --no-pager log --format=%h -n 1)
+  local hash="$HUDDLE_COMMIT_HASH"
   echo '> update index.html commit hash to' $hash
   if [ -z "$DRY_RUN" ]; then
     sed -i -e "s#\(<div id=\"root-version-tag\">\)latest#\1$hash#" web/index.html
