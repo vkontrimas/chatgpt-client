@@ -26,6 +26,7 @@
 [x] clear all chats on logout
 [] - explore using HTTP only cookies for session storage
 [x] - fix broken tests
+[] - take care of landscape mode
 
 Back alley v1 release:
 [x] - register and login pages should redirect to landing if user is logged in
