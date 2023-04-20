@@ -35,7 +35,7 @@ Back alley v1 release:
 [x] - handle spaces in registration (and login)
 [x] - waitlist
 [x] - fix RegistrationCodeUses not working
-[] - finish sliding UI for mobile
+[x] - finish sliding UI for mobile
 [x] - on launch send a request to check if token still valid 
 [x] - fix chat loading
 [] - add analytics
@@ -47,6 +47,8 @@ Back alley v1 release:
 [] - encrypt user chats
 
 Back alley v2 release:
+[] - make sliding ui feel nicer
+     it should just let you drag it and get sucked towards the closest position
 [] - need to be able to share conversations!
 [] - Rework message loading so we only load a portion of the chat
 [] - push notifications

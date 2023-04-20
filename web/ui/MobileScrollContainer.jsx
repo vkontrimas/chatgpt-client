@@ -2,13 +2,23 @@ import '../css/MobileScrollContainer.css'
 
 import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggle } from '../redux/sidebar'
+import { useSwipeable } from 'react-swipeable'
+import { toggle, open, close } from '../redux/sidebar'
 
 const MobileScrollContainer = ({ children }) => {
   const [windowWidth, setWindowWidth] = useState(window.innerWidth)
   const sidebarOpen = useSelector(state => state.sidebar.open)
   const dispatch = useDispatch()
   const mobileLayout = windowWidth < 700;
+
+  const handlers = useSwipeable({
+    onSwipedLeft: (event) => {
+      dispatch(close())
+    },
+    onSwipedRight: (event) => {
+      dispatch(open())
+    },
+  })
 
   useEffect(() => {
     const handleResize = () => {
@@ -26,7 +36,7 @@ const MobileScrollContainer = ({ children }) => {
   const iconClass = sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'
 
   return (
-    <div className={`mobile-scroll-container ${sidebarClass}`}>
+    <div {...handlers} className={`mobile-scroll-container ${sidebarClass}`}>
       {children}
       <div onClick={() => dispatch(toggle())} className={`mobile-sidebar-tab ${sidebarClass}`}>
         <i className={`fa ${iconClass} fa-2x main-sidebar-tab-icon`}/>
