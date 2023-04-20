@@ -164,7 +164,12 @@ class ChatDriver {
     })
 
     this.currentCompletionStream = stream
-    return [message, stream]
+    return [{
+      id: message.id,
+      role: message.role,
+      content: message.content,
+      status: message.status,
+    }, stream]
   }
 
   async fetchMessages() {
