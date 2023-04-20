@@ -51,7 +51,10 @@
   }
 
   .main-sidebar-tab {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     position: absolute;
     left: 80vw;
     top: 0;
@@ -60,8 +63,6 @@
 
     width: 3em;
     height: 6em;
-
-    border: 2px red solid;
   }
 }
 
