@@ -5,7 +5,7 @@ const {
   getRegistrationCode,
 } = require('../registration')
 
-const { User, RegistrationCode } = require('db')
+const { User, RegistrationCode, RegistrationCodeUse } = require('db')
 
 const { uniqueTestUser } = require('./helper')
 
@@ -80,6 +80,23 @@ describe('createUserWithRegistrationCode', () => {
     await expect(createUserWithRegistrationCode({ user, codeId: id }))
       .rejects.toMatch('invalid registration code')
   })
+
+  test('sign up creates RegistrationCodeUse record', async () => {
+    const user = uniqueTestUser()
+
+    const { id } = await createRegistrationCode({ remainingUses: 1 })
+    const [createdUser] = await createUserWithRegistrationCode({ codeId: id, user })
+
+    const createdUse = await RegistrationCodeUse.findOne({
+      where: {
+        UserId: createdUser.id,
+        RegistrationCodeId: id,
+      },
+      raw: true,
+    })
+    expect(createdUse).toBeDefined()
+    expect(createdUse).not.toBeNull()
+  })
 })
 
 describe('createUserWithRegistrationCode', () => {
@@ -124,29 +141,6 @@ describe('createUserWithRegistrationCode', () => {
     const foundBob = await User.findByPk(bob.id, { raw: true })
     expect(foundBob).toMatchObject(bob.toJSON())
   })
-
-  /*
-  test('sign up creates RegistrationCodeUse record', async () => {
-    const user = {
-      name: 'Jim',
-      email: 'jim@example.com',
-      password: 'lol',
-    }
-
-    const { id } = await createRegistrationCode({ remainingUses: 1 })
-    const [createdUser] = await createUserWithRegistrationCode({ codeId: id, user })
-
-    const createdUse = await RegistrationCodeUse.findOne({
-      where: {
-        UserId: createdUser.id,
-        RegistrationCodeId: id,
-      },
-      raw: true,
-    })
-    expect(createdUse).toBeDefined()
-    expect(createdUse).not.toBeNull()
-  })
-  */
 })
 
 describe('getRegistrationCode', () => {

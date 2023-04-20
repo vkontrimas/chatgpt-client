@@ -9,16 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
-      /*models.User.hasOne(RegistrationCodeUse)
-      RegistrationCodeUse.belongsTo(models.User)
-
-      models.RegistrationCode.hasMany(RegistrationCodeUse)
-      RegistrationCodeUse.belongsTo(models.RegistrationCodeUse)*/
-    }
+    static associate(models) { }
   }
   RegistrationCodeUse.init({
-    RegistrationCodeId: DataTypes.UUID,
+    UserId: {
+      type: DataTypes.UUID,
+      primaryKey: true,
+      references: {
+        model: 'User',
+        key: 'id',
+      },
+    },
+    RegistrationCodeId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'RegistrationCode',
+        key: 'id',
+      },
+    }
   }, {
     sequelize,
     modelName: 'RegistrationCodeUse',

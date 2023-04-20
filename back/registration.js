@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const { sequelize, RegistrationCode, RegistrationCodeUses } = require('db')
+const { sequelize, RegistrationCode, RegistrationCodeUse } = require('db')
 
 const { createUser } = require('./users')
 
@@ -29,10 +29,10 @@ const createUserWithRegistrationCode = async ({ user, codeId }) => {
 
     await code.decrement('remainingUses', { transaction })
 
-    /*const use = await RegistrationCodeUses.create({
-      UserId: user.id,
+    const use = await RegistrationCodeUse.create({
+      UserId: userModel.id,
       RegistrationCodeId: code.id,
-    }, { transaction })*/
+    }, { transaction })
 
     return [userModel, code.remainingUses]
   })
