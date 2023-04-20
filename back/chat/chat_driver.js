@@ -3,6 +3,10 @@ const { User, Chat, Message } = require('db')
 const { Transform } = require('stream')
 
 const { selectChatModel } = require('../llm')
+const MessageCrypto = require('./crypto')
+const { MESSAGE_KEY } = require('../config')
+
+const crypto = new MessageCrypto(MESSAGE_KEY)
 
 class ChatDriver {
   constructor(ai, id) {

@@ -15,6 +15,7 @@ const OPENAI_FAKE_MESSAGES = process.env.HUDDLE_OPENAI_FAKE_MESSAGES
 const SESSION_TOKEN_SECRET = required('HUDDLE_LOGIN_TOKEN_SECRET')
 const DB_LOG = process.env.HUDDLE_DB_LOG || false
 const PASSWORD_SALT_ROUNDS = 10
+const MESSAGE_KEY = required('HUDDLE_MESSAGE_KEY')
 
 const fakeWebhookServerPort = () => {
   switch (ENVIRONMENT) {
@@ -42,4 +43,5 @@ module.exports = {
   SESSION_TOKEN_SECRET,
   WAITLIST_SIGNUP_WEBHOOK,
   FAKE_WEBHOOK_SERVER_PORT,
+  MESSAGE_KEY,
 }
