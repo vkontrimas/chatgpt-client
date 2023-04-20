@@ -17,7 +17,7 @@ import '../css/Register.css'
  */
 const mightBeAnEmail = (email) => /.+@.+\..+/g.test(email)
 
-const RegisterForm = ({ codeStatus }) => {
+const RegisterForm = ({ code, codeStatus }) => {
   const [firstName, setFirstName] = useState('')
   const [firstNameAngryClass, firstNameAngry] = useTimed('', 'angry')
   const [lastName, setLastName] = useState('')
@@ -230,7 +230,7 @@ const Register = () => {
   else {
     return (
       <div className='register'>
-        {codeStatus === 'valid' && <RegisterForm codeStatus={codeStatus} />}
+        {codeStatus === 'valid' && <RegisterForm code={code} codeStatus={codeStatus} />}
         {codeStatus === 'used' && <RegisterUsed />}
       </div>
     )
