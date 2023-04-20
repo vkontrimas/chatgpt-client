@@ -169,7 +169,7 @@ class ChatDriver {
       where: {
         ChatId: this.id,
       },
-      orderBy: [['createdAt', 'ASC']],
+      orderBy: [['createdAt', 'DESC']],
     })
 
     this.messages = messages.map(msg => ({
