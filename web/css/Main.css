@@ -17,10 +17,6 @@
   padding: 0.5em;
 }
 
-.main-sidebar-tab {
-  display: none;
-}
-
 .main-sidebar {
   grid-area: sidebar;
 }

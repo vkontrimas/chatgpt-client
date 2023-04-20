@@ -11,9 +11,6 @@ const Main = () => {
       <div className='main-sidebar'>
         <ChatList />
       </div>
-      <div className='main-sidebar-tab'>
-        <i className='fa fa-chevron-left fa-2x main-sidebar-tab-icon'/>
-      </div>
       <div className='main-content'>
         <Outlet />
       </div>

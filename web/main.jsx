@@ -20,13 +20,16 @@ import Landing from './ui/Landing'
 import LoggedOut from './ui/LoggedOut'
 import LoggedIn from './ui/LoggedIn'
 import SessionManager from './ui/SessionManager'
+import MobileScrollContainer from './ui/MobileScrollContainer'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <LoggedIn>
-        <Main />
+        <MobileScrollContainer>
+          <Main />
+        </MobileScrollContainer>
       </LoggedIn>
     ),
     children: [
