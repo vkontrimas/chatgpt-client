@@ -25,7 +25,6 @@ export const userSlice = createSlice({
         bearer: `Bearer ${payload.token}`,
         expiry: getTokenExpiry(payload.token),
       }
-      delete user.token
 
       localForage.setItem('user', user)
       return user

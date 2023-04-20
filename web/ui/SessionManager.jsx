@@ -43,7 +43,7 @@ const SessionManager = ({ children }) => {
 
       if (localUser.expiry * 1000 <= Date.now()) {
         setLoading(false)
-        dispatch(logout)
+        dispatch(logout())
       }
 
       try {
