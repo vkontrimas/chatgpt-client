@@ -35,11 +35,11 @@ Back alley v1 release:
 [x] - fix RegistrationCodeUses not working
 [] - finish sliding UI for mobile
 [x] - on launch send a request to check if token still valid 
-[] - fix chat loading
+[x] - fix chat loading
 [] - add analytics
 [] - 404 and error pages
 [] - log all errors
-[] - in progress AI message should be aligned left
+[x] - in progress AI message should be aligned left
 [x] - add version tag to page
 [] - scroll to bottom when new message is entered or a message is updated!
 [] - encrypt user chats
