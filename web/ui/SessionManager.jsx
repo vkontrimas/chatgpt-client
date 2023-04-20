@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, login } from '../redux/user'
+import { reset } from '../redux/chat_slice'
 import Loading from './Loading'
 
 const SessionManager = ({ children }) => {
@@ -12,6 +13,15 @@ const SessionManager = ({ children }) => {
   const [loading, setLoading] = useState(true) 
   const user = useSelector(state => state.user)
 
+  /*
+   * If user logs out, we want to wipe all the chats we've stored
+   * in the state
+   */
+  useEffect(() => {
+    if (!user) {
+      dispatch(reset())
+    }
+  }, [user])
 
   /*
    * Get user from local storage

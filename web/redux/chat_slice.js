@@ -48,7 +48,10 @@ export const chatSlice = createSlice({
     destroyChat: (state, { payload }) => {
       const id = payload
       delete state.map[id]
-    }
+    },
+    reset: (state) => {
+      return initialState
+    },
   },
   extraReducers: (builder) => { },
 })
@@ -60,6 +63,7 @@ export const {
   setMessages,
   destroyChat,
   updateMessage,
+  reset,
 } = chatSlice.actions
 
 export default chatSlice.reducer

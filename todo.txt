@@ -23,7 +23,7 @@
 [] use paranoid deletions
 [] - sort chats by last used (last time user interacted with it)
 [] put base64 user id inside token
-[] clear all chats on logout
+[x] clear all chats on logout
 [] - explore using HTTP only cookies for session storage
 [x] - fix broken tests
 
