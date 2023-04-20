@@ -1,4 +1,6 @@
 .chat-message {
+  min-width: 2em;
+
   padding: 0.5em;
   border-radius: 0.5em;
 
@@ -28,11 +30,6 @@
 
 .chat-message.user.pending {
   background: #004433;
-}
-
-.chat-message.assistant.pending {
-  align-self: center;
-  background: #003547;
 }
 
 .chat-message.error {
