@@ -66,14 +66,11 @@ const RegisterForm = ({ codeStatus }) => {
       )
 
       const user = registerResponse.data
-      console.log(user)
 
       const loginResponse = await axios.post(
         '/api/login',
         { email, password },
       )
-
-      console.log(loginResponse.data)
 
       dispatch(login(loginResponse.data))
     }
@@ -143,7 +140,6 @@ const RegisterWaitlistForm = ({ setSubmitStatus }) => {
       setName('')
       cumulativeDelaySec += 0.14
     }
-    console.log(email, mightBeAnEmail(email))
     const hasEmail = email && mightBeAnEmail(email)
     if (!(hasEmail)) {
       emailAngry(angryDurationSec, cumulativeDelaySec)
@@ -215,7 +211,6 @@ const Register = () => {
     const checkCodeStatus = async () => {
       try {
         const resp = await axios.get(`/api/register/${code}`)
-        console.log(resp.data.status)
         setCodeStatus(resp.data.status)
       } catch (error) {
         if (error.name === 'AxiosError' && error.response.status === 404) {
