@@ -169,10 +169,10 @@ class ChatDriver {
       where: {
         ChatId: this.id,
       },
-      orderBy: [['createdAt', 'DESC']],
+      order: [['createdAt', 'ASC']],
     })
 
-    console.log(messages.map(m => m.toJSON()))
+    // console.log(messages.map(m => m.toJSON()))
 
     this.messages = messages.map(msg => ({
       id: msg.id,
