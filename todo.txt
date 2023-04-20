@@ -42,7 +42,7 @@ Back alley v1 release:
 [] - log all errors
 [x] - in progress AI message should be aligned left
 [x] - add version tag to page
-[] - scroll to bottom when new message is entered or a message is updated!
+[x] - scroll to bottom when new message is entered or a message is updated!
 [] - encrypt user chats
 
 Back alley v2 release:

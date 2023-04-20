@@ -172,6 +172,8 @@ class ChatDriver {
       orderBy: [['createdAt', 'DESC']],
     })
 
+    console.log(messages.map(m => m.toJSON()))
+
     this.messages = messages.map(msg => ({
       id: msg.id,
       content: msg.content,
