@@ -14,9 +14,11 @@ const errorHandler = (error, request, response, next) => {
       case 'invalid chat id':
         return response.status(404).json({ error })
       case 'missing bearer token':
+      case 'no name':
       case 'no first name':
       case 'no last name':
       case 'no email':
+      case 'invalid email':
       case 'no password':
       case 'missing role':
       case 'missing content':

@@ -15,34 +15,23 @@ const OPENAI_FAKE_MESSAGES = process.env.HUDDLE_OPENAI_FAKE_MESSAGES
 const SESSION_TOKEN_SECRET = required('HUDDLE_LOGIN_TOKEN_SECRET')
 const DB_LOG = process.env.HUDDLE_DB_LOG || false
 const PASSWORD_SALT_ROUNDS = 10
-const DB_CONFIG = {
-  production: {
-    url: process.env.DATABASE_URL,
-    logging: DB_LOG ? console.log : null,
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      }
-    },
-  },
-  development: {
-    url: 'postgres://postgres:huddle@localhost:3003/huddle_dev',
-    logging: DB_LOG ? console.log : null,
-    pool: {
-      idle: 1000
-    }
-  },
-  test: {
-    url: 'postgres://postgres:huddle@localhost:3003/postgres',
-    logging: DB_LOG ? console.log : null,
-    pool: {
-      idle: 1000,
-    },
+
+const fakeWebhookServerPort = () => {
+  switch (ENVIRONMENT) {
+    case 'test':
+      return 3051
+    case 'development':
+      return 3052
+    default:
+      return undefined
   }
 }
 
-const getDBConfig = () => DB_CONFIG[ENVIRONMENT]
+const WAITLIST_SIGNUP_WEBHOOK = ENVIRONMENT === 'production' 
+  ? required('process.env.HUDDLE_WAITLIST_SIGNUP_WEBHOOK')
+  : `http://localhost:${fakeWebhookServerPort()}/test-hook`
+
+const FAKE_WEBHOOK_SERVER_PORT = fakeWebhookServerPort()
 
 module.exports = {
   PORT,
@@ -51,5 +40,6 @@ module.exports = {
   OPENAI_FAKE_MESSAGES,
   PASSWORD_SALT_ROUNDS,
   SESSION_TOKEN_SECRET,
-  getDBConfig,
+  WAITLIST_SIGNUP_WEBHOOK,
+  FAKE_WEBHOOK_SERVER_PORT,
 }
