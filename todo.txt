@@ -29,8 +29,9 @@
 
 Back alley v1 release:
 [x] - register and login pages should redirect to landing if user is logged in
-[] - notify why login or register failed
+[x] - notify why login or register failed
 [x] - handle spaces in registration (and login)
+[x] - waitlist
 [] - fix RegistrationCodeUses not working
 [] - finish sliding UI for mobile
 [x] - on launch send a request to check if token still valid 

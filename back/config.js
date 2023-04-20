@@ -27,8 +27,8 @@ const fakeWebhookServerPort = () => {
   }
 }
 
-const WAITLIST_SIGNUP_WEBHOOK = ENVIRONMENT === 'production' 
-  ? required('process.env.HUDDLE_WAITLIST_SIGNUP_WEBHOOK')
+const WAITLIST_SIGNUP_WEBHOOK = ENVIRONMENT === 'production'
+  ? required('HUDDLE_WAITLIST_SIGNUP_WEBHOOK')
   : `http://localhost:${fakeWebhookServerPort()}/test-hook`
 
 const FAKE_WEBHOOK_SERVER_PORT = fakeWebhookServerPort()
