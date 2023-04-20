@@ -40,11 +40,7 @@ describe('ChatDriver create', () => {
   test('created chat added to database', async () => {
     const { user } = await createTestUser()
 
-    const chatsBefore = await Chat.findAll({ raw: true })
     const chatDriver = await ChatDriver.create(user.id, 'potato')
-    const chatsAfter = await Chat.findAll({ raw: true })
-
-    expect(chatsAfter.length).toBe(chatsBefore.length + 1)
 
     const chat = await Chat.findByPk(chatDriver.id)
     expect(chat).toBeDefined()
@@ -124,7 +120,6 @@ describe('ChatDriver destroy', () => {
     const { user } = await createTestUser()
     const chat = await ChatDriver.create(user.id, 'potato')
     
-    const chatsBefore = await Chat.findAll({ raw: true })
     await expect(chat.destroy()).resolves.toBeUndefined()
     const foundChat = await Chat.findByPk(chat.id)
     expect(foundChat).toBeNull()

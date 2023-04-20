@@ -29,8 +29,6 @@ describe('createUser', () => {
 
 
   test('adds user to DB', async () => {
-    const usersBefore = await User.findAll({ raw: true })
-
     const user = uniqueTestUser()
     const created = await createUser(user)
 

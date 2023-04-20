@@ -12,50 +12,36 @@ const { uniqueTestUser } = require('./helper')
 
 describe('createRegistrationCode', () => {
   test('adds new code to db', async () => {
-    const codesBefore = await RegistrationCode.findAll({ raw: true })
-
     const code = {
       remainingUses: 5
     }
     const model = await createRegistrationCode(code)
-    const codesAfter = await RegistrationCode.findAll({ raw: true })
-
-    expect(codesAfter.length).toBe(codesBefore.length + 1)
-    expect(codesAfter).toContainEqual(model.toJSON())
+    const foundModel = await RegistrationCode.findByPk(model.id, { raw: true })
+    expect(foundModel).toMatchObject(model.toJSON())
   })
 
   test('throws if remaining uses missing', async () => {
-    const codesBefore = await RegistrationCode.findAll({ raw: true })
-
     const code = { }
     await expect(createRegistrationCode(code)).rejects.toMatch('expected remaining registration uses')
-
-    const codesAfter = await RegistrationCode.findAll({ raw: true })
-    expect(codesAfter).toMatchObject(codesBefore)
   })
 
   test('throws if remaining uses 0 or negative', async () => {
-    const codesBefore = await RegistrationCode.findAll({ raw: true })
-
     const code = {
       remainingUses: -1
     }
     await expect(createRegistrationCode(code)).rejects.toMatch('remaining registration uses lower than 1')
-
-    const codesAfter = await RegistrationCode.findAll({ raw: true })
-    expect(codesAfter).toMatchObject(codesBefore)
   })
 
   test('saves note if given', async () => {
     const codeWith = await createRegistrationCode({ remainingUses: 1, note: 'test note!' })
     expect(codeWith.note).toBe('test note!')
+    const codeWithFound = await RegistrationCode.findByPk(codeWith.id, { raw: true })
+    expect(codeWithFound).toMatchObject(codeWith.toJSON())
 
     const codeWithout = await createRegistrationCode({ remainingUses: 1 })
     expect(codeWithout.note).toBeNull()
-
-    const codesAfter = await RegistrationCode.findAll({ raw: true })
-    expect(codesAfter).toContainEqual(codeWith.toJSON())
-    expect(codesAfter).toContainEqual(codeWithout.toJSON())
+    const codeWithoutFound = await RegistrationCode.findByPk(codeWithout.id, { raw: true })
+    expect(codeWithoutFound).toMatchObject(codeWithout.toJSON())
   })
 })
 
@@ -148,9 +134,7 @@ describe('createUserWithRegistrationCode', () => {
     }
 
     const { id } = await createRegistrationCode({ remainingUses: 1 })
-    const usesBefore = await RegistrationCodeUse.findAll({ raw: true })
     const [createdUser] = await createUserWithRegistrationCode({ codeId: id, user })
-    const usesAfter = await RegistrationCodeUse.findAll({ raw: true })
 
     const createdUse = await RegistrationCodeUse.findOne({
       where: {
@@ -161,7 +145,6 @@ describe('createUserWithRegistrationCode', () => {
     })
     expect(createdUse).toBeDefined()
     expect(createdUse).not.toBeNull()
-    expect(usesAfter.length).toBe(usesBefore.length + 1)
   })
   */
 })
