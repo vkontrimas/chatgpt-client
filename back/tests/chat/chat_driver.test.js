@@ -521,3 +521,50 @@ describe('ChatDriver clear', () => {
     await streamToArray(stream)
   })
 })
+
+describe('ChatDriver update', () => {
+  test('updates title', async () => {
+    const { user } = await createTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const initialTitle = 'Untitled Chat'
+    expect(chat.title).toBe(initialTitle)
+    const expectedModel = await Chat.findByPk(chat.id, { raw: true })
+    expect(expectedModel.title).toBe(initialTitle)
+
+    const title = 'My awesome chat'
+    await chat.update({ title })
+    expect(chat.title).toBe(title)
+    expect(await Chat.findByPk(chat.id, { raw: true})).toMatchObject({
+      title
+    })
+  })
+
+  test('does not change anything if fields missing', async () => {
+    const { user } = await createTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const expectedModel = await Chat.findByPk(chat.id, { raw: true })
+
+    const initialTitle = 'Untitled Chat'
+    expect(chat.title).toBe(initialTitle)
+
+    await chat.update({})
+    expect(chat.title).toBe(initialTitle)
+
+    expect(await Chat.findByPk(chat.id, { raw: true }))
+      .toMatchObject(expectedModel)
+  })
+
+  test('cannot update sensitive fields', async () => {
+    const { user } = await createTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const expectedModel = await Chat.findByPk(chat.id, { raw: true })
+
+    await chat.update({ messages: [ { test: test } ], id: 'new id' })
+
+    expect(await Chat.findByPk(chat.id, { raw: true }))
+      .toMatchObject(expectedModel)
+  })
+})

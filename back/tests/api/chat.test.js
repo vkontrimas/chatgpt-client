@@ -26,6 +26,7 @@ describe('POST /chat - create chat', () => {
 
     expect(response.body).toMatchObject({
       id: expect.stringMatching(/.+/),
+      title: 'Untitled Chat',
       messages: [],
     })
   })
@@ -43,9 +44,12 @@ describe('POST /chat - create chat', () => {
 
     const uuid = idFromBase64(response.body.id)
     const chat = await Chat.findByPk(uuid, { raw: true })
-    expect(chat).not.toBeNull()
-    expect(chat.UserId).toBe(user.id)
-    expect(chat.aiModelName).toBe(body.model)
+    expect(chat).toMatchObject({
+      id: expect.stringMatching(/.*/),
+      title: 'Untitled Chat',
+      aiModelName: body.model,
+      UserId: user.id,
+    })
   })
 
   test('400 - missing token fails', async () => {
@@ -86,6 +90,87 @@ describe('POST /chat - create chat', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response.body).toMatchObject({ error: 'missing model' })
+  })
+})
+
+describe('PUT /chat/:id - update chat info', () => {
+  test('404 - non existing chat', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+    await chat.destroy()
+
+    const payload = {
+      title: 'My awesome chat',
+    }
+
+    const response = await api
+      .put(`${ENDPOINT}/${idToBase64(chat.id)}`)
+      .send(payload)
+      .set('Authorization', bearer)
+      .expect(404)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'invalid chat id' })
+  })
+
+  test('400 - bearer missing', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const payload = {
+      title: 'My awesome chat',
+    }
+
+    const response = await api
+      .put(`${ENDPOINT}/${idToBase64(chat.id)}`)
+      .send(payload)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'missing bearer token' })
+  })
+
+  test('401 - updating other user\'s chat', async () => {
+    const [aliceBearer, alice] = await loginTestUser()
+    const [eveBearer, eve] = await loginTestUser()
+    const aliceChat = await ChatDriver.create(alice.id, 'potato')
+
+    const payload = {
+      title: 'My awesome chat',
+    }
+
+    const response = await api
+      .put(`${ENDPOINT}/${idToBase64(aliceChat.id)}`)
+      .send(payload)
+      .set('Authorization', eveBearer)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({ error: 'unauthorized' })
+  })
+
+  test('200 - update title', async () => {
+    const [bearer, user] = await loginTestUser()
+    const chat = await ChatDriver.create(user.id, 'potato')
+
+    const payload = {
+      title: 'My awesome chat',
+    }
+
+    const response = await api
+      .put(`${ENDPOINT}/${idToBase64(chat.id)}`)
+      .send(payload)
+      .set('Authorization', bearer)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({
+      id: idToBase64(chat.id),
+      title: payload.title,
+    })
+
+    expect(await Chat.findByPk(chat.id, { attributes: ['title'], raw: true }))
+      .toMatchObject(payload)
   })
 })
 
@@ -152,12 +237,32 @@ describe('GET /chat/:id - retrieve chat info & messages', () => {
       .expect('Content-Type', /application\/json/)
 
     expect(response.body).toMatchObject({
+      title: 'Untitled Chat',
       messages: messages.map(m => ({
         id: expect.stringMatching(/.+/),
         content: m.content,
         role: m.role,
         status: 'done',
       }))
+    })
+  })
+
+  test('200 - return chat title', async () => {
+    const [bearer, user] = await loginTestUser()
+
+    const chat = await ChatDriver.create(user.id, 'potato')
+    const title = 'My awesome chat'
+    await chat.update({ title })
+
+    const response = await api
+      .get(`${ENDPOINT}/${idToBase64(chat.id)}`)
+      .set('Authorization', bearer)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    expect(response.body).toMatchObject({
+      title,
+      messages: [],
     })
   })
 })
@@ -551,7 +656,21 @@ describe('GET /api/chat - list all chats', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
 
-    const expectedIds = chats.map(({ id }) => idToBase64(id))
-    expect(response.body.map(({id}) => id).sort()).toMatchObject(expectedIds.sort())
+    const byId = (a, b) => {
+      const aId = a.id.toLowerCase()
+      const bId = b.id.toLowerCase()
+      if (aId < bId) { return -1 } 
+      if (aId > bId) { return 1 } 
+      return 0
+    }
+
+    const expected = chats
+      .map(chat => ({
+        id: idToBase64(chat.id),
+        title: chat.title,
+      }))
+      .sort(byId)
+
+    expect(response.body.sort(byId)).toMatchObject(expected)
   })
 })

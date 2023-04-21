@@ -6,7 +6,7 @@ const listChats = async (userId) => {
     where: {
       UserId: userId,
     },
-    attributes: [ 'id' ],
+    attributes: [ 'id', 'title' ],
     raw: true,
   })
 }

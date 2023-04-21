@@ -13,6 +13,7 @@ chatRouter.post('/', async (request, response) => {
   const chat = await ChatDriver.create(user.id, request.body.model)
   response.status(201).json({
     id: idToBase64(chat.id),
+    title: chat.title,
     messages: chat.messages,
   })
 })
@@ -26,12 +27,26 @@ chatRouter.get('/', async (request, response) => {
   })))
 })
 
+chatRouter.put('/:base64Id', async (request, response) => {
+  const user = await request.verifyUserSession()
+  const chatId = idFromBase64(request.params.base64Id)
+  const chat = await ChatDriver.open(user.id, chatId)
+  await chat.update({
+    title: request.body.title || undefined,
+  })
+  response.status(200).json({
+    id: idToBase64(chat.id),
+    title: chat.title,
+  })
+})
+
 chatRouter.get('/:base64Id', async (request, response) => {
   const user = await request.verifyUserSession()
   const chatId = idFromBase64(request.params.base64Id)
   const chat = await ChatDriver.open(user.id, chatId)
 
   response.status(200).json({
+    title: chat.title,
     messages: chat.messages.map(message => ({
       id: idToBase64(message.id),
       role: message.role,

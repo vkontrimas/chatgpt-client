@@ -9,11 +9,13 @@ const { MESSAGE_KEY } = require('../config')
 const crypto = new MessageCrypto(MESSAGE_KEY)
 
 class ChatDriver {
-  constructor(ai, id) {
+  constructor({ ai, id, title }) {
     if (!ai) { throw 'Chat instance requires ai' }
     if (!id) { throw 'Chat instance requires id' }
+    if (!title) { throw 'Chat instance requires title' }
     this.id = id
     this.ai = ai
+    this.title = title
     this.messages = []
     this.currentCompletionStream = null
     this.destroyed = false
@@ -30,7 +32,11 @@ class ChatDriver {
 
     const ai = selectChatModel(chat.aiModelName, chat.aiModelConfig && JSON.parse(chat.aiModelConfig))
 
-    const driver = new ChatDriver(ai, chat.id)
+    const driver = new ChatDriver({
+      ai,
+      id: chat.id,
+      title: chat.title,
+    })
     await driver.fetchMessages(userId)
     return driver
   }
@@ -46,13 +52,17 @@ class ChatDriver {
 
     const db = await Chat.create({
       id: uuid.v4(),
-      title: null,
+      title: 'Untitled Chat',
       UserId: user.id,
       aiModelName: modelName,
       aiModelConfig: JSON.stringify(ai.config),
     })
 
-    return new ChatDriver(ai, db.id, [])
+    return new ChatDriver({
+      id: db.id,
+      title: db.title,
+      ai,
+    })
   }
 
   lastMessageHasError() {
@@ -243,6 +253,13 @@ class ChatDriver {
         ChatId: this.id,
       }
     })
+  }
+
+  async update(fields) {
+    const model = await Chat.findByPk(this.id)
+    const promise = model.update(fields)
+    this.title = fields.title || this.title
+    await promise
   }
 }
 
