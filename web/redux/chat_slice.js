@@ -68,6 +68,17 @@ export const chatSlice = createSlice({
     reset: (state) => {
       return initialState
     },
+    updateChat: (state, { payload }) => {
+      const { id, update } = payload
+      if (state.map[id]) {
+        state.map[id] = {
+          ...state.map[id],
+          ...update,
+          messages: state.map[id].messages,
+          messageMap: state.map[id].messageMap,
+        }
+      }
+    }
   },
   extraReducers: (builder) => { },
 })
@@ -80,6 +91,7 @@ export const {
   destroyChat,
   updateMessage,
   reset,
+  updateChat,
 } = chatSlice.actions
 
 export default chatSlice.reducer

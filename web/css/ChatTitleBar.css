@@ -4,31 +4,36 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5em;
 }
 
 .chat-title-bar-title {
+  outline: none;
+  border: none;
   white-space: nowrap;
   overflow: hide;
   cursor: pointer;
 }
 
-.chat-list .chat-title-bar-title {
-  margin-top: 0.22em;
-  font-weight: 400;
-  font-size: 1.2em;
+.chat-title-bar-title-edit {
+  display: none;
+  color: #808080;
 }
 
-.chat-list .chat-title-bar.selected .chat-title-bar-title {
-  color: #909090;
-  font-weight: 600;
-  font-size: 1.2em;
+.chat-title-bar-title:focus + .chat-title-bar-title-edit,
+.chat-title-bar-title:hover + .chat-title-bar-title-edit,
+.chat-title-bar-title-edit:hover {
+  display: inline-block;
+  color: #808080;
 }
 
-.chat-list .chat-title-bar.selected .chat-title-bar-title > i {
-  scale: 0.6
+/*
+ * Touch screens
+ */
+@media (hover: none) and (pointer: coarse) {
+  .chat-title-bar-title-edit:focus,
+  .chat-title-bar-title-edit:active,
+  .chat-title-bar-title-edit:hover {
+    display: none;
+  }
 }
-
-.chat-list .chat-title-bar-button {
-  scale: 0.75;
-}
-

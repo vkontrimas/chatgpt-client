@@ -46,6 +46,7 @@ Back alley v1 release:
 [x] - scroll to bottom when new message is entered or a message is updated!
 [] - redirect /chat to /
 [] - redirect /register to waitlist page!
+[x] - edit title
 
 Back alley v2 release:
 [] - verify analytics work

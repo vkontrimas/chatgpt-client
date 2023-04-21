@@ -69,3 +69,24 @@
     transform: translate(0, 0);
   }
 }
+
+.delete-input-style {
+  min-width: 1em;
+  width: auto;
+
+  margin: 0;
+  border: none;
+  border-radius: 0.4em;
+  padding: 0.5em;
+  outline: none;
+  resize: none;
+
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 14px;
+
+  color: #808080;
+  background: #252525;
+
+  overflow: hidden;
+}
+

@@ -1,6 +1,7 @@
 import './css/Inputs.css'
 import './css/Buttons.css'
 import './css/Notification.css'
+import './css/Layout.css'
 
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'

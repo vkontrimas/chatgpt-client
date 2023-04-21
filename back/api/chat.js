@@ -28,6 +28,7 @@ chatRouter.get('/', async (request, response) => {
 })
 
 chatRouter.put('/:base64Id', async (request, response) => {
+  console.log('test')
   const user = await request.verifyUserSession()
   const chatId = idFromBase64(request.params.base64Id)
   const chat = await ChatDriver.open(user.id, chatId)
