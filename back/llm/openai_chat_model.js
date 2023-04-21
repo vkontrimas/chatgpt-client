@@ -49,8 +49,6 @@ class OpenAIChatModel extends ChatCompletionModel {
       .filter(({ status }) => status === 'done')
       .map(({ role, content }) => ({ role, content }))
 
-    console.log(messages)
-
     const request = {
       ...this.config,
       messages
