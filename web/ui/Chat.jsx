@@ -1,7 +1,7 @@
 import '../css/Chat.css'
 
 import axios from 'axios'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
 
@@ -9,6 +9,7 @@ import ChatTitleBar from './ChatTitleBar'
 import ChatInput from './ChatInput'
 import ChatMessageScrollView from './ChatMessageScrollView'
 import Loading from './Loading'
+import NotFound from './NotFound'
 import { setChats, setMessages, addMessage, updateMessage } from '../redux/chat_slice'
 
 import completeThread from '../completion'
@@ -19,22 +20,34 @@ const Chat = () => {
   const dispatch = useDispatch()
   const bearer = useSelector(state => state.user?.bearer)
   const chat = useSelector(state => state.chat.map[chatId])
+  const [chatNotFound, setChatNotFound] = useState(false)
   const messages = chat?.messages
 
   useEffect(() => {
+    setChatNotFound(false)
+
     const fetchMessages = async () => {
-      // TODO: this request should really return the chat info too!
-      const response = await axios.get(`/api/chat/${chatId}`, { headers: { Authorization: bearer } })
-      if (chat) {
-        dispatch(setMessages({ chatId, messages: response.data.messages }))
-      }
-      else {
-        dispatch(setChats([ { id: chatId, title: 'Untitled Chat', messages: response.data.messages } ]))
+      try {
+        // TODO: this request should really return the chat info too!
+        const response = await axios.get(`/api/chat/${chatId}`, { headers: { Authorization: bearer } })
+        if (chat) {
+          dispatch(setMessages({ chatId, messages: response.data.messages }))
+        }
+        else {
+          dispatch(setChats([ { id: chatId, title: 'Untitled Chat', messages: response.data.messages } ]))
+        }
+      } catch (error) {
+        setChatNotFound(true)
+        throw error
       }
     }
 
     fetchMessages()
   }, [chatId])
+
+  if (chatNotFound) {
+    return <NotFound />
+  }
 
   if (!chat || !messages) {
     return <Loading />

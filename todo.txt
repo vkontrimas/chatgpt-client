@@ -39,13 +39,14 @@ Back alley v1 release:
 [x] - on launch send a request to check if token still valid 
 [x] - fix chat loading
 [x] - add analytics
-[] - 404 and error pages
+[x] - 404 pages
+[] - error pages
 [] - log all errors
 [x] - in progress AI message should be aligned left
 [x] - add version tag to page
 [x] - scroll to bottom when new message is entered or a message is updated!
-[] - redirect /chat to /
-[] - redirect /register to waitlist page!
+[x] - redirect /chat to /
+[x] - redirect /register to waitlist page!
 [x] - edit title
 
 Back alley v2 release:

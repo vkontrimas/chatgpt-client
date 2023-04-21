@@ -24,6 +24,7 @@ import LoggedOut from './ui/LoggedOut'
 import LoggedIn from './ui/LoggedIn'
 import SessionManager from './ui/SessionManager'
 import MobileScrollContainer from './ui/MobileScrollContainer'
+import NotFound from './ui/NotFound'
 
 const router = createBrowserRouter([
   {
@@ -47,6 +48,11 @@ const router = createBrowserRouter([
       {
         path: '/chat',
         element: <Navigate to='/' replace />,
+      },
+      // Must be the last item in this array!
+      {
+        path: '*',
+        element: <NotFound />
       },
     ],
   },
@@ -77,6 +83,11 @@ const router = createBrowserRouter([
         <Waitlist />
       </LoggedOut>
     )
+  },
+  // This has to remain the last page!
+  {
+    path: '*',
+    element: <NotFound />
   },
 ])
 
