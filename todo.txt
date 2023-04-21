@@ -44,6 +44,8 @@ Back alley v1 release:
 [x] - in progress AI message should be aligned left
 [x] - add version tag to page
 [x] - scroll to bottom when new message is entered or a message is updated!
+[] - redirect /chat to /
+[] - redirect /register to waitlist page!
 
 Back alley v2 release:
 [] - verify analytics work

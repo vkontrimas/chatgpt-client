@@ -9,3 +9,29 @@
   display: block;
   scale: 0.75;
 }
+
+.chat-list-item {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-list-item-title {
+  flex-grow: 1;
+  margin-top: 0.22em;
+  margin-right: 2em;
+  font-weight: 400;
+  font-size: 1.2em;
+  cursor: pointer;
+}
+
+.chat-list-item.selected .chat-list-item-title {
+  color: #909090;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.chat-list-item-button > i {
+  scale: 0.6;
+}
