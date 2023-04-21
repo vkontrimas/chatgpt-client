@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { useParams, useNavigate } from 'react-router'
+import { useParams, useNavigate, Navigate } from 'react-router'
 
 import { useTimed } from './effects'
 import { login } from '../redux/user'
