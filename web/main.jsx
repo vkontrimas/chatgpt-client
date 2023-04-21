@@ -9,6 +9,7 @@ import { Provider as ReduxProvider } from 'react-redux'
 import {
   createBrowserRouter,
   RouterProvider,
+  Navigate,
 } from 'react-router-dom'
 
 import { store } from './redux/store'
@@ -16,6 +17,7 @@ import { store } from './redux/store'
 import Main from './ui/Main'
 import Login from './ui/Login'
 import Register from './ui/Register'
+import Waitlist from './ui/Waitlist'
 import Chat from './ui/Chat'
 import Landing from './ui/Landing'
 import LoggedOut from './ui/LoggedOut'
@@ -42,6 +44,10 @@ const router = createBrowserRouter([
         path: '/chat/:chatId',
         element: <Chat />,
       },
+      {
+        path: '/chat',
+        element: <Navigate to='/' replace />,
+      },
     ],
   },
   {
@@ -59,6 +65,18 @@ const router = createBrowserRouter([
         <Register />
       </LoggedOut>
     ),
+  },
+  {
+    path: '/register',
+    element: <Navigate to='/waitlist' replace />
+  },
+  {
+    path: '/waitlist',
+    element: (
+      <LoggedOut>
+        <Waitlist />
+      </LoggedOut>
+    )
   },
 ])
 

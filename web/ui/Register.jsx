@@ -122,86 +122,6 @@ const RegisterForm = ({ code, codeStatus }) => {
   )
 }
 
-const RegisterWaitlistForm = ({ setSubmitStatus }) => {
-  const [name, setName] = useState('')
-  const [nameAngryClass, nameAngry] = useTimed('', 'angry')
-  const [email, setEmail] = useState('')
-  const [emailAngryClass, emailAngry] = useTimed('', 'angry')
-
-  const handleSubmit = async (event) => {
-    event.preventDefault()
-    
-    const nameTrimmed = name.trim()
-
-    const angryDurationSec = 1.4
-    let cumulativeDelaySec = 0
-    if (!nameTrimmed) {
-      nameAngry(angryDurationSec, cumulativeDelaySec)
-      setName('')
-      cumulativeDelaySec += 0.14
-    }
-    const hasEmail = email && mightBeAnEmail(email)
-    if (!(hasEmail)) {
-      emailAngry(angryDurationSec, cumulativeDelaySec)
-      cumulativeDelaySec += 0.14
-    }
-
-    if (!(nameTrimmed && hasEmail)) { return }
-
-    try {
-      await axios.post('/api/waitlist', { name: nameTrimmed, email })
-      setSubmitStatus('success')
-    } catch (error) {
-      setSubmitStatus('error')
-    }
-  }
-
-  return (
-    <form className='register-used' onSubmit={handleSubmit}>
-      <div className='notification bad'>
-        Sorry! This registration link has been used the maximum number of times.
-      </div>
-      <input
-        className={`text-input ${nameAngryClass}`}
-        placeholder='name'
-        value={name}
-        onChange={(event) => setName(event.target.value)}
-      />
-      <input
-        className={`text-input ${emailAngryClass}`}
-        placeholder='email'
-        value={email}
-        onChange={(event) => setEmail(event.target.value.trim())}
-      />
-      <button
-        className='button2 good'
-        onClick={() => {}}
-      >
-        Join the waitlist
-      </button>
-    </form>
-  )
-}
-
-const RegisterUsed = () => {
-  const [submitStatus, setSubmitStatus] = useState(null)
-  return (
-    <>
-      { !submitStatus && <RegisterWaitlistForm setSubmitStatus={(status) => setSubmitStatus(status)} /> }
-      { 
-        submitStatus === 'success' && <div className='notification good' style={{ width: '20em', textAlign: 'center' }}>
-          Expect an invite soon. ✨
-        </div>
-      }
-      { 
-        submitStatus && submitStatus !== 'success' && <div className='notification bad' style={{ width: '20em', textAlign: 'center' }}>
-          Submission failed.
-        </div>
-      }
-    </>
-  )
-}
-
 const Register = () => {
   const [codeStatus, setCodeStatus] = useState(null)
   const navigate = useNavigate()
@@ -214,7 +134,7 @@ const Register = () => {
         setCodeStatus(resp.data.status)
       } catch (error) {
         if (error.name === 'AxiosError' && error.response.status === 404) {
-          navigate('/not-found', { replace: true })
+          navigate('/waitlist', { replace: true, state: { registrationCode: code } })
         } else {
           throw error
         }
@@ -227,11 +147,15 @@ const Register = () => {
   if (!codeStatus) {
     return <Loading />
   }
+
+  if (codeStatus !== 'valid') {
+    return <Navigate to='/waitlist' replace state={{ registrationCode: code }} />
+  }
+
   else {
     return (
       <div className='register'>
         {codeStatus === 'valid' && <RegisterForm code={code} codeStatus={codeStatus} />}
-        {codeStatus === 'used' && <RegisterUsed />}
       </div>
     )
   }

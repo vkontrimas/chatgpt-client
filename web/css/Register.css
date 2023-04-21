@@ -40,21 +40,3 @@
   grid-area: register;
 }
 
-.register-used {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7em;
-}
-
-.register-used > div {
-  width: 20em;
-}
-
-.register-used > button,
-.register-used > input {
-  height: 2.2em;
-}
-
-.register-used > button {
-  font-weight: 600;
-}

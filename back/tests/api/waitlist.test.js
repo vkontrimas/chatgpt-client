@@ -69,7 +69,7 @@ describe('POST /api/waitlist', () => {
 
     const response = await api
       .post('/api/waitlist')
-      .send({ name: user.firstName, email: user.email })
+      .send({ name: user.firstName, email: user.email, registrationCode: 'foo' })
       .expect(200)
 
     expect(webhookHandler).toHaveBeenCalledTimes(1)
@@ -78,6 +78,7 @@ describe('POST /api/waitlist', () => {
     expect(webhookRequest.body).toMatchObject({
       name: user.firstName,
       email: user.email,
+      registrationCode: 'foo',
     })
   })
 

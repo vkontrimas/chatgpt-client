@@ -1,0 +1,30 @@
+.waitlist {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 0.7em;
+}
+
+.waitlist > .notification {
+  width: 20em;
+}
+
+.waitlist-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7em;
+  width: 20em;
+}
+
+.waitlist-form > button,
+.waitlist-form > input {
+  height: 2.2em;
+}
+
+.waitlist-form > button {
+  font-weight: 600;
+}
