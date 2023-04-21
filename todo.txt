@@ -41,7 +41,6 @@ Back alley v1 release:
 [x] - add analytics
 [x] - 404 pages
 [] - error pages
-[] - log all errors
 [x] - in progress AI message should be aligned left
 [x] - add version tag to page
 [x] - scroll to bottom when new message is entered or a message is updated!
@@ -50,6 +49,7 @@ Back alley v1 release:
 [x] - edit title
 
 Back alley v2 release:
+[] - log all errors
 [] - verify analytics work
 [] - encrypt user chats
 [] - make sliding ui feel nicer
