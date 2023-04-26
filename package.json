@@ -7,5 +7,10 @@
     "wipe-devdb": "docker compose -f devdb/docker_compose.yml down -v",
     "psql": "./devdb/run_psql.sh",
     "deploy": "./scripts/deploy.sh"
-  }
+  },
+  "workspaces": [
+    "back",
+    "web",
+    "db"
+  ]
 }
