@@ -1,4 +1,8 @@
 {
+  "name": "huddle",
+  "version": "0.0.1",
+  "author": "Vytautas Kontrimas",
+  "private": true,
   "scripts": {
     "build-frontend": "cd web && npm run build -- --outDir '../back/public'",
     "heroku-prebuild": "./scripts/build_prod.sh",
