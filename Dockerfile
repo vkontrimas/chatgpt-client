@@ -5,7 +5,9 @@ COPY web/package.json ./web/
 COPY back/package.json ./back/
 COPY db/package.json ./db/
 RUN yarn
-COPY . .
+COPY web/ web/
+COPY db/ db/
+COPY back/ back/
 
 FROM node:20-alpine
 COPY --from=build /huddle /huddle
