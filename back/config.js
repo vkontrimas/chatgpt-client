@@ -10,8 +10,7 @@ const required = (key) => {
 
 const PORT = process.env.PORT || 3000
 const ENVIRONMENT = process.env.NODE_ENV || "development"
-const OPENAI_API_KEY = process.env.HUDDLE_OPENAI_API_KEY
-const OPENAI_FAKE_MESSAGES = process.env.HUDDLE_OPENAI_FAKE_MESSAGES
+const OPENAI_API_KEY = required('HUDDLE_OPENAI_API_KEY')
 const SESSION_TOKEN_SECRET = required('HUDDLE_LOGIN_TOKEN_SECRET')
 const DB_LOG = process.env.HUDDLE_DB_LOG || false
 const PASSWORD_SALT_ROUNDS = 10
@@ -38,7 +37,6 @@ module.exports = {
   PORT,
   ENVIRONMENT,
   OPENAI_API_KEY,
-  OPENAI_FAKE_MESSAGES,
   PASSWORD_SALT_ROUNDS,
   SESSION_TOKEN_SECRET,
   WAITLIST_SIGNUP_WEBHOOK,

@@ -3,35 +3,29 @@ const fs = require('fs');
 module.exports = {
   development: {
     username: 'postgres',
-    password: 'huddle',
+    password: process.env.HUDDLE_POSTGRES_PASSWORD,
     database: 'huddle_dev',
     host: 'localhost',
-    port: 3003,
+    port: 5432,
     dialect: 'postgres',
     logging: process.env.DB_LOG ? console.log : null,
   },
   test: {
     username: 'postgres',
-    password: 'huddle',
+    password: process.env.HUDDLE_POSTGRES_PASSWORD,
     database: 'huddle_test',
     host: 'localhost',
-    port: 3003,
+    port: 5432,
     dialect: 'postgres',
     logging: process.env.DB_LOG ? console.log : null,
   },
   production: {
-    username: process.env.PROD_DB_USERNAME,
-    password: process.env.PROD_DB_PASSWORD,
-    database: process.env.PROD_DB_NAME,
-    host: process.env.PROD_DB_HOSTNAME,
-    port: process.env.PROD_DB_PORT,
+    username: 'postgres',
+    password: process.env.HUDDLE_POSTGRES_PASSWORD,
+    database: 'huddle_prod',
+    host: 'localhost',
+    port: 5432,
     dialect: 'postgres',
-    dialectOptions: {
-      ssl: {
-        require: true,
-        rejectUnauthorized: false,
-      }
-    },
     logging: process.env.DB_LOG ? console.log : null,
   }
 }
