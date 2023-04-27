@@ -2,13 +2,18 @@ services:
   backend:
     image: huddle
     working_dir: /huddle
-    command: sh -c 'yarn && cd back && node index.js'
+    command: sh -c 'cd huddle && node main.js'
     depends_on:
-      - database
-    restart: always
+       - database
 
   database:
     image: postgres:15.2-alpine
+    environment:
+      POSTGRES_PASSWORD: '${POSTGRES_PASSWORD}'
     ports:
       - 5432:5432
-    restart: always
+    volumes:
+      - database:/var/lib/postgresql/data
+
+volumes:
+  database:
