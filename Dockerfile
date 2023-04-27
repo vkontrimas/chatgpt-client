@@ -6,4 +6,4 @@ COPY db/package.json huddle/db/
 RUN cd huddle && yarn
 
 FROM node:20-alpine
-COPY --from=build /app/back /huddle_backend
+COPY --from=build /huddle /huddle
