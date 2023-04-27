@@ -3,7 +3,12 @@ services:
     image: huddle
     working_dir: /huddle
     command: sh -c 'yarn && cd back && node index.js'
+    depends_on:
+      - database
+    restart: always
+
   database:
     image: postgres:15.2-alpine
     ports:
       - 5432:5432
+    restart: always
