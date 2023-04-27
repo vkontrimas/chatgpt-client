@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const uuid = require('uuid')
-const { User } = require('db')
+const { User } = require('./models')
 
 const { PASSWORD_SALT_ROUNDS, SESSION_TOKEN_SECRET } = require('./config')
 

@@ -3,10 +3,8 @@ WORKDIR /huddle
 COPY package.json yarn.lock ./
 COPY web/package.json ./web/
 COPY back/package.json ./back/
-COPY db/package.json ./db/
 RUN yarn
 COPY web/ web/
-COPY db/ db/
 COPY back/ back/
 
 FROM node:20-alpine

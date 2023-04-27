@@ -4,7 +4,7 @@ const api = supertest(require('../../app'))
 const { Writable } = require('stream')
 const streamToArray = require('../../stream_to_array')
 
-const { Chat, Message } = require('db')
+const { Chat, Message } = require('../../models')
 const { ChatDriver } = require('../../chat')
 const { loginTestUser } = require('../helper')
 const { idToBase64, idFromBase64 } = require('../../base64_id')

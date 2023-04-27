@@ -5,7 +5,7 @@ const {
   getRegistrationCode,
 } = require('../registration')
 
-const { User, RegistrationCode, RegistrationCodeUse } = require('db')
+const { User, RegistrationCode, RegistrationCodeUse } = require('../models')
 
 const { uniqueTestUser } = require('./helper')
 

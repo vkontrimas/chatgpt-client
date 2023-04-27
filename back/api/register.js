@@ -5,7 +5,7 @@ const {
   createUserWithRegistrationCode,
   getRegistrationCode
 } = require('../registration')
-const { RegistrationCode } = require('db')
+const { RegistrationCode } = require('../models')
 
 registerRouter.get('/:base64Id', async (request, response) => {
   try {

@@ -1,4 +1,4 @@
-const { Chat } = require('db')
+const { Chat } = require('../models')
 const ChatDriver = require('./chat_driver')
 
 const listChats = async (userId) => {

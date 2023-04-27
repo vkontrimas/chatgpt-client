@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const { User, Chat, Message } = require('db')
+const { User, Chat, Message } = require('../models')
 const { Transform } = require('stream')
 
 const { selectChatModel } = require('../llm')

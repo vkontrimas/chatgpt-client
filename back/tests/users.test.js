@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { uniqueTestUser } = require('./helper')
-const { User } = require('db')
+const { User } = require('../models')
 
 const { 
   createUser,

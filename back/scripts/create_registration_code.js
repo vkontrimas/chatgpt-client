@@ -1,6 +1,6 @@
 const inquirer = require('inquirer')
 
-const { sequelize } = require('db')
+const { sequelize } = require('../models')
 const { ENVIRONMENT } = require('../config')
 const { idToBase64 } = require('../base64_id')
 const { createRegistrationCode } = require('../registration')

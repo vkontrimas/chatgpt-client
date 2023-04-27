@@ -1,6 +1,6 @@
 const usersRouter = require('express').Router()
 
-const { User } = require('db')
+const { User } = require('../models')
 const { ENVIRONMENT } = require('../config')
 const { idToBase64, idFromBase64 } = require('../base64_id')
 

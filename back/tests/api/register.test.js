@@ -2,7 +2,7 @@ const supertest = require('supertest')
 const api = supertest(require('../../app'))
 
 const { uniqueTestUser } = require('../helper')
-const { User, RegistrationCode } = require('db')
+const { User, RegistrationCode } = require('../../models')
 const { idToBase64, idFromBase64 } = require('../../base64_id')
 
 const { 

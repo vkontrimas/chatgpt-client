@@ -33,6 +33,38 @@ const WAITLIST_SIGNUP_WEBHOOK = ENVIRONMENT === 'production'
 
 const FAKE_WEBHOOK_SERVER_PORT = fakeWebhookServerPort()
 
+const POSTGRES_PASSWORD = required('HUDDLE_POSTGRES_PASSWORD')
+const SEQUELIZE_CONFIGURATIONS = {
+  development: {
+    username: 'postgres',
+    password: POSTGRES_PASSWORD,
+    database: 'huddle_dev',
+    host: 'localhost',
+    port: 5432,
+    dialect: 'postgres',
+    logging: process.env.DB_LOG ? console.log : null,
+  },
+  test: {
+    username: 'postgres',
+    password: POSTGRES_PASSWORD,
+    database: 'huddle_test',
+    host: 'localhost',
+    port: 5432,
+    dialect: 'postgres',
+    logging: process.env.DB_LOG ? console.log : null,
+  },
+  production: {
+    username: 'postgres',
+    password: POSTGRES_PASSWORD,
+    database: 'huddle_prod',
+    host: 'localhost',
+    port: 5432,
+    dialect: 'postgres',
+    logging: process.env.DB_LOG ? console.log : null,
+  }
+}
+const SEQUELIZE_CONFIG = SEQUELIZE_CONFIGURATIONS[ENVIRONMENT]
+
 module.exports = {
   PORT,
   ENVIRONMENT,
@@ -42,4 +74,5 @@ module.exports = {
   WAITLIST_SIGNUP_WEBHOOK,
   FAKE_WEBHOOK_SERVER_PORT,
   MESSAGE_KEY,
+  SEQUELIZE_CONFIG,
 }

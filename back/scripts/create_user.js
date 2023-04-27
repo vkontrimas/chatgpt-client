@@ -1,7 +1,7 @@
 const inquirer = require('inquirer')
 const bcrypt = require('bcrypt')
 
-const { sequelize, User } = require('../db/db')
+const { sequelize, User } = require('../db/models')
 const { PASSWORD_HASH_ROUNDS } = require('../config')
 
 const run = async () => {

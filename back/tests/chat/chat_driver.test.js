@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const { Chat, Message } = require('db')
+const { Chat, Message } = require('../../models')
 const { ChatDriver } = require('../../chat')
 const { createUser } = require('../../users')
 const { PotatoChatModel } = require('../../llm')

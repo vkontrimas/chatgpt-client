@@ -1,5 +1,5 @@
 const uuid = require('uuid')
-const { sequelize, RegistrationCode, RegistrationCodeUse } = require('db')
+const { sequelize, RegistrationCode, RegistrationCodeUse } = require('./models')
 
 const { createUser } = require('./users')
 
