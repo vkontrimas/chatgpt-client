@@ -14,7 +14,7 @@ module.exports = {
     username: 'postgres',
     password: POSTGRES_PASSWORD,
     database: 'huddle_test',
-    host: 'database',
+    host: 'localhost',
     port: 5432,
     dialect: 'postgres',
     logging: process.env.DB_LOG ? console.log : null,
