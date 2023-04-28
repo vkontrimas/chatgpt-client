@@ -14,7 +14,7 @@ const path = require('path')
 const app = express()
 if (ENVIRONMENT !== 'test') {
   const morgan = require('morgan')
-  app.use(morgan('tiny'))
+  app.use(morgan(':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] :response-time ms ":referrer" ":user-agent"'))
 }
 if (ENVIRONMENT === 'development' || ENVIRONMENT === 'test') {
   const cors = require('cors')
