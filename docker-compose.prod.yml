@@ -1,13 +1,14 @@
 services:
   www:
-    image: huddle_www
-    depends_on: huddle_back
+    image: 739471740344.dkr.ecr.eu-west-2.amazonaws.com/huddle_www
+    depends_on:
+      - backend
     ports:
       - 80:80
       - 443:443
 
   backend:
-    image: huddle_back
+    image: 739471740344.dkr.ecr.eu-west-2.amazonaws.com/huddle_back
     depends_on:
        - database
     environment:
