@@ -19,8 +19,6 @@ services:
     image: postgres:15.2-alpine
     environment:
       POSTGRES_PASSWORD: '${HUDDLE_POSTGRES_PASSWORD}'
-    ports:
-      - 5432:5432
     volumes:
       - database:/var/lib/postgresql/data
 

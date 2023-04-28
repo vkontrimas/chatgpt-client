@@ -1,8 +1,25 @@
 services:
+  backend:
+    image: huddle
+    working_dir: /huddle/back
+    command: sh -c 'yarn run dev'
+    depends_on:
+       - database
+    environment:
+      PORT: 3001
+      NODE_ENV: 'development'
+      HUDDLE_OPENAI_API_KEY: '${HUDDLE_OPENAI_API_KEY}'
+      HUDDLE_DATABASE_PATH: 'postgres://postgres:${HUDDLE_POSTGRES_PASSWORD}@localhost:5432'
+      HUDDLE_LOGIN_TOKEN_SECRET: '${HUDDLE_LOGIN_TOKEN_SECRET}'
+      HUDDLE_MESSAGE_KEY: '${HUDDLE_MESSAGE_KEY}'
+      HUDDLE_WAITLIST_SIGNUP_WEBHOOK: '${HUDDLE_WAITLIST_SIGNUP_WEBHOOK}'
+    volumes:
+       - ./:/huddle/
+
   frontend:
     image: huddle
     working_dir: /huddle/web
-    command: sh -c 'npm run dev'
+    command: sh -c 'yarn run dev'
     depends_on:
        - backend
     environment:
@@ -11,29 +28,14 @@ services:
     ports:
       - '${HUDDLE_PORT}:${HUDDLE_PORT}'
     volumes:
-      - ./:huddle/
-
-  backend:
-    image: huddle
-    working_dir: /huddle/back
-    command: sh -c 'npm run dev'
-    depends_on:
-       - database
-    environment:
-      PORT: 3000
-      NODE_ENV: 'development'
-      HUDDLE_OPENAI_API_KEY: '${HUDDLE_OPENAI_API_KEY}'
-      HUDDLE_DATABASE_PATH: 'postgres://postgres:${HUDDLE_POSTGRES_PASSWORD}@localhost:5432'
-      HUDDLE_LOGIN_TOKEN_SECRET: '${HUDDLE_LOGIN_TOKEN_SECRET}'
-      HUDDLE_MESSAGE_KEY: '${HUDDLE_MESSAGE_KEY}'
-      HUDDLE_WAITLIST_SIGNUP_WEBHOOK: '${HUDDLE_WAITLIST_SIGNUP_WEBHOOK}'
-    volumes:
-      - ./:huddle/
+      - ./:/huddle/
 
   database:
     image: postgres:15.2-alpine
     environment:
       POSTGRES_PASSWORD: '${HUDDLE_POSTGRES_PASSWORD}'
+    ports:
+      - 5432:5432
     volumes:
       - database:/var/lib/postgresql/data
 
