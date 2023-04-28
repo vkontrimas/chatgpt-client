@@ -20,7 +20,7 @@ if (ENVIRONMENT === 'development' || ENVIRONMENT === 'test') {
   const cors = require('cors')
   app.use(cors())
 }
-app.use(express.static('public'))
+/*app.use(express.static('public'))
 app.use(express.json())
 app.use('/api/chat', userSession, chatRouter)
 app.use('/api/users', userSession, usersRouter)
@@ -30,4 +30,8 @@ app.use('/api/waitlist', waitlistRouter)
 app.get('*', (request, response) => response.sendFile(path.resolve('public', 'index.html')))
 app.use(unknownEndpoint)
 app.use(errorHandler)
+*/
+app.use((request, response) => {
+  response.status(404).end()
+})
 module.exports = app
