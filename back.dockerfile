@@ -2,12 +2,12 @@ FROM node:20-alpine
 WORKDIR back
 
 # install deps
-COPY package.json .
-COPY yarn.loc[k] .
+COPY back/package.json .
+COPY back/yarn.loc[k] .
 RUN yarn
 
 # copy everything else
-COPY . .
+COPY back .
 
 # run!
 CMD node main.js

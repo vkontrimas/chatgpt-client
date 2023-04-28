@@ -1,6 +1,6 @@
 services:
   backend:
-    image: huddle
+    image: node:20-alpine
     working_dir: /huddle/back
     command: sh -c 'yarn run dev'
     depends_on:
@@ -17,7 +17,7 @@ services:
        - ./:/huddle/
 
   frontend:
-    image: huddle
+    image: node:20-alpine
     working_dir: /huddle/web
     command: sh -c 'yarn run dev'
     depends_on:
