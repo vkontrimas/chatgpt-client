@@ -1,20 +1,23 @@
 services:
+  www:
+    image: huddle_www
+    depends_on: huddle_back
+    ports:
+      - 80:80
+      - 443:443
+
   backend:
-    image: huddle
-    working_dir: /huddle/back
-    command: sh -c 'node main.js'
+    image: huddle_back
     depends_on:
        - database
     environment:
-      PORT: '${HUDDLE_PORT}'
+      PORT: 3000
       NODE_ENV: '${HUDDLE_NODE_ENV}'
       HUDDLE_OPENAI_API_KEY: '${HUDDLE_OPENAI_API_KEY}'
       HUDDLE_LOGIN_TOKEN_SECRET: '${HUDDLE_LOGIN_TOKEN_SECRET}'
       HUDDLE_MESSAGE_KEY: '${HUDDLE_MESSAGE_KEY}'
       HUDDLE_WAITLIST_SIGNUP_WEBHOOK: '${HUDDLE_WAITLIST_SIGNUP_WEBHOOK}'
       HUDDLE_POSTGRES_PASSWORD: '${HUDDLE_POSTGRES_PASSWORD}'
-    ports:
-      - '${HUDDLE_PORT}:${HUDDLE_PORT}'
 
   database:
     image: postgres:15.2-alpine
