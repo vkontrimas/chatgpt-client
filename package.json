@@ -4,13 +4,10 @@
   "author": "Vytautas Kontrimas",
   "private": true,
   "scripts": {
-    "build-frontend": "cd web && npm run build -- --outDir '../back/public'",
-    "start": "cd back && npm start",
-    "deploy": "./scripts/deploy.sh"
+    "dev": "docker compose -f docker-compose.dev.yml up"
   },
   "workspaces": [
     "back",
-    "web",
-    "db"
+    "web"
   ]
 }
