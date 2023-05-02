@@ -54,7 +54,7 @@ const ChatMessageContextMenu = ({children}) => {
           <i className='fa fa-trash-o fa-lg'></i>
         </button>
         <button
-          className='button-clear chat-message-context-menu-button'
+          className='button-clear good chat-message-context-menu-button'
           aria-label='Delete message'
         >
           <i className='fa fa-share-alt fa-lg'></i>
