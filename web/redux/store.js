@@ -4,7 +4,9 @@ import chat from './chat_slice'
 import sidebar from './sidebar'
 import currentThread from './current_thread'
 
-export const store = configureStore({
+export const createStore = () => configureStore({
   reducer: { user, chat, sidebar, currentThread },
   devTools: true,
 })
+
+export const store = createStore()

@@ -1,7 +1,7 @@
 
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {
+export const initialState = {
   allMessages: {
     'Ks_46clmQHSH_VG4RSiVOg': {
       previous: null,
@@ -60,26 +60,45 @@ const initialState = {
       status: 'done'
     },
   },
-  branches: [
-    {
+  branches: {
+    'zVAsHPNMQdGP-AXR6q8ABw': {
       id: 'zVAsHPNMQdGP-AXR6q8ABw',
       start: 'Ks_46clmQHSH_VG4RSiVOg',
       end: 'Za-Rw3GmQVa-z6urtkKZlg',
     },
-  ],
+  },
   currentBranch: 'zVAsHPNMQdGP-AXR6q8ABw',
-  grabbedId: null,
+  grabbedMessages: [],
 }
 
 export const currentThreadSlice  = createSlice({
   name: 'currentThread',
   initialState,
   reducers: {
+    grabMessage: (state, { payload }) => {
+      const { messageId } = payload
+      if (!(messageId in state.allMessages)) {
+        throw 'message id doesnt exist'
+      }
+
+      const endId = state.allMessages[messageId].previous || null
+
+      const grabbedMessages = []
+      let currentMessageId = state.branches[state.currentBranch].end
+      do {
+        const message = state.allMessages[currentMessageId]
+        grabbedMessages.push(message)
+        currentMessageId = message.previous
+      } while (currentMessageId && currentMessageId !== endId);
+      grabbedMessages.reverse()
+      state.grabbedMessages = grabbedMessages
+    }
   },
   extraReducers: (builder) => { },
 })
 
 export const {
+  grabMessage,
 } = currentThreadSlice.actions
 
 export default currentThreadSlice.reducer
