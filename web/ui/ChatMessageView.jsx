@@ -5,6 +5,15 @@ import { useSelector } from 'react-redux'
 
 import ChatMessage from './ChatMessage'
 
+const GrabbedMessages = ({ grabbedMessages }) => {
+  if (!grabbedMessages || grabbedMessages.length === 0) { return }
+
+  return (
+    <div className='chat-message-view-grabbed'>
+      Grabbed
+    </div>
+  )
+}
 
 const ChatMessageView = (props) => {
   const lastMessageId = useSelector(state => {
@@ -40,11 +49,7 @@ const ChatMessageView = (props) => {
   return (
     <div className='chat-message-view'>
       {shownMessages.map(message => (<ChatMessage key={message.id} message={message} handleOpenContext={handleOpenContext} />))}
-      {grabbedMessages.length > 0 && (
-        <div className='chat-message-view-grabbed'>
-          Grabbed messages!
-        </div>
-      )}
+      <GrabbedMessages grabbedMessages={grabbedMessages} />
     </div>
   )
 }
