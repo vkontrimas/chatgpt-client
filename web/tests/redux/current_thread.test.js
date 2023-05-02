@@ -46,4 +46,45 @@ describe('message grabbing', () => {
       },
     ])
   })
+
+  test('grabbedMessages do not appear in shownMessages', () => {
+    store.dispatch(grabMessage({ messageId: 'SQyigiY2Tpupk8Hrquenzw' }))
+    expect(getState().shownMessages).toMatchObject([
+      {
+        previous: null,
+        id: 'Ks_46clmQHSH_VG4RSiVOg',
+        role: 'user',
+        content: 'Hello!',
+        status: 'done'
+      },
+      {
+        previous: 'Ks_46clmQHSH_VG4RSiVOg',
+        id: 'bxi-qv_fS2WlX9fqaiNWUQ',
+        role: 'assistant',
+        content: 'Hello there! How can I assist you today?',
+        status: 'done'
+      },
+      {
+        previous: 'bxi-qv_fS2WlX9fqaiNWUQ',
+        id: 'D8tRVuNsRSyYi6ENLWVtoQ',
+        role: 'user',
+        content: 'Generate me a hello world program, please.',
+        status: 'done'
+      },
+      {
+        previous: 'D8tRVuNsRSyYi6ENLWVtoQ',
+        id: 'zYgED-plQsCB04ji1bGlog',
+        role: 'assistant',
+        content: 'Sure, here is a sample Hello World program in Python:\n\n```\nprint("Hello, World!")\n```\n\nFeel free to copy and paste this code into a Python IDE or editor of your choice and run it to see the output.',
+        status: 'done'
+      },
+      {
+        previous: 'zYgED-plQsCB04ji1bGlog',
+        id: 'pACIgc3pTtC9vDGVew5BmQ',
+        role: 'user',
+        content: 'Could you write one in C?',
+        status: 'done'
+      },
+    ])
+  })
 })
