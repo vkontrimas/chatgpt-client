@@ -73,6 +73,7 @@ const ChatMessageContent = ({ handleHold, message }) => {
     <div
       ref={messageRef}
       className={`chat-message ${message.role} ${message.status || 'done'}`}
+      onBlur={() => console.log('blur')}
     >
       <ReactMarkdown>{message.content}</ReactMarkdown>
     </div>
@@ -80,11 +81,11 @@ const ChatMessageContent = ({ handleHold, message }) => {
 }
 
 const ChatMessage = ({ message }) => {
-  const [showContextMenu, setShowContextMenu] = useState(true)
+  const [showContextMenu, setShowContextMenu] = useState(false)
 
   const handleHold = useCallback(() => {
-    console.log('IM BEING HELD')
-  })
+    setShowContextMenu(true)
+  }, [setShowContextMenu])
 
   if (showContextMenu) {
     return (
