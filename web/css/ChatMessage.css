@@ -62,9 +62,7 @@
 }
 
 .chat-message-context {
-  padding: 0.4em;
   border-radius: 0.8em;
-  border: 0.2em solid #303030;
 
   display: flex;
   flex-direction: column;
