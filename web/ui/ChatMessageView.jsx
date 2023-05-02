@@ -1,11 +1,15 @@
 import '../css/ChatMessageView.css'
 
+import { useSelector } from 'react-redux'
+
 import ChatMessage from './ChatMessage'
 
-const ChatMessageView = ({ messages }) => {
+const ChatMessageView = (props) => {
+  const shownMessages = useSelector(state => state.currentThread.shownMessages)
+
   return (
     <div className='chat-message-view'>
-      {messages.map(message => (<ChatMessage key={message.id} message={message} />))}
+      {shownMessages.map(message => (<ChatMessage key={message.id} message={message} />))}
     </div>
   )
 }
