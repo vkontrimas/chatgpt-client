@@ -44,7 +44,25 @@ const useLongHold = (handleHold, messageRef, holdTimeMs = 250) => {
 }
 
 const ChatMessageContextMenu = ({children}) => {
-  return children
+  return (
+    <div className='chat-message-context'>
+      <div className='chat-message-context-menu'>
+        <button
+          className='button-clear chat-message-context-menu-button'
+          aria-label='Delete message'
+        >
+          <i className='fa fa-trash-o fa-lg'></i>
+        </button>
+        <button
+          className='button-clear chat-message-context-menu-button'
+          aria-label='Delete message'
+        >
+          <i className='fa fa-share-alt fa-lg'></i>
+        </button>
+      </div>
+      {children}
+    </div>
+  )
 }
 
 const ChatMessageContent = ({ handleHold, message }) => {

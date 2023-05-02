@@ -7,7 +7,7 @@
   color: floralwhite;
   background: #005f7f;
 
-  user-select:none;
+  user-select: none;
 }
 
 .chat-message.user {
@@ -61,3 +61,22 @@
   padding-left: 10px;
 }
 
+.chat-message-context {
+  padding: 0.4em;
+  border-radius: 0.8em;
+  border: 0.2em solid #303030;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.6em;
+}
+
+.chat-message-context-menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.chat-message-context-menu-button {
+  flex: 1;
+}
