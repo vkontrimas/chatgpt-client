@@ -1,16 +1,41 @@
 import '../css/ChatMessageView.css'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useMemo, useState, useCallback } from 'react'
+import { useSelector } from 'react-redux'
 
 import ChatMessage from './ChatMessage'
-import { grabMessage } from '../redux/current_thread'
+
 
 const ChatMessageView = (props) => {
-  const dispatch = useDispatch()
-  const shownMessages = useSelector(state => state.currentThread.shownMessages)
-  const grabbedMessages = useSelector(state => state.currentThread.grabbedMessages)
+  const lastMessageId = useSelector(state => {
+    const currentId = state.currentThread.currentBranch
+    return state.currentThread.branches[currentId].end
+  })
 
-  const handleOpenContext = (messageId) => dispatch(grabMessage({ messageId }))
+  const allMessages = useSelector(state => state.currentThread.allMessages)
+  const [grabbedMessages, setGrabbedMessages] = useState([])
+
+  const shownMessages = useMemo(() => {
+    let currentId = grabbedMessages.length > 0 ? grabbedMessages[0].previous : lastMessageId
+    const shownMessages = []
+    while (currentId) {
+      shownMessages.push(allMessages[currentId])
+      currentId = allMessages[currentId]?.previous
+    }
+    shownMessages.reverse()
+    return shownMessages
+  }, [lastMessageId, allMessages, grabbedMessages])
+
+  const handleOpenContext = useCallback((messageId) => {
+    let currentId = lastMessageId
+    const grabbedMessages = []
+    while (currentId && allMessages[messageId].previous !== currentId) {
+      grabbedMessages.push(allMessages[currentId])
+      currentId = allMessages[currentId].previous
+    }
+    grabbedMessages.reverse()
+    setGrabbedMessages(grabbedMessages)
+  }, [lastMessageId, allMessages])
 
   return (
     <div className='chat-message-view'>
