@@ -80,12 +80,13 @@ const ChatMessageContent = ({ handleHold, message }) => {
   )
 }
 
-const ChatMessage = ({ message }) => {
+const ChatMessage = ({ message, handleOpenContext }) => {
   const [showContextMenu, setShowContextMenu] = useState(false)
 
   const handleHold = useCallback(() => {
-    setShowContextMenu(true)
-  }, [setShowContextMenu])
+    console.log(message.id)
+    handleOpenContext(message.id)
+  }, [handleOpenContext, message.id])
 
   if (showContextMenu) {
     return (
