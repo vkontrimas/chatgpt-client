@@ -60,21 +60,3 @@
   display: block;
   padding-left: 10px;
 }
-
-.chat-message-context {
-  border-radius: 0.8em;
-
-  display: flex;
-  flex-direction: column;
-
-  gap: 0.6em;
-}
-
-.chat-message-context-menu {
-  display: flex;
-  flex-direction: row;
-}
-
-.chat-message-context-menu-button {
-  flex: 1;
-}

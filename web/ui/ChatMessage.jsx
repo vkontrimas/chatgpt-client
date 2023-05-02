@@ -43,28 +43,6 @@ const useLongHold = (handleHold, messageRef, holdTimeMs = 250) => {
   }, [messageRef, handleHold])
 }
 
-const ChatMessageContextMenu = ({children}) => {
-  return (
-    <div className='chat-message-context'>
-      <div className='chat-message-context-menu'>
-        <button
-          className='button-clear chat-message-context-menu-button'
-          aria-label='Delete message'
-        >
-          <i className='fa fa-trash-o fa-lg'></i>
-        </button>
-        <button
-          className='button-clear good chat-message-context-menu-button'
-          aria-label='Delete message'
-        >
-          <i className='fa fa-share-alt fa-lg'></i>
-        </button>
-      </div>
-      {children}
-    </div>
-  )
-}
-
 const ChatMessageContent = ({ handleHold, message }) => {
   const messageRef = useRef(null)
   useLongHold(handleHold, messageRef)
@@ -81,22 +59,11 @@ const ChatMessageContent = ({ handleHold, message }) => {
 }
 
 const ChatMessage = ({ message, handleOpenContext }) => {
-  const [showContextMenu, setShowContextMenu] = useState(false)
-
   const handleHold = useCallback(() => {
-    console.log(message.id)
     handleOpenContext(message.id)
   }, [handleOpenContext, message.id])
 
-  if (showContextMenu) {
-    return (
-      <ChatMessageContextMenu>
-        <ChatMessageContent handleHold={handleHold} message={message} />
-      </ChatMessageContextMenu>
-    )
-  } else {
-    return <ChatMessageContent handleHold={handleHold} message={message} />
-  }
+  return <ChatMessageContent handleHold={handleHold} message={message} />
 }
 
 export default ChatMessage

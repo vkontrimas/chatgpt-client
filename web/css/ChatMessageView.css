@@ -1,8 +1,29 @@
 .chat-message-view {
   min-height: 100%;
+  padding-right: 1em;
+}
+
+.chat-message-list {
   display: flex;
   flex-direction: column;
   gap: 0.8em;
-  padding-right: 1em;
   justify-content: flex-end;
+}
+
+.chat-message-context {
+  border-radius: 0.8em;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 0.6em;
+}
+
+.chat-message-context-menu {
+  display: flex;
+  flex-direction: row;
+}
+
+.chat-message-context-menu-button {
+  flex: 1;
 }
