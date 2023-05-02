@@ -1,17 +1,10 @@
 import '../css/ChatMessage.css'
 
-import { useRef, useEffect, useCallback } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 
 import ReactMarkdown from 'react-markdown'
 
-const ChatMessage = ({ message }) => {
-  const holdTimeMs = 250
-  const messageRef = useRef(null)
-
-  const handleHold = useCallback(() => {
-    console.log('IM BEING HELD')
-  })
-
+const useLongHold = (handleHold, messageRef, holdTimeMs = 250) => {
   useEffect(() => {
     const target = messageRef.current
     if (!target) { return }
@@ -23,7 +16,7 @@ const ChatMessage = ({ message }) => {
         event.preventDefault()
         handleHold()
         if ('vibrate' in navigator) {
-          navigator.vibrate([20])
+          navigator.vibrate([25])
         }
       }, holdTimeMs)
     }
@@ -48,6 +41,15 @@ const ChatMessage = ({ message }) => {
       }
     }
   }, [messageRef, handleHold])
+}
+
+const ChatMessageContextMenu = ({children}) => {
+  return children
+}
+
+const ChatMessageContent = ({ handleHold, message }) => {
+  const messageRef = useRef(null)
+  useLongHold(handleHold, messageRef)
 
   return (
     <div
@@ -57,6 +59,24 @@ const ChatMessage = ({ message }) => {
       <ReactMarkdown>{message.content}</ReactMarkdown>
     </div>
   )
+}
+
+const ChatMessage = ({ message }) => {
+  const [showContextMenu, setShowContextMenu] = useState(true)
+
+  const handleHold = useCallback(() => {
+    console.log('IM BEING HELD')
+  })
+
+  if (showContextMenu) {
+    return (
+      <ChatMessageContextMenu>
+        <ChatMessageContent handleHold={handleHold} message={message} />
+      </ChatMessageContextMenu>
+    )
+  } else {
+    return <ChatMessageContent handleHold={handleHold} message={message} />
+  }
 }
 
 export default ChatMessage
