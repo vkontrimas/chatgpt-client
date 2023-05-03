@@ -89,16 +89,14 @@ const ChatMessageContextMenu = ({children}) => {
   )
 }
 
-const GrabbedMessages = ({ grabbedMessages }) => {
+const GrabbedMessages = ({ grabbedMessages, handleOpenContext }) => {
   if (!grabbedMessages || grabbedMessages.length === 0) { return }
 
   return (
     <ChatMessageContextMenu>
       <div className='chat-message-list'>
         {grabbedMessages.map(message => (
-          <div className='grabbed-message-container'>
-            <ChatMessage key={message.id} message={message} />
-          </div>
+          <ChatMessage key={message.id} message={message} handleOpenContext={handleOpenContext}/>
         ))}
       </div>
     </ChatMessageContextMenu>
@@ -139,7 +137,7 @@ const ChatMessageView = (props) => {
   return (
     <div className='chat-message-view chat-message-list'>
       {shownMessages.map(message => (<ChatMessage key={message.id} message={message} handleOpenContext={handleOpenContext} />))}
-      <GrabbedMessages grabbedMessages={grabbedMessages} />
+      <GrabbedMessages grabbedMessages={grabbedMessages} handleOpenContext={handleOpenContext} />
     </div>
   )
 }

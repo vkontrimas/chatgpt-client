@@ -100,7 +100,7 @@
   gap: 0em;
 }
 
-.grabbed-message-container {
+.chat-message-context .chat-message {
   position: relative;
 
   animation: chat-message-shake 0.25s;
@@ -110,7 +110,7 @@
   max-height: 5em;
 }
 
-.grabbed-message-container::after {
+.chat-message-context .chat-message::after {
   position: absolute;
   content: "";
   left: 0;
