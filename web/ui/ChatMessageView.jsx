@@ -95,7 +95,11 @@ const GrabbedMessages = ({ grabbedMessages }) => {
   return (
     <ChatMessageContextMenu>
       <div className='chat-message-list'>
-        {grabbedMessages.map(message => (<ChatMessage key={message.id} message={message} />))}
+        {grabbedMessages.map(message => (
+          <div className='grabbed-message-container'>
+            <ChatMessage key={message.id} message={message} />
+          </div>
+        ))}
       </div>
     </ChatMessageContextMenu>
   )
