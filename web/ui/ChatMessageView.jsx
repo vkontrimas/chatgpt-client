@@ -103,7 +103,7 @@ const MessageList = ({pastTopId, bottomId, allMessages, handleSelectMessage}) =>
     const messages = []
     while (currentId !== pastTopId) {
       messages.push(allMessages[currentId])
-      currentId = allMessages[currentId].previous
+      currentId = allMessages[currentId].aboveMessageId
     }
     messages.reverse()
 
@@ -243,7 +243,7 @@ const ChatMessageView = (props) => {
     if (selectionType === 'single') {
       setSelectionBottomId(messageId)
     }
-    setSelectionPastTopId(allMessages[messageId].previous)
+    setSelectionPastTopId(allMessages[messageId].aboveMessageId)
   }
 
   return (
