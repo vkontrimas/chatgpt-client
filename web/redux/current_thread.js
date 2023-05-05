@@ -61,8 +61,8 @@ export const initialState = {
   branches: {
     'zVAsHPNMQdGP-AXR6q8ABw': {
       id: 'zVAsHPNMQdGP-AXR6q8ABw',
-      start: 'Ks_46clmQHSH_VG4RSiVOg',
-      end: 'Za-Rw3GmQVa-z6urtkKZlg',
+      pastTopId: 'Ks_46clmQHSH_VG4RSiVOg',
+      bottomId: 'Za-Rw3GmQVa-z6urtkKZlg',
     },
   },
   currentBranch: 'zVAsHPNMQdGP-AXR6q8ABw',

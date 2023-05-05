@@ -225,7 +225,7 @@ const MessageSelection = ({
 const ChatMessageView = (props) => {
   const threadBottomId = useSelector(state => {
     const currentId = state.currentThread.currentBranch
-    return state.currentThread.branches[currentId].end
+    return state.currentThread.branches[currentId].bottomId
   })
   const allMessages = useSelector(state => state.currentThread.allMessages)
 
