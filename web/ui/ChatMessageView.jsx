@@ -115,11 +115,19 @@ const MessageList = ({pastTopId, bottomId, allMessages, handleSelectMessage}) =>
   return <div className='chat-message-list'>{messageElements}</div>
 }
 
+const SelectedMessageList = (props) => {
+  const { isCollapsed } = props
+  return (
+    <div className={`selected-messages ${isCollapsed ? 'collapsed' : ''}`}>
+      <MessageList {...props} />
+    </div>
+  )
+}
+
 const MessageSelectionContextMenu = ({ role, handleEdit, handleMultiSelect }) => {
   const editIcon = role === 'assistant' 
     ? <i className='fa fa-refresh fa-lg'/> 
     : <i className='fa fa-pencil fa-lg'/>
-
 
     return (
       <div className='chat-message-context-menu'>
@@ -229,34 +237,23 @@ const ChatMessageView = (props) => {
   })
   const allMessages = useSelector(state => state.currentThread.allMessages)
 
-  const [selectionType, setSelectionType] = useState('single')
-  const [selectionBottomId, setSelectionBottomId] = useState(null)
-  const [selectionPastTopId, setSelectionPastTopId] = useState(null)
+  const [multipleSelection, setMultipleSelection] = useState(false)
+  const [selectedId, setSelectedId] = useState(null)
+  const pastSelectedId = selectedId && allMessages[selectedId].aboveMessageId
 
-  const setSelection = (bottomId, pastTopId, type) => {
-    setSelectionBottomId(bottomId)
-    setSelectionPastTopId(pastTopId)
-    setSelectionType(type)
-  }
-
-  const selectMessage = (messageId) => {
-    if (selectionType === 'single') {
-      setSelectionBottomId(messageId)
-    }
-    setSelectionPastTopId(allMessages[messageId].aboveMessageId)
-  }
+  const setSelection = (bottomId, pastTopId, type) => { }
 
   return (
     <div className='chat-message-view'>
-      {selectionBottomId && (
+      {selectedId && (
         <>
           <MessageList
             pastTopId={null}
-            bottomId={selectionPastTopId}
+            bottomId={pastSelectedId}
             allMessages={allMessages}
-            handleSelectMessage={selectMessage}
+            handleSelectMessage={setSelectedId}
           />
-          <MessageSelection 
+          {/*<MessageSelection 
             type={selectionType}
             pastTopId={selectionPastTopId}
             bottomId={selectionBottomId}
@@ -264,15 +261,24 @@ const ChatMessageView = (props) => {
             setSelection={setSelection}
             selectMessage={selectMessage}
             threadBottomId={threadBottomId}
+          />*/}
+          <SelectedMessageList
+            pastTopId={pastSelectedId}
+            bottomId={multipleSelection ? threadBottomId : selectedId}
+            allMessages={allMessages}
+            handleSelectMessage={setSelectedId}
+            isCollapsed={multipleSelection}
           />
         </>
       )}
-      <MessageList
-        pastTopId={selectionBottomId}
-        bottomId={threadBottomId}
-        allMessages={allMessages}
-        handleSelectMessage={selectMessage}
-      />
+      {!(multipleSelection || selectedId === threadBottomId) && (
+        <MessageList
+          pastTopId={selectedId}
+          bottomId={threadBottomId}
+          allMessages={allMessages}
+          handleSelectMessage={setSelectedId}
+        />
+      )}
     </div>
   )
 }
