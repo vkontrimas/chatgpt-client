@@ -14,7 +14,7 @@ const useLongHold = (handleHold, messageRef, holdTimeMs = 250) => {
 
     const handleHoldStart = (event) => {
       timer = setTimeout(() => {
-        event.preventDefault()
+        //event.preventDefault()
         handleHold()
         if ('vibrate' in navigator) {
           navigator.vibrate([25])
@@ -67,34 +67,6 @@ const ChatMessage = ({ message, handleSelectMessage }) => {
   return <ChatMessageContent handleHold={handleHold} message={message} />
 }
 
-const ChatMessageContextMenu = ({children}) => {
-  return (
-    <div className='chat-message-context'>
-      <div className='chat-message-context-menu'>
-        <button
-          className='button-clear good chat-message-context-menu-button'
-          aria-label='Delete message'
-        >
-          <i className='fa fa-refresh fa-lg'></i>
-        </button>
-        <button
-          className='button-clear chat-message-context-menu-button'
-          aria-label='Delete message'
-        >
-          <i className='fa fa-trash-o fa-lg'></i>
-        </button>
-        <button
-          className='button-clear good chat-message-context-menu-button'
-          aria-label='Delete message'
-        >
-          <i className='fa fa-share-alt fa-lg'></i>
-        </button>
-      </div>
-      {children}
-    </div>
-  )
-}
-
 const MessageList = ({pastTopId, bottomId, allMessages, handleSelectMessage}) => {
   if (pastTopId === 'thread-top') { pastTopId = null }
 
@@ -124,8 +96,8 @@ const SelectedMessageList = (props) => {
   )
 }
 
-const MessageSelectionContextMenu = ({ role, handleEdit, handleMultiSelect }) => {
-  const editIcon = role === 'assistant' 
+const SingleSelectionContextMenu = ({ isAssistant, handleEdit, handleDelete, handleShare }) => {
+  const editIcon = isAssistant
     ? <i className='fa fa-refresh fa-lg'/> 
     : <i className='fa fa-pencil fa-lg'/>
 
@@ -134,46 +106,39 @@ const MessageSelectionContextMenu = ({ role, handleEdit, handleMultiSelect }) =>
         <button
           className='button-clear good chat-message-context-menu-button'
           aria-label='Edit message'
-          onClick={() => handleEdit()}
+          onClick={handleEdit}
         >
           {editIcon}
         </button>
         <button
-          className='button-clear chat-message-context-menu-button'
-          aria-label='Delete message'
-          onClick={() => handleMultiSelect('delete')}
+          className='button-clear good chat-message-context-menu-button'
+          aria-label='Share message'
+          onClick={() => {}}
         >
-          <i className='fa fa-trash-o fa-lg'></i>
+          <i className='fa fa-clone fa-lg'></i>
         </button>
         <button
           className='button-clear good chat-message-context-menu-button'
           aria-label='Share message'
-          onClick={() => handleMultiSelect('share')}
+          onClick={handleShare}
         >
           <i className='fa fa-share-alt fa-lg'></i>
+        </button>
+        <button
+          className='button-clear chat-message-context-menu-button'
+          aria-label='Delete message'
+          onClick={handleDelete}
+        >
+          <i className='fa fa-trash-o fa-lg'></i>
         </button>
       </div>
     )
 }
 
-const MessageMultiSelectionConfirmMenu = ({ type, handleConfirm, handleCancel }) => {
-  const confirmIcon = type === 'delete' 
-    ? <i className='fa fa-trash-o fa-lg'/>
-    : <i className='fa fa-share-alt fa-lg'/>
-
-  const confirmClass = type === 'delete'
-    ? 'button-clear chat-message-context-menu-button'
-    : 'button-clear good chat-message-context-menu-button'
-
+const MultiSelectionConfirmMenu = ({ type, handleConfirm, handleCancel, children }) => {
   return (   
     <div className='chat-message-context-menu'>
-      <button
-        className={confirmClass}
-        aria-label='Delete message'
-        onClick={() => handleConfirm()}
-      >
-        {confirmIcon}
-      </button>
+      {children}
       <button
         className='button-clear chat-message-context-menu-button'
         aria-label='Share message'
@@ -185,51 +150,6 @@ const MessageMultiSelectionConfirmMenu = ({ type, handleConfirm, handleCancel })
   )
 }
 
-const MessageSelection = ({
-  type,
-  pastTopId,
-  bottomId,
-  allMessages,
-  setSelection,
-  threadBottomId,
-  selectMessage,
-}) => {
-  const typeIsSingle = type === 'single'
-
-  const handleMultiSelect = (newType) => {
-    setSelection(threadBottomId, pastTopId, newType)
-  }
-
-  const handleCancelMultiSelect = () => {
-    setSelection(null, null, 'single')
-  }
-
-  return (
-    <div className={`chat-message-context ${typeIsSingle ? '' : 'collapse-messages'}`}>
-      {typeIsSingle && (
-        <MessageSelectionContextMenu
-          role={allMessages[bottomId].role}
-          handleEdit={() => {}}
-          handleMultiSelect={handleMultiSelect}
-        />
-      )}
-      {!typeIsSingle && (
-        <MessageMultiSelectionConfirmMenu
-          type={type}
-          handleConfirm={() => {}}
-          handleCancel={handleCancelMultiSelect}
-        />
-      )}
-      <MessageList
-        pastTopId={pastTopId}
-        bottomId={bottomId}
-        allMessages={allMessages}
-        handleSelectMessage={selectMessage}
-      />
-    </div>
-  )
-}
-
 const ChatMessageView = (props) => {
   const threadBottomId = useSelector(state => {
     const currentId = state.currentThread.currentBranch
@@ -237,11 +157,68 @@ const ChatMessageView = (props) => {
   })
   const allMessages = useSelector(state => state.currentThread.allMessages)
 
-  const [multipleSelection, setMultipleSelection] = useState(false)
+  const [selectionType, setSelectionType] = useState('single')
   const [selectedId, setSelectedId] = useState(null)
   const pastSelectedId = selectedId && allMessages[selectedId].aboveMessageId
+  const multipleSelection = selectionType !== 'single'
 
-  const setSelection = (bottomId, pastTopId, type) => { }
+  const clearSelection = () => {
+    setSelectionType('single')
+    setSelectedId(null)
+  }
+
+  const contextMenu = useMemo(() => {
+    if (!selectedId) { return null }
+
+    switch (selectionType) {
+      case 'single':
+        return (
+          <SingleSelectionContextMenu
+            isAssistant={allMessages[selectedId].role === 'assistant'}
+            handleEdit={() => {}}
+            handleDelete={() => setSelectionType('delete')}
+            handleShare={() => setSelectionType('share')}
+          />
+        )
+      case 'delete':
+        return (
+          <MultiSelectionConfirmMenu
+            type={'delete'}
+            handleCancel={() => setSelectionType('single')}
+          >
+            <button
+              className='button-clear chat-message-context-menu-button'
+              aria-label='Delete message'
+              onClick={() => {
+                clearSelection()
+              }}
+            >
+              <i className='fa fa-trash-o fa-lg'></i>
+            </button>
+          </MultiSelectionConfirmMenu>
+        )
+      case 'share':
+        return (
+          <MultiSelectionConfirmMenu
+            type={'delete'}
+            handleCancel={() => setSelectionType('single')}
+          >
+            <button
+              className='button-clear good chat-message-context-menu-button'
+              aria-label='Share message'
+              onClick={() => {
+                clearSelection()
+              }}
+            >
+              <i className='fa fa-share-alt fa-lg'></i>
+            </button>
+          </MultiSelectionConfirmMenu>
+        )
+      default:
+        console.warn(selectedId, 'not implemented')
+        return null
+    }
+  }, [selectionType, selectedId])
 
   return (
     <div className='chat-message-view'>
@@ -253,22 +230,16 @@ const ChatMessageView = (props) => {
             allMessages={allMessages}
             handleSelectMessage={setSelectedId}
           />
-          {/*<MessageSelection 
-            type={selectionType}
-            pastTopId={selectionPastTopId}
-            bottomId={selectionBottomId}
-            allMessages={allMessages}
-            setSelection={setSelection}
-            selectMessage={selectMessage}
-            threadBottomId={threadBottomId}
-          />*/}
-          <SelectedMessageList
-            pastTopId={pastSelectedId}
-            bottomId={multipleSelection ? threadBottomId : selectedId}
-            allMessages={allMessages}
-            handleSelectMessage={setSelectedId}
-            isCollapsed={multipleSelection}
-          />
+          <div className='chat-message-context'>
+            {contextMenu}
+            <SelectedMessageList
+              pastTopId={pastSelectedId}
+              bottomId={multipleSelection ? threadBottomId : selectedId}
+              allMessages={allMessages}
+              handleSelectMessage={setSelectedId}
+              isCollapsed={multipleSelection}
+            />
+          </div>
         </>
       )}
       {!(multipleSelection || selectedId === threadBottomId) && (
