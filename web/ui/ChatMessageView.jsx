@@ -72,6 +72,12 @@ const ChatMessageContextMenu = ({children}) => {
     <div className='chat-message-context'>
       <div className='chat-message-context-menu'>
         <button
+          className='button-clear good chat-message-context-menu-button'
+          aria-label='Delete message'
+        >
+          <i className='fa fa-refresh fa-lg'></i>
+        </button>
+        <button
           className='button-clear chat-message-context-menu-button'
           aria-label='Delete message'
         >
@@ -103,41 +109,49 @@ const GrabbedMessages = ({ grabbedMessages, handleOpenContext }) => {
   )
 }
 
+const MessageList = ({pastTopId, bottomId, allMessages}) => {
+  if (pastTopId === 'thread-top') { pastTopId = null }
+
+  const messageElements = useMemo(() => {
+    let currentId = bottomId
+    const messages = []
+    while (currentId !== pastTopId) {
+      messages.push(allMessages[currentId])
+      currentId = allMessages[currentId].previous
+    }
+    messages.reverse()
+
+    return messages.map(message => (
+      <ChatMessage key={message.id} message={message} handleOpenContext={() => {}} />
+    ))
+  }, [pastTopId, bottomId, allMessages])
+  
+  return <div className='chat-message-list'>{messageElements}</div>
+}
+
+const MessageSelection = ({pastTopId, bottomId, allMessages}) => {
+  return <MessageList pastTopId={pastTopId} bottomId={bottomId} allMessages={allMessages} />
+}
+
 const ChatMessageView = (props) => {
-  const lastMessageId = useSelector(state => {
+  const threadBottomId = useSelector(state => {
     const currentId = state.currentThread.currentBranch
     return state.currentThread.branches[currentId].end
   })
-
   const allMessages = useSelector(state => state.currentThread.allMessages)
-  const [grabbedMessages, setGrabbedMessages] = useState([])
 
-  const shownMessages = useMemo(() => {
-    let currentId = grabbedMessages.length > 0 ? grabbedMessages[0].previous : lastMessageId
-    const shownMessages = []
-    while (currentId) {
-      shownMessages.push(allMessages[currentId])
-      currentId = allMessages[currentId]?.previous
-    }
-    shownMessages.reverse()
-    return shownMessages
-  }, [lastMessageId, allMessages, grabbedMessages])
-
-  const handleOpenContext = useCallback((messageId) => {
-    let currentId = lastMessageId
-    const grabbedMessages = []
-    while (currentId && allMessages[messageId].previous !== currentId) {
-      grabbedMessages.push(allMessages[currentId])
-      currentId = allMessages[currentId].previous
-    }
-    grabbedMessages.reverse()
-    setGrabbedMessages(grabbedMessages)
-  }, [lastMessageId, allMessages])
+  const [selectionBottomId, setSelectionBottomId] = useState('SQyigiY2Tpupk8Hrquenzw')
+  const [selectionPastTopId, setSelectionPastTopId] = useState('pACIgc3pTtC9vDGVew5BmQ')
 
   return (
-    <div className='chat-message-view chat-message-list'>
-      {shownMessages.map(message => (<ChatMessage key={message.id} message={message} handleOpenContext={handleOpenContext} />))}
-      <GrabbedMessages grabbedMessages={grabbedMessages} handleOpenContext={handleOpenContext} />
+    <div className='chat-message-view'>
+      <MessageList pastTopId={'thread-top'} bottomId={selectionPastTopId || threadBottomId} allMessages={allMessages} />
+      {selectionBottomId && selectionPastTopId && (
+        <>
+          <MessageSelection pastTopId={selectionPastTopId} bottomId={selectionBottomId} allMessages={allMessages} />
+          <MessageList pastTopId={selectionBottomId} bottomId={threadBottomId} allMessages={allMessages} />
+        </>
+      )}
     </div>
   )
 }
