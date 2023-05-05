@@ -97,11 +97,7 @@
   padding-left: 10px;
 }
 
-.chat-message-context {
-  overflow: hidden;
-}
-
-.chat-message-context .chat-message-list {
+.collapse-messages .chat-message-list {
   gap: 0em;
 }
 
@@ -110,10 +106,13 @@
 
   animation: chat-message-shake 0.25s;
   animation-iteration-count: 2;
+}
 
+.chat-message-context.collapse-messages .chat-message {
   overflow: hidden;
   max-height: 5em;
 }
+
 
 .chat-message-context .chat-message::after {
   position: absolute;
@@ -123,6 +122,9 @@
   width: 100%;
   height: 100%;
   background: rgb(37,37,37, 0.30);
+}
+
+.chat-message-context.collapse-messages .chat-message::after {
   background: linear-gradient(to top, rgba(37,37,37,1) 0%, rgba(37,37,37,0.30) 1.25em, rgba(37,37,37,0.30) 100%);
 }
 
